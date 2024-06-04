@@ -1,9 +1,280 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body></body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        display: flex;
+        height: 100vh;
+    }
+    
+    .container {
+        display: flex;
+        width: 100%;
+    }
+    
+    .sidebar {
+        width: 250px;
+        background-color: #2c3e50;
+        color: #ecf0f1;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    
+    .sidebar h2 {
+        margin: 0;
+        font-size: 24px;
+        text-align: center;
+    }
+    
+    .sidebar nav ul {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .sidebar nav ul li {
+        margin: 20px 0;
+    }
+    
+    .sidebar nav ul li a {
+        color: #ecf0f1;
+        text-decoration: none;
+        display: block;
+        padding: 10px;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+    }
+    
+    .sidebar nav ul li a:hover {
+        background-color: #34495e;
+    }
+    
+    .content {
+        flex-grow: 1;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    
+    .section {
+        display: none;
+    }
+    
+    .section.active {
+        display: block;
+    }    
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const links = document.querySelectorAll('.sidebar nav ul li a');
+        const sections = document.querySelectorAll('.section');
+    
+        links.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = link.getAttribute('data-target');
+    
+                sections.forEach(section => {
+                    if (section.id === target) {
+                        section.classList.add('active');
+                    } else {
+                        section.classList.remove('active');
+                    }
+                });
+            });
+        });
+    });
+</script>
+<body>
+    
+    
+    <aside class="sidebar">
+        <h5>Admin Dashboard</h5>
+        <nav>
+            <ul>
+                <li><a href="#" data-target="home">Home</a></li>
+                <li><a href="#" data-target="data-pendaftar">Data Pendaftar</a></li>
+                <li><a href="#" data-target="verifikasi-peserta">Verifikasi Peserta</a></li>
+                <li><a href="#" data-target="verifikasi-pembayaran">Verifikasi Pembayaran</a></li>
+                <li class="nav-item"> <a href="" class="nav-link"> <i class="nav-icon far fa-circle text-danger"></i>
+                    <p class="text">Logout</p>
+                </a> </li>
+            </ul>
+        </nav>
+    </aside>
+   
+    <div class="container">
+        <main class="content">
+            <section id="home" class="section active">
+                <h2 class="mt-5 mb-5">Dashboard</h2>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                              <h5 class="card-title">Jumlah Pendaftar</h5>
+                              <h6 class="card-subtitle mb-2 text-body-secondary">Card subtitle</h6>
+                              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                              <a href="#" class="card-link">Card link</a>
+                              <a href="#" class="card-link">Another link</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                              <h5 class="card-title">Jumlah Peserta</h5>
+                              <h6 class="card-subtitle mb-2 text-body-secondary">Card subtitle</h6>
+                              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                              <a href="#" class="card-link">Card link</a>
+                              <a href="#" class="card-link">Another link</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                              <h5 class="card-title">Jumlah Pembayaran berhasil</h5>
+                              <h6 class="card-subtitle mb-2 text-body-secondary">Card subtitle</h6>
+                              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                              <a href="#" class="card-link">Card link</a>
+                              <a href="#" class="card-link">Another link</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="data-pendaftar" class="section" >
+                <h2 class="mt-5 mb-5">Data Pendaftar</h2>
+                <table class="table table-striped table-bordered" >
+                    <thead>
+                      <tr align="center">
+                        <th scope="col">NO</th>
+                        <th scope="col">Nama</th>
+                        <th scope="col">Asal Kota</th>
+                        <th scope="col">Asal Sekolah</th>
+                      </tr>
+                    </thead>
+                    <tbody align="center">
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Bandung</td>
+                        <td>SMPN 14 Bandung</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>Jakarta</td>
+                        <td>SMPN 78 Jakarta</td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </section>
+            <section id="verifikasi-peserta" class="section">
+                <h2 class="mt-5 mb-5">Verifikasi Peserta</h2>
+                <table class="table table-striped table-bordered" >
+                    <thead>
+                      <tr align="center">
+                        <th scope="col">NO</th>
+                        <th scope="col">Nama</th>
+                        <th scope="col">Asal Kota</th>
+                        <th scope="col">Asal Sekolah</th>
+                        <th scope="col">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody align="center">
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Bandung</td>
+                        <td>SMPN 14 Bandung</td>
+                        <td><div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                              Verifikasi
+                            </button>
+                            <ul class="dropdown-menu">
+                              <li><a class="dropdown-item" href="#"> Terverifikasi</a></li>
+                              <li><a class="dropdown-item" href="#">Tidak Terverifikasi</a></li>
+                            </ul>
+                          </div></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>Jakarta</td>
+                        <td>SMPN 78 Jakarta</td>
+                        <td><div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                              Verifikasi
+                            </button>
+                            <ul class="dropdown-menu">
+                              <li><a class="dropdown-item" href="#"> Terverifikasi</a></li>
+                              <li><a class="dropdown-item" href="#">Tidak Terverifikasi</a></li>
+                            </ul>
+                          </div></td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </section>
+            <section id="verifikasi-pembayaran" class="section">
+                <h2 class="mt-5 mb-5">Verifikasi Pembayaran</h2>
+                <table class="table table-striped table-bordered" >
+                    <thead>
+                      <tr align="center">
+                        <th scope="col">NO</th>
+                        <th scope="col">Nama</th>
+                        <th scope="col">Asal Kota</th>
+                        <th scope="col">Asal Sekolah</th>
+                        <th scope="col">Bukti Pembayaran</th>
+                        <th scope="col">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody align="center">
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Bandung</td>
+                        <td>SMPN 14 Bandung</td>
+                        <td>Image</a></td>
+                        <td><div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                              Verifikasi
+                            </button>
+                            <ul class="dropdown-menu">
+                              <li><a class="dropdown-item" href="#"> Terverifikasi</a></li>
+                              <li><a class="dropdown-item" href="#">Tidak Terverifikasi</a></li>
+                            </ul>
+                          </div></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>Jakarta</td>
+                        <td>SMPN 78 Jakarta</td>
+                        <td>Image</td>
+                        <td><div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                              Verifikasi
+                            </button>
+                            <ul class="dropdown-menu">
+                              <li><a class="dropdown-item" href="#"> Terverifikasi</a></li>
+                              <li><a class="dropdown-item" href="#">Tidak Terverifikasi</a></li>
+                            </ul>
+                          </div></td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </section>
+        </main>
+    </div>
+    <script src="scripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+</body>
 </html>
