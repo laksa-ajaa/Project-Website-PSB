@@ -16,9 +16,6 @@
             height: 100vh;
             overflow-x: hidden;
             /* Mencegah scroll horizontal */
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
         .sidebar {
@@ -90,10 +87,8 @@
 
         .main-content {
             flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            margin-left: 7px;
+            margin-right: 250px;
             padding-top: 60px;
             /* Sesuaikan padding untuk memperhitungkan navbar tetap */
             transition: margin-left 0.5s cubic-bezier(0.3, 0.0, 0.2, 1);
@@ -142,51 +137,6 @@
             /* Animasi fade in */
         }
 
-        .container {
-            justify-content: center;
-            align-items: center;
-            top: 100px;
-            left: 100px;
-            margin: 50px;
-            height: 500px;
-            width:100%;
-        }
-
-        .card {
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-header {
-            background-color: #007bff;
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            text-align: center;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-        }
-
-        .table th,
-        .table td {
-            vertical-align: middle;
-        }
-
-        .status-pending {
-            color: #ffc107;
-            font-weight: bold;
-        }
-
-        .status-verified {
-            color: #28a745;
-            font-weight: bold;
-        }
-
-        .status-rejected {
-            color: #dc3545;
-            font-weight: bold;
-        }
-
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -229,49 +179,8 @@
     </nav>
     <div class="main-content" id="mainContent">
         <div class="container">
-            <div class="card">
-                <div class="card-header">
-                    Status Pendaftaran
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>NO</th>
-                                    <th>Nama</th>
-                                    <th>Email</th>
-                                    <th>Nomor Telepon</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>John Doe</td>
-                                    <td>johndoe@example.com</td>
-                                    <td>08123456789</td>
-                                    <td class="status-pending">Menunggu Verifikasi</td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Jane Smith</td>
-                                    <td>janesmith@example.com</td>
-                                    <td>08198765432</td>
-                                    <td class="status-verified">Terverifikasi</td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>Robert Brown</td>
-                                    <td>robertbrown@example.com</td>
-                                    <td>08156789876</td>
-                                    <td class="status-rejected">Ditolak</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+            <h2>Konten Utama</h2>
+            <p>Konten ada di sini.</p>
         </div>
     </div>
 
