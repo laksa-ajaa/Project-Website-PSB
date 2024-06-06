@@ -22,5 +22,9 @@ def showVisiMisi():
 def showKegiatan():
     return render_template('user_page/kegiatan.html')
 
+@app.route('/template')
+def showTemp():
+    return render_template('dashboard_user/template.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
