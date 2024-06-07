@@ -4,7 +4,19 @@ app = Flask(__name__)
 
 @app.route('/')
 def showHome():
-    return render_template('user_page/index.html')
+    data = {
+        'title': 'Beranda',
+    }
+    return render_template('user_page/index.html', data=data)
+
+@app.route('/login')
+def auth():
+    data = {
+        'title': 'Login/Register',
+    }
+    return render_template('auth/login.html', data=data)
+
+
 
 @app.route('/sejarah')
 def showSejarah():
@@ -24,7 +36,25 @@ def showKegiatan():
 
 @app.route('/template')
 def showTemp():
-    return render_template('dashboard_user/template.html')
+    data = {
+        'title': 'Template',
+    }
+    return render_template('dashboard_user/template.html' , data=data)
+
+
+# Routes Dashboard Admin
+@app.route('/admin')
+def indexAdmin():
+    return render_template('dashboard_admin/index.html')
+@app.route('/admin/datapeserta')
+def pesertaAdmin():
+    return render_template('dashboard_admin/table.html')
+@app.route('/admin/verifikasipeserta')
+def verifyAdmin():
+    return render_template('dashboard_admin/widget.html')
+@app.route('/admin/pembayaran')
+def paymentAdmin():
+    return render_template('dashboard_admin/form.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
