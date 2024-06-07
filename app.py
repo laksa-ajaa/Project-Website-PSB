@@ -58,19 +58,31 @@ def paymentAdmin():
 
 @app.route('/formulir')
 def showformulir():
-    return render_template('dashboard_user/Formulir.html')
+    data = {
+        'title': 'Template',
+    }
+    return render_template('dashboard_user/Formulir.html' , data=data)
 
 @app.route('/DashboardUser')
 def showDashUser():
-    return render_template('dashboard_user/Dashboard-user.html')
+    data = {
+        'title': 'Template',
+    }
+    return render_template('dashboard_user/Dashboard-user.html', data=data)
 
 @app.route('/Verifikasi')
 def showVer():
-    return render_template('dashboard_user/Verifikasi.html')
+    data = {
+        'title': 'Template',
+    }
+    return render_template('dashboard_user/Verifikasi.html' , data=data)
 
 @app.route('/Pembayaran')
 def showPembayaran():
-    return render_template('dashboard_user/Pembayaran.html')
+    data = {
+        'title': 'Template',
+    }
+    return render_template('dashboard_user/Pembayaran.html' , data=data)
 
 if __name__ == '__main__':
     app.run(debug=True)

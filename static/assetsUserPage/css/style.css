@@ -2746,6 +2746,7 @@ ol {
     line-height: 30px;
     text-align: center;
     border: 1px solid #ffffff;
+    border-radius: 5px;
     cursor: pointer;
     position: absolute;
     right: 15px;
@@ -2959,7 +2960,45 @@ ol {
     margin-right: 0;
   }
 }
+#wrapper {
+  overflow-x: hidden;
+}
 
+#sidebar-wrapper {
+  min-height: 100vh;
+  margin-left: -15rem;
+  transition: margin 0.25s ease-out;
+}
+
+#sidebar-wrapper .sidebar-heading {
+  padding: 0.875rem 1.25rem;
+  font-size: 1.2rem;
+}
+
+#sidebar-wrapper .list-group {
+  width: 15rem;
+}
+
+#page-content-wrapper {
+  min-width: 100vw;
+}
+
+body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
+  margin-left: 0;
+}
+
+@media (min-width: 768px) {
+  #sidebar-wrapper {
+    margin-left: 0;
+  }
+  #page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+  }
+  body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
+    margin-left: -15rem;
+  }
+}
 /* Small Device = 320px */
 
 @media only screen and (max-width: 479px) {
