@@ -10,7 +10,7 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
+            background-color: #aebeec;
             margin: 0;
             padding: 0;
             height: 100vh;
@@ -18,234 +18,177 @@
         }
 
         .sidebar {
-            height: 100%;
-            width: 250px;
-            position: fixed;
-            top: 0;
-            left: 0;
+            height: 900vh;
+            width: 200px;
             background-color: #111;
             padding-top: 40px;
-            transform: translateX(-250px);
-            transition: transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
-            opacity: 0;
+            color: white;
+            position: fixed;
         }
 
         .sidebar a {
-            padding: 10px 10px;
+            padding: 10px 0px;
             text-decoration: none;
             font-size: 18px;
             color: #818181;
             display: block;
             transition: 0.3s;
-        }
-
-        .sidebar-links {
-            padding: 40px;
+            left: 30px;
+            top: 50px;
         }
 
         .sidebar a:hover {
             color: #f1f1f1;
         }
 
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1;
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
+        .sidebar-links {
+            padding: 40px;
+        }
+
+        .main-content-wrapper {
+            flex-grow: 1;
+            margin-left: 200px; /* Menyesuaikan margin kiri untuk memberikan ruang pada sidebar */
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .navbar .navbar-brand {
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-            text-decoration: none;
-        }
-
-        .navbar .nav-links a {
-            color: white;
-            text-decoration: none;
-            margin: 0 10px;
-            transition: color 0.3s ease;
-        }
-
-        .navbar .nav-links a:hover {
-            color: #f1f1f1;
+            flex-direction: column;
         }
 
         .main-content {
             flex: 1;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            padding-top: 70px; /* Sesuaikan padding atas untuk memberikan ruang pada navbar */
-            transition: margin-left 0.5s cubic-bezier(0.3, 0.0, 0.2, 1);
-        }
-
-        .open-sidebar-btn {
-            font-size: 31px;
-            cursor: pointer;
-            background-color: #111;
-            color: white;
-            padding: 10px 13px;
-            border: none;
-            position: fixed;
-            top: 0px;
-            left: 45px;
-            z-index: 2;
-            transition: background-color 0.4s ease, color 0.4s ease, opacity 0s ease;
-        }
-
-        .open .sidebar {
-            transform: translateX(0);
-            animation: fadeIn 0.5s forwards;
-        }
-
-        .close .sidebar {
-            animation: fadeOut 0.5s forwards;
-        }
-
-        .open .main-content {
-            margin-left: 250px;
-        }
-
-        .hide-sidebar-btn {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .fade-sidebar-btn {
-            opacity: 1;
-            visibility: visible;
-            animation: fadeIn 0.5s forwards;
+            align-items: center;
+            padding: 20px;
         }
 
         .form-container {
-            width: 100%;
-            max-width: 900px;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin: 0 20px;
-            min-height: 500px; /* Sesuaikan tinggi minimum untuk memperpanjang formulir ke bawah */
+          width: 100%;
+          max-width: 1000px;
+          background-color: hsl(263, 52%, 90%);
+          padding: 30px;
+          border-radius: 10px;
+          box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+          margin: 20px auto;
         }
 
         .form-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            text-align: center;
+          font-size: 28px;
+          font-weight: bold;
+          margin-bottom: 20px;
+          text-align: center;
+          color: #333;
         }
 
+        .form-control {
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          margin-bottom: 15px;
+          width: 100%;
+          transition: border-color 0.3s;
+      }
+      
+      .form-control:focus {
+          border-color: #007bff;
+          box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+      }
+
+      .form-label {
+        font-weight: bold;
+        color: #555;
+    }
+
         .btn-primary {
-            background-color: #007bff;
-            border: none;
+          background-color: #007bff;
+          color: #fff;
+          border: none;
+          padding: 10px 20px;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s;
         }
 
         .btn-primary:hover {
             background-color: #0056b3;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadeOut {
-            from {
-                opacity: 1;
-            }
-
-            to {
-                opacity: 0;
-            }
-        }
+        .select-wrapper {
+          position: relative;
+          width: 100%;
+      }
+      
+      .custom-select {
+          display: block;
+          width: 100%;
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          background-color: #fff;
+          appearance: none;
+      }
+      
+      .select-icon {
+          position: absolute;
+          top: 50%;
+          right: 10px;
+          transform: translateY(-50%);
+          pointer-events: none;
+      }
     </style>
 </head>
-
+{% include 'user_page/layouts/header.html' %}
 <body>
-    <div class="sidebar" id="mySidebar">
+    {% include 'user_page/layouts/navbar.html' %}
+
+    <div class="sidebar">
         <div class="sidebar-links">
             <a href="#">Home</a>
-            <a href="#">Formulir Pendaftaran</a>
-            <a href="#">Tunggu Verifikasi</a>
-            <a href="#">Pembayaran</a>
-        </div>
-    </div>
-    <nav class="navbar" id="myNavbar">
-        <a href="#" class="navbar-brand" id="navbarBrand" onclick="toggleSidebar()">☰</a>
-        <div class="nav-links">
-            <a href="#">Home</a>
-            <a href="#">Formulir Pendaftaran</a>
-            <a href="#">Tunggu Verifikasi</a>
-            <a href="#">Pembayaran</a>
-        </div>
-    </nav>
-    <div class="main-content" id="mainContent">
-        <div class="form-container">
-            <div class="form-title">Formulir Pembayaran SPP</div>
-            <form>
-                <div class="mb-3">
-                    <label for="nama" class="form-label">Nama Lengkap</label>
-                    <input type="text" class="form-control" id="nama" placeholder="Masukkan nama lengkap Anda" required>
-                </div>
-                <div class="mb-3">
-                    <label for="kelas" class="form-label">Kelas</label>
-                    <input type="text" class="form-control" id="kelas" placeholder="Masukkan kelas Anda" required>
-                </div>
-                <div class="mb-3">
-                    <label for="jumlah" class="form-label">Jumlah Pembayaran</label>
-                    <input type="number" class="form-control" id="jumlah" placeholder="Masukkan jumlah pembayaran"
-                        required>
-                </div>
-                <div class="mb-3">
-                    <label for="metode" class="form-label">Metode Pembayaran</label>
-                    <select class="form-select" id="metode" required>
-                        <option value="">Pilih metode pembayaran</option>
-                        <option value="transfer_bank">Transfer Bank</option>
-                        <option value="kartu_kredit">Kartu Kredit</option>
-                        <option value="dompet_digital">Dompet Digital</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="tanggal" class="form-label">Tanggal Pembayaran</label>
-                    <input type="date" class="form-control" id="tanggal" required>
-                </div>
-                <div class="mb-3">
-                    <label for="bukti" class="form-label">Upload Bukti Pembayaran</label>
-                    <input type="file" class="form-control" id="bukti" required>
-                </div>
-                <button type="submit" class="btn btn-primary w-100">Kirim Pembayaran</button>
-            </form>
+            <a href="#">Dashboard</a>
+            <a href="#">Orders</a>
+            <a href="#">Products</a>
+            <a href="#">Customers</a>
         </div>
     </div>
 
-    <script>
-        function toggleSidebar() {
-            document.body.classList.toggle('open');
-            if (document.body.classList.contains('open')) {
-                document.body.classList.remove('close');
-                document.getElementById('sidebarToggleBtn').classList.remove('hide-sidebar-btn');
-                document.getElementById('sidebarToggleBtn').classList.add('fade-sidebar-btn');
-            } else {
-                document.body.classList.add('close');
-                document.getElementById('sidebarToggleBtn').classList.add('hide-sidebar-btn');
-                document.getElementById('sidebarToggleBtn').classList.remove('fade-sidebar-btn');
-            }
-        }
-    </script>
+    <div class="main-content-wrapper">
+        <div class="main-content" id="mainContent">
+            <div class="form-container">
+                <div class="form-title">Formulir Pembayaran SPP</div>
+                <form>
+                    <div class="mb-3">
+                        <label for="nama" class="form-label">Nama Lengkap</label>
+                        <input type="text" class="form-control" id="nama" placeholder="Masukkan nama lengkap Anda" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="kelas" class="form-label">Kelas</label>
+                        <input type="text" class="form-control" id="kelas" placeholder="Masukkan kelas Anda" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="jumlah" class="form-label">Jumlah Pembayaran</label>
+                        <input type="number" class="form-control" id="jumlah" placeholder="Masukkan jumlah pembayaran" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="metode" class="form-label">Metode Pembayaran</label>
+                        <select class="form-select" id="metode" required>
+                            <option value="">Pilih metode pembayaran</option>
+                            <option value="transfer_bank">Transfer Bank</option>
+                            <option value="kartu_kredit">Kartu Kredit</option>
+                            <option value="dompet_digital">Dompet Digital</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tanggal" class="form-label">Tanggal Pembayaran</label>
+                        <input type="date" class="form-control" id="tanggal" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="bukti" class="form-label">Upload Bukti Pembayaran</label>
+                        <input type="file" class="form-control" id="bukti" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Kirim Pembayaran</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+0vnYqE2I6pO7FjzX6nslnfF/HL5V" crossorigin="anonymous"></script>
 </body>
-
+{% include 'user_page/layouts/footer.html' %}
 </html>
