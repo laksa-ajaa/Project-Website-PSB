@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>DASHMIN</title>
+    <title>DASHMIN </title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -60,9 +60,10 @@
                 </div>
                 <div class="navbar-nav w-100">
                     <a href="index.html" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
-                    <a href="table.html" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Data Peserta</a>
-                    <a href="widget.html" class="nav-item nav-link active"><i class="fa fa-th me-2"></i>Verifikasi Peserta</a>
-                    <a href="form.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Pembayaran</a>
+                    <a href="dataPeserta.html" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Data Peserta</a>
+                    <a href="verifikasi.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Verifikasi Peserta</a>
+                    <a href="pembayaran.html" class="nav-item nav-link active"><i class="fa fa-keyboard me-2"></i>Pembayaran</a>
+                    
                 </div>
             </nav>
         </div>
@@ -159,79 +160,6 @@
             <!-- Navbar End -->
 
 
-            <!-- Chart Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="row g-4">
-                    
-                    <div class="col-sm-12 col-md-6 col-xl-4">
-                        <div class="h-100 bg-light rounded p-4">
-                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                <h6 class="mb-0">Calender</h6>
-                                <a href="">Show All</a>
-                            </div>
-                            <div id="calender"></div>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-md-6 col-xl-4">
-                        <div class="h-100 bg-light rounded p-4">
-                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                <h6 class="mb-0">To Do List</h6>
-                                <a href="">Show All</a>
-                            </div>
-                            <div class="d-flex mb-2">
-                                <input class="form-control bg-transparent" type="text" placeholder="Enter task">
-                                <button type="button" class="btn btn-primary ms-2">Add</button>
-                            </div>
-                            <div class="d-flex align-items-center border-bottom py-2">
-                                <input class="form-check-input m-0" type="checkbox">
-                                <div class="w-100 ms-3">
-                                    <div class="d-flex w-100 align-items-center justify-content-between">
-                                        <span>Short task goes here...</span>
-                                        <button class="btn btn-sm"><i class="fa fa-times"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center border-bottom py-2">
-                                <input class="form-check-input m-0" type="checkbox">
-                                <div class="w-100 ms-3">
-                                    <div class="d-flex w-100 align-items-center justify-content-between">
-                                        <span>Short task goes here...</span>
-                                        <button class="btn btn-sm"><i class="fa fa-times"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center border-bottom py-2">
-                                <input class="form-check-input m-0" type="checkbox" checked>
-                                <div class="w-100 ms-3">
-                                    <div class="d-flex w-100 align-items-center justify-content-between">
-                                        <span><del>Short task goes here...</del></span>
-                                        <button class="btn btn-sm text-primary"><i class="fa fa-times"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center border-bottom py-2">
-                                <input class="form-check-input m-0" type="checkbox">
-                                <div class="w-100 ms-3">
-                                    <div class="d-flex w-100 align-items-center justify-content-between">
-                                        <span>Short task goes here...</span>
-                                        <button class="btn btn-sm"><i class="fa fa-times"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center pt-2">
-                                <input class="form-check-input m-0" type="checkbox">
-                                <div class="w-100 ms-3">
-                                    <div class="d-flex w-100 align-items-center justify-content-between">
-                                        <span>Short task goes here...</span>
-                                        <button class="btn btn-sm"><i class="fa fa-times"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> 
-                </div>
-            </div>
-            <!-- Chart End -->
             <!-- Table Start -->
             <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">    
@@ -243,41 +171,36 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">No</th>
-                                            <th scope="col">First Name</th>
-                                            <th scope="col">Last Name</th>
-                                            <th scope="col">Email</th>
-                                            <th scope="col">City</th>
-                                            <th scope="col">NIP</th>
-                                            <th scope="col">Status</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">NISN</th>
+                                            <th scope="col">Bukti Transfer</th>
+                                            <th scope="col">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
                                             <th scope="row">1</th>
-                                            <td>John</td>
                                             <td>Doe</td>
-                                            <td>jhon@email.com</td>
-                                            <td>Padang</td>
-                                            <td>123</td>
-                                            <td>Belum Terverfikasi</td>
+                                            <td>515256247</td>
+                                            <td>FOTO</td>
+                                            <td>Accept</td>
+                                    
                                         </tr>
                                         <tr>
                                             <th scope="row">2</th>
                                             <td>Mark</td>
-                                            <td>Otto</td>
-                                            <td>mark@email.com</td>
-                                            <td>Bandung</td>
-                                            <td>456</td>
-                                            <td>Belum Terverfikasi</td>
+                                            <td>1255484181</td>
+                                            <td>FOTO</td>
+                                            <td>Accept</td>
+                                            
                                         </tr>
                                         <tr>
                                             <th scope="row">3</th>
                                             <td>Jacob</td>
-                                            <td>Thornton</td>
-                                            <td>jacob@email.com</td>
-                                            <td>Medan</td>
-                                            <td>789</td>
-                                            <td>Belum Terverfikasi</td>
+                                            <td>15151412581</td>
+                                            <td>FOTO</td>
+                                            <td>Accept</td>
+                                            
                                         </tr>
                                     </tbody>
                                 </table>
@@ -298,7 +221,7 @@
                         </div>
                         <div class="col-12 col-sm-6 text-center text-sm-end">
                             <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                            Designed By <a href="https://htmlcodex.com">HTML Codex</a>
+                            Designed By <a href="https://htmlcodex.com">HTML </a>
                         </div>
                     </div>
                 </div>

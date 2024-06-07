@@ -19,17 +19,19 @@
 
           <div class="col-md-6 p-4">
             <div class="mb-4">
-              <h3 class="fw-bold">Halaman Login Admin</h3>
+              <h3 class="fw-bold">Halo, Selamat Datang di Halaman Admin <span class="text-success">Yayasan Ulumul Qur'an</span>!</h3>
+              <small class="text-muted fw-semibold">Silahkan masuk untuk mengakses pendaftaran santri</small>
             </div>
             <form action="/login" method="POST">
               <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input autofocus required id="username" type="username" class="form-control rounded" name="username" />
+                <label for="username" class="form-label">Email</label>
+                <input autofocus required id="username" type="username" class="form-control rounded" placeholder="example@gmail.com" name="username" />
               </div>
               <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
                 <input required id="password" type="password" class="form-control rounded" placeholder="" name="password" />
               </div>
+              <p class="fw-semibold">Belum Punya Akun? <a href="/register">Daftar</a></p>
               <div class="d-flex justify-content-end">
                 <button type="submit" class="btn btn-sm rounded text-white" style="background-color: #3085c3">
                   <span>Masuk <i class="ri-login-box-line"></i></span>
