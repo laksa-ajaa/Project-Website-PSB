@@ -15,73 +15,41 @@
             padding: 0;
             height: 100vh;
             overflow-x: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
         .sidebar {
-            height: 100%;
-            width: 250px;
-            position: fixed;
-            top: 0;
-            left: 0;
+            height: 900vh;
+            width: 200px;
             background-color: #111;
             padding-top: 40px;
-            transform: translateX(-250px);
-            transition: transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
-            opacity: 0;
+            color: white;
+            position: fixed;
         }
 
         .sidebar a {
-            padding: 10px 10px;
+            padding: 10px 0px;
             text-decoration: none;
             font-size: 18px;
             color: #818181;
             display: block;
             transition: 0.3s;
-        }
-
-        .sidebar-links {
-            padding: 40px;
+            left: 30px;
+            top: 50px;
         }
 
         .sidebar a:hover {
             color: #f1f1f1;
         }
 
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1;
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
+        .sidebar-links {
+            padding: 40px;
+        }
+
+        .main-content-wrapper {
+            flex-grow: 1;
+            margin-left: 200px; /* Menyesuaikan margin kiri untuk memberikan ruang pada sidebar */
             display: flex;
-            justify-content: space-between;
-            /* Distribusikan item secara merata dengan ruang di antara mereka */
-            align-items: center;
-            /* Pusatkan item secara vertikal */
-        }
-
-        .navbar .navbar-brand {
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-            text-decoration: none;
-        }
-
-        .navbar .nav-links a {
-            color: white;
-            text-decoration: none;
-            margin: 0 10px;
-            transition: color 0.3s ease;
-        }
-
-        .navbar .nav-links a:hover {
-            color: #f1f1f1;
+            flex-direction: column;
         }
 
         .main-content {
@@ -89,78 +57,46 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            padding-top: 60px;
-            /* Sesuaikan padding untuk memperhitungkan navbar tetap */
-            transition: margin-left 0.5s cubic-bezier(0.3, 0.0, 0.2, 1);
-            /* Transisi yang halus */
+            padding: 20px;
         }
 
-        .open-sidebar-btn {
-            font-size: 31px;
-            cursor: pointer;
-            background-color: #111;
-            color: white;
-            padding: 10px 13px;
-            border: none;
-            position: fixed;
-            top: 0px;
-            left: 45px;
-            z-index: 2;
-            transition: background-color 0.4s ease, color 0.4s ease, opacity 0s ease;
-            /* Tambahkan transisi untuk perubahan warna dan opasitas */
-        }
-
-        .open .sidebar {
-            transform: translateX(0);
-            animation: fadeIn 0.5s forwards;
-        }
-
-        .close .sidebar {
-            animation: fadeOut 0.5s forwards;
-        }
-
-        .open .main-content {
-            margin-left: 250px;
-        }
-
-        .hide-sidebar-btn {
-            opacity: 0;
-            /* Atur opasitas awal ke 0 */
-            visibility: hidden;
-            /* Sembunyikan tombol */
-        }
-
-        .fade-sidebar-btn {
-            opacity: 1;
-            visibility: visible;
-            animation: fadeIn 0.5s forwards;
-            /* Animasi fade in */
-        }
-
-        .container {
-            justify-content: center;
-            align-items: center;
-            top: 100px;
-            left: 100px;
-            margin: 50px;
-            height: 500px;
-            width:100%;
-        }
-
-        .card {
+        .form-container {
+            width: 100%;
+            max-width: 900px;
+            background-color: #ffffff;
+            padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 0 20px;
+            min-height: 500px;
+            /* Sesuaikan tinggi minimum untuk memperpanjang formulir ke bawah */
+        }
+
+        .form-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
         }
 
         .card-header {
             background-color: #007bff;
-            color: white;
+            color: #131010;
             font-size: 24px;
             font-weight: bold;
             text-align: center;
             border-top-left-radius: 8px;
             border-top-right-radius: 8px;
+            padding: 15px 0;
         }
 
         .table th,
@@ -204,87 +140,70 @@
         }
     </style>
 </head>
+{% include 'user_page/layouts/header.html' %}
 
 <body>
-    <div class="sidebar" id="mySidebar">
+    {% include 'user_page/layouts/navbar.html' %}
+
+    <div class="sidebar">
         <div class="sidebar-links">
             <a href="#">Home</a>
-            <a href="#">Formulir Pendaftaran</a>
-            <a href="#">Tunggu Verifikasi</a>
-            <a href="#">Pembayaran</a>
+            <a href="#">Dashboard</a>
+            <a href="#">Orders</a>
+            <a href="#">Products</a>
+            <a href="#">Customers</a>
         </div>
     </div>
-    <nav class="navbar" id="myNavbar">
-        <a href="#" class="navbar-brand" id="navbarBrand" onclick="toggleSidebar()">☰</a>
-        <div class="nav-links">
-            <a href="#">Home</a>
-            <a href="#">Formulir Pendaftaran</a>
-            <a href="#">Tunggu Verifikasi</a>
-            <a href="#">Pembayaran</a>
-        </div>
-    </nav>
-    <div class="main-content" id="mainContent">
-        <div class="container">
-            <div class="card">
-                <div class="card-header">
-                    Status Pendaftaran
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>NO</th>
-                                    <th>Nama</th>
-                                    <th>Email</th>
-                                    <th>Nomor Telepon</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>John Doe</td>
-                                    <td>johndoe@example.com</td>
-                                    <td>08123456789</td>
-                                    <td class="status-pending">Menunggu Verifikasi</td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Jane Smith</td>
-                                    <td>janesmith@example.com</td>
-                                    <td>08198765432</td>
-                                    <td class="status-verified">Terverifikasi</td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>Robert Brown</td>
-                                    <td>robertbrown@example.com</td>
-                                    <td>08156789876</td>
-                                    <td class="status-rejected">Ditolak</td>
-                                </tr>
-                            </tbody>
-                        </table>
+    <div class="main-content-wrapper">
+        <div class="main-content" id="mainContent">
+            <div class="container">
+                <div class="card">
+                    <div class="card-header">
+                        Status Pendaftaran
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>NO</th>
+                                        <th>Nama</th>
+                                        <th>Email</th>
+                                        <th>Nomor Telepon</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>John Doe</td>
+                                        <td>johndoe@example.com</td>
+                                        <td>08123456789</td>
+                                        <td class="status-pending">Menunggu Verifikasi</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Jane Smith</td>
+                                        <td>janesmith@example.com</td>
+                                        <td>08198765432</td>
+                                        <td class="status-verified">Terverifikasi</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>Robert Brown</td>
+                                        <td>robertbrown@example.com</td>
+                                        <td>08156789876</td>
+                                        <td class="status-rejected">Ditolak</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        function toggleSidebar() {
-            document.body.classList.toggle('open');
-            if (document.body.classList.contains('open')) {
-                document.body.classList.remove('close');
-                document.getElementById('sidebarToggleBtn').classList.remove('hide-sidebar-btn');
-                document.getElementById('sidebarToggleBtn').classList.add('fade-sidebar-btn');
-            } else {
-                document.body.classList.add('close');
-                document.getElementById('sidebarToggleBtn').classList.add('hide-sidebar-btn');
-                document.getElementById('sidebarToggleBtn').classList.remove('fade-sidebar-btn');
-            }
-        }
-    </script>
 </body>
+{% include 'user_page/layouts/footer.html' %}
 
 </html>

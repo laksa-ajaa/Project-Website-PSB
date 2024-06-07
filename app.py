@@ -26,5 +26,21 @@ def showKegiatan():
 def showTemp():
     return render_template('dashboard_user/template.html')
 
+@app.route('/formulir')
+def showformulir():
+    return render_template('dashboard_user/Formulir.html')
+
+@app.route('/DashboardUser')
+def showDashUser():
+    return render_template('dashboard_user/Dashboard-user.html')
+
+@app.route('/Verifikasi')
+def showVer():
+    return render_template('dashboard_user/Verifikasi.html')
+
+@app.route('/Pembayaran')
+def showPembayaran():
+    return render_template('dashboard_user/Pembayaran.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
