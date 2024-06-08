@@ -1,0 +1,162 @@
+
+.form-container {
+    max-width: 100%;
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+}
+
+.form-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #131111;
+}
+
+.form-control {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.form-label {
+    font-weight: bold;
+    color: #555;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.card {
+    max-width: 100%;
+    height: 600px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+}
+
+.card-body {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.card-body img {
+  height: 500px;
+}
+
+.card-body h5 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.card-body p {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.card-body p strong {
+    font-weight: bold;
+}
+
+status-pending {
+    color: orange;
+}
+.status-verified {
+    color: green;
+}
+.status-rejected {
+    color: red;
+}
+
+
+/* Style untuk judul form */
+h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 1.5rem;
+    text-align: center;
+  }
+  
+  /* Style untuk card */
+  .card {
+    margin-top: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Style untuk isi form */
+  .form-label {
+    font-weight: bold;
+  }
+  
+  .form-control {
+    border-radius: 5px;
+
+  }
+  
+  .form-select {
+    border-radius: 5px;
+  }
+  
+  /* Style untuk tombol Daftar */
+  .btn-primary {
+    border-radius: 5px;
+  }
+  
+  /* Style untuk margin bawah pada elemen form */
+  .mb-3 {
+    margin-bottom: 1.5rem;
+  }
+
+  .input {
+    top: 10px;
+  }
+
+  h4 {
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+p {
+    margin: 5px 0;
+    line-height: 1.6;
+}
+
+b {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+ol {
+    margin: 5px 0 5px 20px;
+}
+.container h4 {
+    color: #333;
+}
+
+.container p {
+    color: #555;
+}

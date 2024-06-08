@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, url_for
 
 app = Flask(__name__)
 
@@ -56,11 +56,21 @@ def verifyAdmin():
 def paymentAdmin():
     return render_template('dashboard_admin/form.html')
 
-@app.route('/formulir')
+@app.route('/formulir', methods=["GET", "POST"])
 def showformulir():
-    data = {
-        'title': 'Template',
-    }
+    if request.method=="POST":
+        data = {
+            "nama" : request.form["nama"],
+            "tempat_lahir" : request.form["tempat_lahir"],
+            "tanggal_lahir" : request.form["tanggal_lahir"],
+            "alamat" : request.form["alamat"],
+            "no_hp" : request.form["no_hp"],
+            "email" : request.form["email"],
+            "pendidikan" : request.form["pendidikan"],
+            "program" : request.form["program"],
+            "motivasi" : request.form["motivasi"]
+        }
+        db.pend_santri.insert_one[data]
     return render_template('dashboard_user/Formulir.html' , data=data)
 
 @app.route('/DashboardUser')
