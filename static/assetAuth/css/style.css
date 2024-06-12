@@ -1,23 +1,18 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
 * {
-  padding: 0;
-  margin: 0;
   box-sizing: border-box;
 }
 
-:root {
-  --linear-grad: linear-gradient(to right, #141e30, #243b55);
-  --grad-clr1: #141e30;
-  --grad-clr2: #243b55;
-}
-
 body {
-  height: 100vh;
-  background: #f6f5f7;
-  display: grid;
-  place-content: center;
   font-family: "Poppins", sans-serif;
+  background-image: url("../img/bg.jpg");
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
 }
 
 h1 {
@@ -46,8 +41,8 @@ a {
 
 button {
   border-radius: 20px;
-  border: 1px solid var(--grad-clr2);
-  background: var(--grad-clr2);
+  border: 1px solid #ffffff;
+  background-color: #4caf50;
   color: #ffffff;
   font-size: 12px;
   font-weight: bold;
@@ -66,19 +61,18 @@ button:focus {
 }
 
 form {
-  background: #ffffff;
+  background-color: #ffffff;
   display: flex;
+  flex-direction: column;
+  padding: 0 50px;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
   height: 100%;
-  width: 100%;
-  padding: 0 50px;
   text-align: center;
 }
 
 input {
-  background: #f6f5f7;
+  background-color: #f6f5f7;
   border: none;
   padding: 12px 15px;
   margin: 8px 0;
@@ -86,7 +80,7 @@ input {
 }
 
 .container {
-  background: #fff;
+  background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   position: relative;
@@ -133,7 +127,6 @@ input {
     opacity: 0;
     z-index: 1;
   }
-
   50%,
   100% {
     opacity: 1;
@@ -153,7 +146,7 @@ input {
 }
 
 .overlay {
-  background: var(--linear-grad);
+  background: #17594a;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 0 0;
