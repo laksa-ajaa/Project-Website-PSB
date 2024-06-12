@@ -1,15 +1,13 @@
-<<<<<<< HEAD
-from flask import Flask, flash, render_template, request, url_for, redirect, session
+#<<<<<<< HEAD
+from flask import Flask, flash, render_template, request, url_for, redirect, session, jsonify
 from pymongo import MongoClient
 from flask_session import Session
-import os
-=======
-from flask import Flask, render_template, jsonify, request, url_for
 import jwt
 import hashlib
-from pymongo import MongoClient
 from datetime import datetime, timedelta
->>>>>>> 91541897c9ff4eb5d061c97cd43e269572d0cbbc
+import os
+#=======
+#>>>>>>> 91541897c9ff4eb5d061c97cd43e269572d0cbbc
 
 client = MongoClient("mongodb+srv://laksmanachairutama:lcacanony123@cluster0.zddwrtt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 db = client.dbsantri
@@ -18,8 +16,6 @@ SECRET_KEY = "users"
 
 
 # Konfigurasi MongoDB
-client = MongoClient("mongodb://animasigame12:mAuMHxMzLtugqcak@ac-fvqcj1c-shard-00-00.wuksjrs.mongodb.net:27017,ac-fvqcj1c-shard-00-01.wuksjrs.mongodb.net:27017,ac-fvqcj1c-shard-00-02.wuksjrs.mongodb.net:27017/?ssl=true&replicaSet=atlas-ei9moj-shard-0&authSource=admin&retryWrites=true&w=majority&appName=Cluster0")
-db = client['dbsparta']
 
 # Konfigurasi folder upload
 UPLOAD_FOLDER = 'uploads'
@@ -84,27 +80,10 @@ def verifyAdmin():
 def paymentAdmin():
     return render_template('dashboard_admin/form.html')
 
-<<<<<<< HEAD
+#<<<<<<< HEAD
 # Routes Dashboard Admin
-=======
-@app.route('/formulir', methods=["GET", "POST"])
-def showformulir():
-    if request.method=="POST":
-        data = {
-            "nama" : request.form["nama"],
-            "tempat_lahir" : request.form["tempat_lahir"],
-            "tanggal_lahir" : request.form["tanggal_lahir"],
-            "alamat" : request.form["alamat"],
-            "no_hp" : request.form["no_hp"],
-            "email" : request.form["email"],
-            "pendidikan" : request.form["pendidikan"],
-            "program" : request.form["program"],
-            "motivasi" : request.form["motivasi"]
-        }
-        db.pend_santri.insert_one[data]
-    return render_template('dashboard_user/Formulir.html')
-
->>>>>>> 91541897c9ff4eb5d061c97cd43e269572d0cbbc
+#=======
+#>>>>>> 91541897c9ff4eb5d061c97cd43e269572d0cbbc
 @app.route('/DashboardUser')
 def showDashUser():
     data = {
