@@ -1,6 +1,14 @@
-from flask import Flask, render_template, request, url_for
+from flask import Flask, render_template, jsonify, request, url_for
+import jwt
+import hashlib
+from pymongo import MongoClient
+from datetime import datetime, timedelta
 
+client = MongoClient("mongodb+srv://laksmanachairutama:lcacanony123@cluster0.zddwrtt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+db = client.dbsantri
 app = Flask(__name__)
+SECRET_KEY = "users"
+
 
 @app.route('/')
 def showHome():
@@ -48,7 +56,7 @@ def indexAdmin():
     return render_template('dashboard_admin/index.html')
 @app.route('/admin/datapeserta')
 def pesertaAdmin():
-    return render_template('dashboard_admin/table.html')
+    return render_template('dashboard_admin/dataPeserta.html')
 @app.route('/admin/verifikasipeserta')
 def verifyAdmin():
     return render_template('dashboard_admin/widget.html')
@@ -71,7 +79,7 @@ def showformulir():
             "motivasi" : request.form["motivasi"]
         }
         db.pend_santri.insert_one[data]
-    return render_template('dashboard_user/Formulir.html' , data=data)
+    return render_template('dashboard_user/Formulir.html')
 
 @app.route('/DashboardUser')
 def showDashUser():
