@@ -45,17 +45,38 @@
 
 .card {
     max-width: 100%;
-    height: 600px;
-    background-color: white;
+    height:93%;
+    background-color: rgb(243, 241, 241);
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin: 20px auto;
 }
 
+.card-doc {
+    max-width: 100%;
+    height:40%;
+    background-color: rgb(243, 241, 241);
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+}
+
+.card-ibu {
+    max-width: 100%;
+    height:82%;
+    background-color: rgb(243, 241, 241);
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 60px auto;
+    margin-top: 50px;
+}
+
 .card-body {
     padding: 20px;
-    background-color: #fff;
+    background-color: #fcfafa;
     border-radius: 10px;
 }
 
@@ -159,4 +180,14 @@ ol {
 
 .container p {
     color: #555;
+}
+
+.card-home {
+    max-width: 100%;
+    height: 600px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
 }

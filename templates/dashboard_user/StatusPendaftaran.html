@@ -41,8 +41,8 @@
                             <h2>Status Pendaftaran</h2>
                             <div class="card-body p-5">
                                 <h5>Informasi Status Pendaftaran</h5>
-                                <p>Status: <strong class="status-pending">Menunggu Verifikasi</strong></p>
-                                <p>Tanggal Pendaftaran: <strong>20 Mei 2024</strong></p>
+                                <p>Status: <strong class="{% if status == 'Menunggu Verifikasi' %}status-pending{% else %}status-verified{% ednif %}">{{ status }}</strong></p>
+                                <p>Tanggal Pendaftaran: <strong>{{ data.tanggal_pendaftaran }}</strong></p>
                                 <p>Catatan: <strong>Dokumen sedang dalam proses verifikasi oleh pihak pesantren. Harap menunggu pemberitahuan lebih lanjut.</strong></p>
                             </div>
                         </div>
