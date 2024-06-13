@@ -1,19 +1,27 @@
-from flask import Flask, redirect, url_for, render_template, request, jsonify, send_from_directory, send_file, make_response
+import os
+from os.path import join, dirname
+from dotenv import load_dotenv
+from flask import Flask, render_template, jsonify, request, url_for, redirect, flash, session
+import jwt
+import hashlib
+from pymongo import MongoClient
+from datetime import datetime, timedelta
+import re
+
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv(dotenv_path)
+
+MONGODB_URI = os.environ.get("MONGODB_URI")
+DB_NAME =  os.environ.get("DB_NAME")
+
+client = MongoClient(MONGODB_URI)
+db = client[DB_NAME]
 
 app = Flask(__name__)
 SECRET_KEY = "users"
 
-
-# Konfigurasi MongoDB
-
-# Konfigurasi folder upload
-UPLOAD_FOLDER = 'uploads'
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
-
-# Konfigurasi Flask-Session
-app.config["SESSION_TYPE"] = "filesystem"
-Session(app)
+app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.config["UPLOAD_FOLDER"] = "./static/dokumen"
 
 @app.route('/')
 def showHome():
@@ -22,68 +30,67 @@ def showHome():
     }
     return render_template('user_page/index.html', data=data)
 
-@app.route('/login')
-def auth():
+@app.route('/auth')
+def showAuth():
     data = {
         'title': 'Login/Register',
     }
     return render_template('auth/login.html', data=data)
 
-#route login admin
-@app.route('/loginAdmin')
-def login_admin():
-    data = request.get_json()
-    email = data["email"]
-    password = data["password"]
-    pw_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
+@app.route('/login', methods=['POST'])
+def auth():
+    email = request.form["email"]
+    password = request.form["password"]
+    password_hash = hashlib.sha256(password.encode('utf-8')).hexdigest()
 
-    result = db.admin.find_one({"email": email, "password": pw_hash})
-
-    if result:
+    # Perhatikan: Di sini Anda harus memeriksa dengan password_hash, bukan password biasa
+    cek_login = db.dbsantri.find_one({"email": email, "password": password_hash})
+    if cek_login:
         payload = {
             "email": email,
-            "exp": datetime.utcnow() + timedelta(seconds=60 * 60 * 24)
+            "exp": datetime.utcnow() + timedelta(hours=1)
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
-
-        response = make_response(
-            jsonify({
-                "message": "success",
-                "email": email,
-                "token": token
-            })
-        )
-        response.set_cookie("token", token)
-        return response
-
+        return jsonify({"status": "success", "token": token})
     else:
-        return jsonify({
-            "message": "fail",
-            "error": "We could not find a user with that email/password combination"
-        })
-    
-def adminTokenAuth(view_func):
-    @wraps(view_func)
-    def decorator(*args, **kwargs):
-        token_receive = request.cookies.get("token")
-        try:
-            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-            email = payload.get('email')
-            admin_info = db.pend_santri.admin.find_one({'email': email})
-            if admin_info:
-                admin = [admin_info]
-                return view_func(*args, admin=admin, **kwargs)
-            else:
-                return redirect(url_for('indexAdmin'))
-        except jwt.ExpiredSignatureError:
-            msg = 'Your token has expired'
-            return redirect(url_for('indexAdmin', msg=msg))
-        except jwt.exceptions.DecodeError:
-            print("Received token:", token_receive)
-            msg = 'There was a problem logging you in'
-            return redirect(url_for('indexAdmin', msg=msg))
+        return jsonify({"status": "error", "msg": "Email atau password salah"})
 
-    return decorator
+@app.route('/register', methods = ["post"])
+def register():
+    nama = request.form["nama"]
+    email = request.form["email"]
+    phone = request.form["phone"]
+    password = request.form["password"]
+    repassword = request.form["repassword"]
+    
+    # Validasi input dasar
+    if not nama or not email or not phone or not password or not repassword:
+        return jsonify({"status": "error", "message": "Semua field harus diisi"})
+    
+    # Validasi format email
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        return jsonify({"status": "error", "message": "Format email tidak valid"})
+    
+    # Validasi kesesuaian password
+    if password != repassword:
+        return jsonify({"status": "error", "message": "Password dan konfirmasi password tidak cocok"})
+    
+    # Periksa apakah email sudah terdaftar
+    cek_email = db.dbsantri.find_one({"email": email})
+    if cek_email:
+        return jsonify({"status": "error", "message": "Email sudah terdaftar"})
+    
+    password_hash = hashlib.sha256(password.encode('utf-8')).hexdigest()
+    doc = {
+        "nama": nama,
+        "email": email,
+        "phone": phone,
+        "password": password_hash
+    }
+    db.dbsantri.insert_one(doc)
+    return jsonify({"status": "success"})
+
+
 
 @app.route('/sejarah')
 def showSejarah():
@@ -95,6 +102,7 @@ def showKontak():
 
 @app.route('/visimisi')
 def showVisiMisi():
+    
     return render_template('user_page/visimisi.html')
 
 @app.route('/kegiatan')
@@ -106,7 +114,15 @@ def showTemp():
     data = {
         'title': 'Template',
     }
-    return render_template('dashboard_user/template.html' , data=data)
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.dbsantri.find_one({"email": payload["email"]})
+        return render_template("dashboard_user/index.html", user_info=user_info, data=data)
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("showAuth", msg="Your token has expired"))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("showAuth", msg="There was problem logging you in"))
 
 
 # Routes Dashboard Admin
@@ -123,18 +139,24 @@ def verifyAdmin():
 def paymentAdmin():
     return render_template('dashboard_admin/form.html')
 
-#<<<<<<< HEAD
-# Routes Dashboard Admin
-#=======
-#>>>>>> 91541897c9ff4eb5d061c97cd43e269572d0cbbc
-@app.route('/DashboardUser')
+
+# Routes Dashboard User
+@app.route('/dashboard')
 def showDashUser():
     data = {
         'title': 'Template',
     }
-    return render_template('dashboard_user/Dashboard-user.html', data=data)
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.dbsantri.find_one({"email": payload["email"]})
+        return render_template("dashboard_user/index.html", user_info=user_info, data=data)
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("showAuth", msg="Your token has expired"))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("showAuth", msg="There was problem logging you in"))
 
-@app.route('/formulir', methods=["GET", "POST"])
+@app.route('/dashboard/formulir', methods=["GET", "POST"])
 def showformulir():
     data = {}
     if request.method=="POST":
@@ -166,11 +188,11 @@ def showformulir():
         return render_template('dashboard_user/Formulir.html', data=data)
     return render_template('dashboard_user/Formulir.html', data=data)
 
-@app.route('/documen', methods=["GET","POST"])
+@app.route('/dashboard/dokumen', methods=["GET","POST"])
 def showdoc():
 
     return render_template('dashboard_user/dokumen.html')
-@app.route('/StatusPendaftaran')
+@app.route('/dashboard/status')
 def showVer():
     if 'user_email' in session:
         user_email = session ['user_email']
@@ -184,7 +206,7 @@ def showVer():
     else:
         return redirect(url_for('showformulir'))
 
-@app.route('/Pembayaran', methods=['GET', 'POST'])
+@app.route('/dashboard/pembayaran', methods=['GET', 'POST'])
 def showPembayaran():
     if request.method == 'POST':
         print(request.form)
@@ -200,7 +222,7 @@ def showPembayaran():
             return redirect(url_for('showPembayaran'))
         
         bukti_filename = bukti.filename
-        bukti_path = os.path.join(UPLOAD_FOLDER, bukti_filename)
+        bukti_path = os.path.join("UPLOAD_FOLDER", bukti_filename)
         bukti.save(bukti_path)
 
         doc = {
