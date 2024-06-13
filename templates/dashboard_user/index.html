@@ -1,156 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>User Dashboard</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
-    <style>
-      body,
-      html {
-        height: 100%;
-        margin: 0;
-      }
-      .wrapper {
-        display: flex;
-        flex-direction: column;
-        min-height: 100%;
-      }
-      .content {
-        flex: 1;
-        display: flex;
-      }
-      .navbar {
-        height: 100px;
-        font-size: 1.2em;
-      }
-      .navbar-brand {
-        font-weight: bold;
-      }
-      .sidebar {
-        width: 250px;
-        background-color: #343a40;
-        color: #fff;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        padding-top: 30px; /* Adjust this to match the height of your navbar */
-      }
-      .sidebar a {
-        color: #fff;
-        padding: 15px;
-        text-decoration: none;
-        display: block;
-      }
-      .sidebar a:hover {
-        background-color: #495057;
-      }
-      .main-content {
-        padding: 20px;
-        flex-grow: 1;
-      }
-      footer {
-        background-color: #333;
-        color: #fff;
-        text-align: center;
-        padding: 10px;
-        bottom: 0;
-        width: 100%;
-        z-index: 1000;
-      }
-    </style>
-  </head>
+
   <body>
-    <div class="wrapper">
-      <!-- Navbar -->
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-          <a class="navbar-brand" href="#">Pesantren</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto d-flex gap-4">
-              <li class="nav-item">
-                <a class="nav-link" href="index.html">Beranda</a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Profil</a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Sejarah</a></li>
-                  <li><a class="dropdown-item" href="#">Visi dan Misi</a></li>
-                  <li><a class="dropdown-item" href="#">Kegiatan & Fasilitas</a></li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#pendaftaran">Pendaftaran Santri Baru (PSB)</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#kontak">Kontak Kami</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#login">User</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-
-      <div class="content">
-        <!-- Sidebar -->
-        <div class="sidebar">
-          <a href="index.html">Home Dashboard</a>
-          <a href="form.html">Pengisian Form</a>
-          <a href="status.html">Status Pendaftaran</a>
-          <a href="pembayaran.html">Pembayaran</a>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-          <h1>Selamat Datang di Dashboard User para calon santri</h1>
-          <div class="card mb-4">
-            <div class="card-header">Syarat Pendaftaran</div>
-            <div class="card-body">
-              <ul>
-                <li>Mengisi Form Pendaftaran</li>
-                <li>Foto Akta Kelahiran</li>
-                <li>Foto Kartu Keluarga (KK)</li>
-                <li>Foto Rapor Terakhir</li>
-                <li>Pas Foto 3x4 (2 lembar)</li>
-              </ul>
+    <!-- Offcanvas & Header Menu Begin -->
+    {% include 'dashboard_user/layouts/header.html' %}
+    {% include 'dashboard_user/layouts/navbar.html' %}
+    <!-- Offcanvas & Header Menu End -->
+    
+    <!-- Sidebar Begin -->
+    
+    <!-- Main Content Begin -->
+    <div class="d-flex" id="wrapper">
+          {% include 'dashboard_user/layouts/sidebar.html' %}
+        <!-- Sidebar-->
+        <!-- Page content wrapper-->
+        <div id="page-content-wrapper">
+          <!-- Top navigation-->
+          <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+            <div class="container-fluid">
+              <button class="border-0" id="sidebarToggle"><span class="navbar-toggler-icon"></span></button>
+              </button>
             </div>
-          </div>
+          </nav>
+          <!-- Page content-->
+          <div class="container">
+            <!-- Breadcrumb Begin -->
+            <div class="breadcrumb-section">
+              <div class="container">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="breadcrumb__option">
+                      <a href="./index.html"><span class="fa fa-home"></span> Home</a>
+                      <span>Dashboard</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Breadcrumb End -->
+    
+            <!-- Your content goes here -->
+            <h2>Selamat Datang Calon Santri/santriwati umulquran</h2>
+            <br>
+            <h5>Pondok Pesantren Ulumul Qur’an Telah Membuka Pendaftaran Bagi Santri Baru T.A 2024/2025
 
-          <!-- Registration Process -->
-          <div class="card">
-            <div class="card-header">Alur Proses Pendaftaran</div>
-            <div class="card-body">
-              <div class="mb-4">
-                <h5>1. Pengisian Form</h5>
-                <p>Calon santri mengisi form pendaftaran secara lengkap dan benar.</p>
+              INFORMASI PENDAFTARAN SANTRI BARU PONDOK PESANTREN ULUMUL QUR’AN STABAT T.A 2024/2025</h5>
+            <br>
+            <div class="row">
+              <div class="col-sm-12 mb-3 mb-sm-0">
+                <div class="card-home">
+                  <div class="card-body">
+                    <img src="../../static/assetsUserPage/img/program.png" class="card-img-top" alt="...">
+                  </div>
+                </div>
+                <div class="container">
+                  <h4>1. Tempat Dan Waktu Pendaftaran</h4>
+                  <b>a. Tempat Pendaftaran</b>
+                  <p>Bertempat di Pesantren Ulumul Qur’an Stabat, JL.KH.Wahid Hasyim, No. 03, Stabat, Kab. Langkat</p>
+                  <b>b. Waktu Pendaftaran</b>
+                  <p>Tahap 1 : Pada Tanggal 1 Februari s/d 30 Maret 2024</p>
+                  <p>Tahap 2 : Pada Tanggal 22 April s/d 30 Juni 2024</p>
+                  <p>Pendaftaran di buka dari pukul : 09.00 s/d 15.30 WIB</p>
+                  <p>Jika kuota sudah terpenuhi sebelum batas akhir tanggal tersebut di atas, maka penerimaan akan di tutup.</p>
+          
+                  <h4>2. Persyaratan</h4>
+                  <p>a. Calon santri/ah wajib datang bersama orang tua/wali santri</p>
+                  <p>b. Menyerahkan fotocopy yang di legalisir</p>
+                  <ol>MTs : Ijazah MIN/SD 3 lembar (HARUS TERBACA JELAS)</ol>
+                  <ol>MAS : Ijazah MTS/SMP 3 lembar (HARUS TERBACA JELAS)</ol>
+                  <p>c. Menyerahkan fotocopy surat keterangan lulus menyusul yang telah dilegalisir sebanyak 3 kali</p>
+                  <p>d. Menyerahkan fotocopy akte kelahiran dan fotocopy kartu keluarga 3 lembar</p>
+                  <p>e. Surat Keterangan Memiliki NISN ( Nomor Induk Siswa Nasional ) dari sekolah asal/ fotocopy bagian depan raport yang terlampir NISN</p>
+                  <p>f. Mengisi Surat Pernyataan</p>
+                  <p>g. Biaya Pendaftaran = Rp.250.000,-</p>
+                  <p>h. Biaya Pendaftaran Alumni MTs Ulumul Qur’an = Rp. 150.000,-</p>
+          
+                  <h4>3. Alur Pendaftaran</h4>
+                  <p>a. Calon santri/ah mengisi formulir pendaftaran dan melunasi uang masuk dan administrasi pendidikan MTs/MAS sebesar Rp.5.750.000,-</p>
+                  <p>b. Khusus santri MTs Ulumul Qur’an yang melanjutkan ke MAS Ulumul Qur’an biaya administrasi pendidikan sebesar Rp.5.350.000,-</p>
+                  <p>c. Biaya uang masuk di atas, sudah termasuk biaya bulanan sampai dengan bulan agustus 2024</p>
+                  <p>d. biaya bulanan berikutnya mulai dibayarkan pada bulan September 2024 sebesar Rp.950.000,-</p>
+          
+                  <h4>4. Jadwal Masuk Asrama</h4>
+                  <p>Santri Baru (MTs/MAS) masuk asrama pada hari Minggu, 07 Juli 2024. Pukul 08.00 WIB s/d 10.00 WIB ( Acara serah terima santri ke pondok).</p>
+          
+                  <h4>Tahfidz Murn</h4>
+                  <p>Program Tahfidz Murni adalah program khusus menghafal Al-Qur’an tanpa mengikuti kegiatan pembelajaran SKB 3 Menteri.
+                      Biaya Masuk : Rp 1.900.000 (sudah termasuk 2 bulan pembayaran ) khusus untuk program ini calon santri bisa mendaftar kapan saja.</p>
               </div>
-              <div class="mb-4">
-                <h5>2. Menunggu Verifikasi</h5>
-                <p>Pihak pesantren akan memverifikasi data dan dokumen yang telah diunggah oleh calon santri.</p>
-              </div>
-              <div class="mb-4">
-                <h5>3. Pembayaran</h5>
-                <p>Setelah data diverifikasi, calon santri akan menerima instruksi untuk melakukan pembayaran biaya pendaftaran sebesar Rp. -.</p>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <!-- Footer -->
-      <footer>
-        <div class="container">
-          <p>&copy; 2024 Pesantren. All Rights Reserved.</p>
-        </div>
-      </footer>
-    </div>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+      
+      <!-- Main Content End -->
+    {% include 'dashboard_user/layouts/footer.html' %}
   </body>
 </html>
