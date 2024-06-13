@@ -19,5 +19,16 @@
     <link rel="stylesheet" href="../../../static/assetsUserPage/css/owl.carousel.min.css" type="text/css" />
     <link rel="stylesheet" href="../../../static/assetsUserPage/css/slicknav.min.css" type="text/css" />
     <link rel="stylesheet" href="../../../static/assetsUserPage/css/style.css" type="text/css" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+    <script>
+      function logout() {
+        $.removeCookie("mytoken", { path: "/dashboard" });
+        alert("Signed out!");
+        window.location.href = "/auth";
+      }
+    </script>
   </head>
 </html>

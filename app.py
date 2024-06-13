@@ -6,6 +6,7 @@ import jwt
 import hashlib
 from pymongo import MongoClient
 from datetime import datetime, timedelta
+import re
 
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
@@ -29,12 +30,65 @@ def showHome():
     }
     return render_template('user_page/index.html', data=data)
 
-@app.route('/login')
-def auth():
+@app.route('/auth')
+def showAuth():
     data = {
         'title': 'Login/Register',
     }
     return render_template('auth/login.html', data=data)
+
+@app.route('/login', methods=['POST'])
+def auth():
+    email = request.form["email"]
+    password = request.form["password"]
+    password_hash = hashlib.sha256(password.encode('utf-8')).hexdigest()
+
+    # Perhatikan: Di sini Anda harus memeriksa dengan password_hash, bukan password biasa
+    cek_login = db.dbsantri.find_one({"email": email, "password": password_hash})
+    if cek_login:
+        payload = {
+            "email": email,
+            "exp": datetime.utcnow() + timedelta(hours=1)
+        }
+        token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+        return jsonify({"status": "success", "token": token})
+    else:
+        return jsonify({"status": "error", "msg": "Email atau password salah"})
+
+@app.route('/register', methods = ["post"])
+def register():
+    nama = request.form["nama"]
+    email = request.form["email"]
+    phone = request.form["phone"]
+    password = request.form["password"]
+    repassword = request.form["repassword"]
+    
+    # Validasi input dasar
+    if not nama or not email or not phone or not password or not repassword:
+        return jsonify({"status": "error", "message": "Semua field harus diisi"})
+    
+    # Validasi format email
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        return jsonify({"status": "error", "message": "Format email tidak valid"})
+    
+    # Validasi kesesuaian password
+    if password != repassword:
+        return jsonify({"status": "error", "message": "Password dan konfirmasi password tidak cocok"})
+    
+    # Periksa apakah email sudah terdaftar
+    cek_email = db.dbsantri.find_one({"email": email})
+    if cek_email:
+        return jsonify({"status": "error", "message": "Email sudah terdaftar"})
+    
+    password_hash = hashlib.sha256(password.encode('utf-8')).hexdigest()
+    doc = {
+        "nama": nama,
+        "email": email,
+        "phone": phone,
+        "password": password_hash
+    }
+    db.dbsantri.insert_one(doc)
+    return jsonify({"status": "success"})
 
 
 
@@ -48,6 +102,7 @@ def showKontak():
 
 @app.route('/visimisi')
 def showVisiMisi():
+    
     return render_template('user_page/visimisi.html')
 
 @app.route('/kegiatan')
@@ -59,7 +114,15 @@ def showTemp():
     data = {
         'title': 'Template',
     }
-    return render_template('dashboard_user/template.html' , data=data)
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.dbsantri.find_one({"email": payload["email"]})
+        return render_template("dashboard_user/index.html", user_info=user_info, data=data)
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("showAuth", msg="Your token has expired"))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("showAuth", msg="There was problem logging you in"))
 
 
 # Routes Dashboard Admin
@@ -76,14 +139,24 @@ def verifyAdmin():
 def paymentAdmin():
     return render_template('dashboard_admin/form.html')
 
-@app.route('/DashboardUser')
+
+# Routes Dashboard User
+@app.route('/dashboard')
 def showDashUser():
     data = {
         'title': 'Template',
     }
-    return render_template('dashboard_user/Dashboard-user.html', data=data)
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.dbsantri.find_one({"email": payload["email"]})
+        return render_template("dashboard_user/index.html", user_info=user_info, data=data)
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("showAuth", msg="Your token has expired"))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("showAuth", msg="There was problem logging you in"))
 
-@app.route('/formulir', methods=["GET", "POST"])
+@app.route('/dashboard/formulir', methods=["GET", "POST"])
 def showformulir():
     data = {}
     if request.method=="POST":
@@ -115,11 +188,11 @@ def showformulir():
         return render_template('dashboard_user/Formulir.html', data=data)
     return render_template('dashboard_user/Formulir.html', data=data)
 
-@app.route('/documen', methods=["GET","POST"])
+@app.route('/dashboard/dokumen', methods=["GET","POST"])
 def showdoc():
 
     return render_template('dashboard_user/dokumen.html')
-@app.route('/StatusPendaftaran')
+@app.route('/dashboard/status')
 def showVer():
     if 'user_email' in session:
         user_email = session ['user_email']
@@ -133,7 +206,7 @@ def showVer():
     else:
         return redirect(url_for('showformulir'))
 
-@app.route('/Pembayaran', methods=['GET', 'POST'])
+@app.route('/dashboard/pembayaran', methods=['GET', 'POST'])
 def showPembayaran():
     if request.method == 'POST':
         print(request.form)
