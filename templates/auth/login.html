@@ -20,12 +20,14 @@
   <body>
     <div class="container" id="container">
       <div class="form-container sign-up-container">
-        <form action="#">
+        <form action="/register" method="post">
           <h1>Buat Akun</h1>
           <span>Buat akun untuk mendaftar</span>
-          <input type="text" placeholder="Name" />
-          <input type="email" placeholder="Email" />
-          <input type="password" placeholder="Password" />
+          <input type="text" name="nama" placeholder="Nama Lengkap" />
+          <input type="email" name="email" placeholder="Email" />
+          <input type="number" name="phone" placeholder="Nomor Telepon" />
+          <input type="password" name="password" placeholder="Password" />
+          <input type="repassword" name="repassword" placeholder="Confirm Password" />
           <button>Buat akun</button>
         </form>
       </div>

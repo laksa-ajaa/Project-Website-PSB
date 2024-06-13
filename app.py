@@ -7,8 +7,7 @@ from datetime import datetime, timedelta
 client = MongoClient("mongodb+srv://laksmanachairutama:lcacanony123@cluster0.zddwrtt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 db = client.dbsantri
 app = Flask(__name__)
-SECRET_KEY = "users"
-
+USER_KEY = "users"
 
 @app.route('/')
 def showHome():
@@ -23,8 +22,20 @@ def auth():
         'title': 'Login/Register',
     }
     return render_template('auth/login.html', data=data)
+@app.route('/register', methods=['POST'])
+def register():
+    nama = request.form['nama']
+    email = request.form['email']
+    password = request.form['password']
+    repassword = request.form['repassword']
 
-
+    if password != repassword:
+        return jsonify({
+            'status': 'error',
+            'message': 'Password tidak sama'
+        })
+    
+    
 
 @app.route('/sejarah')
 def showSejarah():
