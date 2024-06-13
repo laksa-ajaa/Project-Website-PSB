@@ -1,13 +1,26 @@
-from flask import Flask, render_template, jsonify, request, url_for
+import os
+from os.path import join, dirname
+from dotenv import load_dotenv
+from flask import Flask, render_template, jsonify, request, url_for, redirect, flash, session
 import jwt
 import hashlib
 from pymongo import MongoClient
 from datetime import datetime, timedelta
 
-client = MongoClient("mongodb+srv://laksmanachairutama:lcacanony123@cluster0.zddwrtt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-db = client.dbsantri
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv(dotenv_path)
+
+MONGODB_URI = os.environ.get("MONGODB_URI")
+DB_NAME =  os.environ.get("DB_NAME")
+
+client = MongoClient(MONGODB_URI)
+db = client[DB_NAME]
+
 app = Flask(__name__)
-USER_KEY = "users"
+SECRET_KEY = "users"
+
+app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.config["UPLOAD_FOLDER"] = "./static/dokumen"
 
 @app.route('/')
 def showHome():
@@ -22,20 +35,8 @@ def auth():
         'title': 'Login/Register',
     }
     return render_template('auth/login.html', data=data)
-@app.route('/register', methods=['POST'])
-def register():
-    nama = request.form['nama']
-    email = request.form['email']
-    password = request.form['password']
-    repassword = request.form['repassword']
 
-    if password != repassword:
-        return jsonify({
-            'status': 'error',
-            'message': 'Password tidak sama'
-        })
-    
-    
+
 
 @app.route('/sejarah')
 def showSejarah():
@@ -75,23 +76,6 @@ def verifyAdmin():
 def paymentAdmin():
     return render_template('dashboard_admin/form.html')
 
-@app.route('/formulir', methods=["GET", "POST"])
-def showformulir():
-    if request.method=="POST":
-        data = {
-            "nama" : request.form["nama"],
-            "tempat_lahir" : request.form["tempat_lahir"],
-            "tanggal_lahir" : request.form["tanggal_lahir"],
-            "alamat" : request.form["alamat"],
-            "no_hp" : request.form["no_hp"],
-            "email" : request.form["email"],
-            "pendidikan" : request.form["pendidikan"],
-            "program" : request.form["program"],
-            "motivasi" : request.form["motivasi"]
-        }
-        db.pend_santri.insert_one[data]
-    return render_template('dashboard_user/Formulir.html')
-
 @app.route('/DashboardUser')
 def showDashUser():
     data = {
@@ -99,19 +83,91 @@ def showDashUser():
     }
     return render_template('dashboard_user/Dashboard-user.html', data=data)
 
-@app.route('/Verifikasi')
-def showVer():
-    data = {
-        'title': 'Template',
-    }
-    return render_template('dashboard_user/Verifikasi.html' , data=data)
+@app.route('/formulir', methods=["GET", "POST"])
+def showformulir():
+    data = {}
+    if request.method=="POST":
+        data = {
+            "nama" : request.form["nama"],
+            "tempat_lahir" : request.form["tempat_lahir"],
+            "tanggal_lahir" : request.form["tanggal_lahir"],
+            "jenis_kelamin" : request.form["jenis_kelamin"],
+            "alamat" : request.form["alamat"],
+            "sekolah_asal" : request.form["sekolah_asal"],
+            "nisn" : request.form["nisn"],
+            "anak_ke" : request.form["anak_ke"],
+            "email" : request.form["email"],
+            "pendidikan" : request.form["pendidikan"],
+            "program" : request.form["program"],
+            "motivasi" : request.form["motivasi"],
+            "nama_ibu" : request.form["nama_ibu"],
+            "nik_ibu" : request.form["nik_ibu"],
+            "tempat_lahir_ibu" : request.form["tempat_lahir_ibu"],
+            "tanggal_lahir_ibu" : request.form["tanggal_lahir_ibu"],
+            "no_hp_ibu" : request.form["no_hp_ibu"],
+            "nama_ayah" : request.form["nama_ayah"],
+            "nik_ayah" : request.form["nik_ayah"],
+            "tempat_lahir_ayah" : request.form["tempat_lahir_ayah"],
+            "tanggal_lahir_ayah" : request.form["tanggal_lahir_ayah"],
+            "no_hp_ayah" : request.form["no_hp_ayah"]
+        }
+        db.PS_baru.insert_one(data)
+        return render_template('dashboard_user/Formulir.html', data=data)
+    return render_template('dashboard_user/Formulir.html', data=data)
 
-@app.route('/Pembayaran')
+@app.route('/documen', methods=["GET","POST"])
+def showdoc():
+
+    return render_template('dashboard_user/dokumen.html')
+@app.route('/StatusPendaftaran')
+def showVer():
+    if 'user_email' in session:
+        user_email = session ['user_email']
+        data = db.pend_santri.find_one({"email" : user_email})
+        if data:
+            status = data.get("status", "Menunggu Verifikasi")
+            return render_template('dashboard_user/StatusPendaftaran.html', status=status )
+        else:
+            flash('Data Pendaftaran tidak ditemukan.', 'Silahkan Login')
+            return redirect(url_for('showformulir'))
+    else:
+        return redirect(url_for('showformulir'))
+
+@app.route('/Pembayaran', methods=['GET', 'POST'])
 def showPembayaran():
-    data = {
-        'title': 'Template',
-    }
-    return render_template('dashboard_user/Pembayaran.html' , data=data)
+    if request.method == 'POST':
+        print(request.form)
+        nama = request.form.get('nama')
+        kelas = request.form.get('kelas')
+        jumlah = request.form.get('jumlah')
+        metode = request.form.get('metode')
+        tanggal = request.form.get('tanggal')
+        bukti = request.files.get('bukti')
+
+        if not bukti:
+            flash('wajib upload bukti pembayaran', 'danger')
+            return redirect(url_for('showPembayaran'))
+        
+        bukti_filename = bukti.filename
+        bukti_path = os.path.join("UPLOAD_FOLDER", bukti_filename)
+        bukti.save(bukti_path)
+
+        doc = {
+            'nama': nama,
+            'kelas': kelas,
+            'jumlah': jumlah,
+            'metode': metode,
+            'tanggal': tanggal,
+            'bukti_path': bukti_path,
+            "status": "Menunggu Verifikasi"
+        }
+        db.pembayaran.insert_one(doc)
+
+        flash('pembayaran berhasil dikirim, menunggu verifikasi.', 'success')
+        return redirect(url_for('showPembayaran'))
+
+    return render_template('dashboard_user/Pembayaran.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)

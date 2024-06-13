@@ -39,22 +39,22 @@
                     <div class="main-content" id="mainContent">
                         <div class="form-container">
                             <div class="form-title">Formulir Pembayaran SPP</div>
-                            <form>
+                            <form method="POST" enctype="multipart/form-data">
                                 <div class="mb-3">
                                     <label for="nama" class="form-label">Nama Lengkap</label>
-                                    <input type="text" class="form-control" id="nama" placeholder="Masukkan nama lengkap Anda" required>
+                                    <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan nama lengkap Anda" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="kelas" class="form-label">Kelas</label>
-                                    <input type="text" class="form-control" id="kelas" placeholder="Masukkan kelas Anda" required>
+                                    <input type="text" class="form-control" id="kelas" name="kelas" placeholder="Masukkan kelas Anda" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="jumlah" class="form-label">Jumlah Pembayaran</label>
-                                    <input type="number" class="form-control" id="jumlah" placeholder="Masukkan jumlah pembayaran" required>
+                                    <input type="number" class="form-control" id="jumlah" name="jumlah" placeholder="Masukkan jumlah pembayaran" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="metode" class="form-label">Metode Pembayaran</label>
-                                    <select class="form-select" id="metode" required>
+                                    <select class="form-select" id="metode" name="metode" required>
                                         <option value="">Pilih metode pembayaran</option>
                                         <option value="transfer_bank">Transfer Bank</option>
                                         <option value="kartu_kredit">Kartu Kredit</option>
@@ -63,14 +63,14 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="tanggal" class="form-label">Tanggal Pembayaran</label>
-                                    <input type="date" class="form-control" id="tanggal" required>
+                                    <input type="date" class="form-control" id="tanggal" name="tanggal" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="bukti" class="form-label">Upload Bukti Pembayaran</label>
                                     <div class="input-group mb-3">
-                                        <input type="file" class="form-control" id="inputGroupFile02">
+                                        <input type="file" class="form-control" id="inputGroupFile02" name="bukti" required>
                                         <label class="input-group-text" for="inputGroupFile02">Upload</label>
-                                    </div>                                      
+                                    </div>
                                     <div class="form-text">File harus dalam format JPG, JPEG, PNG, atau PDF.</div>
                                 </div>
                                 <button type="submit" class="btn btn-primary w-100">Kirim Pembayaran</button>
