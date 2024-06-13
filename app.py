@@ -123,7 +123,47 @@ def showTemp():
         return redirect(url_for("showAuth", msg="Your token has expired"))
     except jwt.exceptions.DecodeError:
         return redirect(url_for("showAuth", msg="There was problem logging you in"))
+    
+#Routes Login Admin
+@app.route('/authAdmin')
+def showAuthadmin():
+    data = {
+        'title': 'Login',
+    }
+    return render_template('auth/login_admin.html', data=data)
 
+@app.route('/loginAdmin', methods=['POST'])
+def authAdmin():
+    email = request.form["email"]
+    password = request.form["password"]
+    password_hash = hashlib.sha256(password.encode('utf-8')).hexdigest()
+
+    # Perhatikan: Di sini Anda harus memeriksa dengan password_hash, bukan password biasa
+    cek_login = db.dbAdmin.find_one({"email": email, "password": password_hash})
+    if cek_login:
+        payload = {
+            "email": email,
+            "exp": datetime.utcnow() + timedelta(hours=1)
+        }
+        token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+        return jsonify({"status": "success", "token": token})
+    else:
+        return jsonify({"status": "error", "msg": "Email atau password salah"})
+    
+@app.route('/templateAdmin')
+def showTempAdmin():
+    data = {
+        'title': 'TemplateAdmin',
+    }
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        admin_info = db.dbAdmin.find_one({"email": payload["email"]})
+        return render_template("dashboard_admin/index.html", admin_info=admin_info, data=data)
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("showAuthAdmin", msg="Your token has expired"))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("showAuthAdmin", msg="There was problem logging you in"))
 
 # Routes Dashboard Admin
 @app.route('/admin')
