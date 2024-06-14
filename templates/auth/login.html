@@ -18,29 +18,28 @@
     <link rel="stylesheet" href="../../static/assetAuth/css/style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
   </head>
   <body>
     <div class="container" id="container">
       <div class="form-container sign-up-container">
-        <form>
+        <form id="registerForm">
           <h1>Buat Akun</h1>
           <span>Buat akun untuk mendaftar</span>
-          <input type="text" name="nama" placeholder="Nama Lengkap" />
-          <input type="email" name="email" placeholder="Email" />
-          <input type="number" name="phone" placeholder="Nomor Telepon" />
-          <input type="password" name="password" placeholder="Password" />
-          <input type="repassword" name="repassword" placeholder="Confirm Password" />
-          <button onclick="register()">Buat akun</button>
+          <input type="text" id="nama" name="nama" placeholder="Nama Lengkap" />
+          <input type="email" id="regisemail" name="email" placeholder="Email" />
+          <input type="number" id="phone" name="phone" placeholder="Nomor Telepon" />
+          <input type="password" id="regispassword" name="password" placeholder="Password" />
+          <input type="password" id="repassword" name="repassword" placeholder="Confirm Password" />
+          <button type="submit">Buat akun</button>
         </form>
       </div>
       <div class="form-container sign-in-container">
         <form id="loginForm">
           <h1>Sign in</h1>
           <span>Masuk dengan akunmu</span>
-          <input type="email" id="email" placeholder="Email" required />
-          <div class="invalid-feedback">Email harus diisi.</div>
-          <input type="password" id="password" placeholder="Password" required />
-          <div class="invalid-feedback">Password harus diisi.</div>
+          <input type="email" id="email" placeholder="Email" />
+          <input type="password" id="password" placeholder="Password" />
           <button type="submit">Masuk</button>
         </form>
       </div>
@@ -60,10 +59,18 @@
       </div>
     </div>
 
+    {% with msg = get_flashed_messages() %} {% if msg %}
+    <script>
+      swal({
+        icon: "error",
+        text: "{{ msg[0] }}",
+      });
+    </script>
+    {% endif %} {% endwith %}
+
     <!-- Bootstrap JS and dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Custom JS -->
     <script>
@@ -86,8 +93,16 @@
           let email = $("#email").val();
           let password = $("#password").val();
 
-          if (!email || !password) {
-            alert("Email dan password harus diisi");
+          if (!email && !password) {
+            swal("Oops!", "Email dan password harus diisi", "error");
+            return;
+          }
+          if (!email) {
+            swal("Oops!", "Email harus diisi", "error");
+            return;
+          }
+          if (!password) {
+            swal("Oops!", "Password harus diisi", "error");
             return;
           }
 
@@ -99,12 +114,61 @@
               password: password,
             },
             success: function (response) {
-              if (response["status"] === "success") {
-                // Simpan token di cookie
-                $.cookie("mytoken", response["token"], { path: "/dashboard", httpOnly: true });
-                window.location.replace("/dashboard");
+              if (response) {
+                swal("Hore", "Login Berhasil!", "success").then(() => {
+                  window.location.href = "/dashboard";
+                });
               } else {
-                alert(response["msg"]);
+                swal("Oops!", response["msg"], "error");
+              }
+            },
+          });
+        });
+        $("#registerForm").submit(function (e) {
+          e.preventDefault();
+          let nama = $("#nama").val();
+          let email = $("#regisemail").val();
+          let phone = $("#phone").val();
+          let password = $("#regispassword").val();
+          let repassword = $("#repassword").val();
+
+          if (!nama && !email && !phone && !password && !repassword) {
+            swal("Oops!", "Semua field harus diisi", "error");
+            return;
+          }
+          if (!email) {
+            swal("Oops!", "Email harus diisi", "error");
+            return;
+          }
+          if (!phone) {
+            swal("Oops!", "Nomor Telepon harus diisi", "error");
+            return;
+          }
+          if (!password) {
+            swal("Oops!", "Password harus diisi", "error");
+            return;
+          }
+          if (password != repassword) {
+            swal("Oops!", "Password dan konfirmasi password tidak cocok", "error");
+            return;
+          }
+
+          $.ajax({
+            type: "POST",
+            url: "/register",
+            data: {
+              nama: nama,
+              email: email,
+              phone: phone,
+              password: password,
+            },
+            success: function (response) {
+              if (response["status"] === "success") {
+                swal("Success!", "Akun anda telah berhasil dibuat, silahkan Sign in", "success").then(() => {
+                  window.location.reload();
+                });
+              } else {
+                swal("Oops!", response["msg"], "error");
               }
             },
           });
