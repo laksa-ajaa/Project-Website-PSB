@@ -8,6 +8,7 @@ from pymongo import MongoClient
 from datetime import datetime, timedelta
 import re
 
+
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
@@ -23,6 +24,7 @@ app.secret_key = SECRET_KEY
 
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["UPLOAD_FOLDER"] = "./static/dokumen"
+
 
 @app.route('/')
 def showHome():
@@ -122,26 +124,28 @@ def authAdmin():
     data = {
         'title': 'Login Admin',
     }
-    if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        password_hash = hashlib.sha256(password.encode('utf-8')).hexdigest()
-
-        # Perhatikan: Di sini Anda harus memeriksa dengan password_hash, bukan password biasa
-        cek_login = db.admin.find_one({"username": username, "password": password_hash})
-        if cek_login:
-            payload = {
-                "username": username,
-                "role": "admin",
-                "exp": datetime.utcnow() + timedelta(hours=1)
-            }
-            token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
-            response = make_response(redirect(url_for('showDashUser')))
-            response.set_cookie("AdminSecretToken", token)
-            return response
-        else:
-            return jsonify({"status": "error", "msg": "Username atau password salah"})
     return render_template('auth/login_admin.html', data=data)
+
+@app.route('/loginAdmin', methods=['POST'])
+def authAdmin():
+    username = request.form["username"]
+    password = request.form["password"]
+    password_hash = hashlib.sha256(password.encode('utf-8')).hexdigest()
+
+    # Perhatikan: Di sini Anda harus memeriksa dengan password_hash, bukan password biasa
+    cek_login = db.admin.find_one({"username": username, "password": password_hash})
+    if cek_login:
+        payload = {
+            "username": username,
+            "role": "admin",
+            "exp": datetime.utcnow() + timedelta(hours=1)
+        }
+        token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+        response = make_response(redirect(url_for('showDashUser')))
+        response.set_cookie("AdminSecretToken", token)
+        return response
+    else:
+        return jsonify({"status": "error", "msg": "Username atau password salah"})
 
     
 @app.route('/templateAdmin')
@@ -168,10 +172,10 @@ def pesertaAdmin():
     return render_template('dashboard_admin/dataPeserta.html')
 @app.route('/admin/verifikasipeserta')
 def verifyAdmin():
-    return render_template('dashboard_admin/widget.html')
+    return render_template('dashboard_admin/pembayaran.html')
 @app.route('/admin/pembayaran')
 def paymentAdmin():
-    return render_template('dashboard_admin/form.html')
+    return render_template('dashboard_admin/verifikasi.html')
 
 
 # Routes Dashboard User
