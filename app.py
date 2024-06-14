@@ -8,6 +8,7 @@ from pymongo import MongoClient
 from datetime import datetime, timedelta
 import re
 
+
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
@@ -22,6 +23,7 @@ SECRET_KEY = "users"
 
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["UPLOAD_FOLDER"] = "./static/dokumen"
+
 
 @app.route('/')
 def showHome():
@@ -134,6 +136,11 @@ def showAuthadmin():
 
 @app.route('/loginAdmin', methods=['POST'])
 def authAdmin():
+    doc = {
+        'email' : 'admin@gmail.com',
+        'password' : 'admin123'
+    }
+    db.dbAdmin.insert_one(doc)
     email = request.form["email"]
     password = request.form["password"]
     password_hash = hashlib.sha256(password.encode('utf-8')).hexdigest()
@@ -174,10 +181,10 @@ def pesertaAdmin():
     return render_template('dashboard_admin/dataPeserta.html')
 @app.route('/admin/verifikasipeserta')
 def verifyAdmin():
-    return render_template('dashboard_admin/widget.html')
+    return render_template('dashboard_admin/pembayaran.html')
 @app.route('/admin/pembayaran')
 def paymentAdmin():
-    return render_template('dashboard_admin/form.html')
+    return render_template('dashboard_admin/verifikasi.html')
 
 
 # Routes Dashboard User

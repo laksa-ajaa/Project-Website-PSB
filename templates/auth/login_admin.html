@@ -33,7 +33,7 @@
 
           $.ajax({
             type: "POST",
-            url: "/login",
+            url: "/loginAdmin",
             data: {
               email: email,
               password: password,
@@ -76,7 +76,7 @@
                 <input required id="password" type="password" class="form-control rounded" placeholder="" name="password" />
               </div>
               <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-sm rounded text-white" style="background-color: #3085c3">
+                <button id="signIn" class="btn btn-sm rounded text-white" style="background-color: #3085c3">
                   <span>Masuk <i class="ri-login-box-line"></i></span>
                 </button>
               </div>
