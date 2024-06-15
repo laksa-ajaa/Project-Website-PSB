@@ -3,54 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Form Login Admin</title>
+    <title>{{data.title}}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../../static/assestAdmin/login/css/style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-
-    <!-- Custom JS -->
-    <script>
-      const signInButton = document.getElementById("signIn");
-      const container = document.getElementById("container");
-
-      signInButton.addEventListener("click", () => {
-        container.classList.remove("right-panel-active");
-      });
-
-      // jQuery code
-      $(document).ready(function () {
-        $("#loginFormAdmin").submit(function (e) {
-          e.preventDefault();
-          let email = $("#email").val();
-          let password = $("#password").val();
-
-          if (!email || !password) {
-            alert("Email dan password harus diisi");
-            return;
-          }
-
-          $.ajax({
-            type: "POST",
-            url: "/loginAdmin",
-            data: {
-              email: email,
-              password: password,
-            },
-            success: function (response) {
-              if (response["status"] === "success") {
-                // Simpan token di cookie
-                $.cookie("mytoken", response["token"], { path: "/admin", httpOnly: true });
-                window.location.replace("/admin");
-              } else {
-                alert(response["msg"]);
-              }
-            },
-          });
-        });
-      });
-  </script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
   </head>
 
   <body class="">
@@ -63,20 +22,20 @@
 
           <div class="col-md-6 p-4">
             <div class="mb-4">
-              <h3 class="fw-bold">Halo, Selamat Datang di Halaman Login Admin <span class="text-success">Yayasan Ulumul Qur'an</span>!</h3>
+              <h3 class="fw-bold">Halaman Login Admin <span class="text-success">Yayasan Ulumul Qur'an</span>!</h3>
               <small class="text-muted fw-semibold">Silahkan masuk untuk mengakses Dashboard Admin</small>
             </div>
-            <form method="POST" id="loginFormAdmin">
+            <form id="loginAdminForm">
               <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input autofocus required id="email" type="email" class="form-control rounded" placeholder="example@gmail.com" name="email" />
+                <label for="username" class="form-label">Username</label>
+                <input autofocus id="username" type="username" class="form-control rounded" placeholder="Username" id="username" />
               </div>
               <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
-                <input required id="password" type="password" class="form-control rounded" placeholder="" name="password" />
+                <input id="password" type="password" class="form-control rounded" placeholder="Password" id="password" />
               </div>
               <div class="d-flex justify-content-end">
-                <button id="signIn" class="btn btn-sm rounded text-white" style="background-color: #3085c3">
+                <button type="submit" class="btn btn-sm rounded text-white" style="background-color: #3c723a">
                   <span>Masuk <i class="ri-login-box-line"></i></span>
                 </button>
               </div>
@@ -86,6 +45,60 @@
       </div>
     </div>
 
+    {% with msg = get_flashed_messages() %} {% if msg %}
+    <script>
+      swal({
+        icon: "error",
+        text: "{{ msg[0] }}",
+      });
+    </script>
+    {% endif %} {% endwith %}
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+    <script>
+      // jQuery code
+      $(document).ready(function () {
+        $("#loginAdminForm").submit(function (e) {
+          e.preventDefault();
+          let username = $("#username").val();
+          let password = $("#password").val();
+
+          if (!username && !password) {
+            swal("Oops!", "username dan password harus diisi", "error");
+            return;
+          }
+          if (!username) {
+            swal("Oops!", "username harus diisi", "error");
+            return;
+          }
+          if (!password) {
+            swal("Oops!", "Password harus diisi", "error");
+            return;
+          }
+
+          $.ajax({
+            type: "POST",
+            url: "/authAdmin",
+            data: {
+              username: username,
+              password: password,
+            },
+            success: function (response) {
+              if (response) {
+                swal("Hore", "Login Berhasil!", "success").then(() => {
+                  window.location.href = "/admin";
+                });
+              } else {
+                swal("Oops!", response.msg, "error");
+              }
+            },
+            error: function (response) {
+              swal("Oops!", response.responseJSON.msg, "error");
+            },
+          });
+        });
+      });
+    </script>
   </body>
 </html>
