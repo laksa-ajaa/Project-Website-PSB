@@ -1,334 +1,97 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Landing Page</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
-    <style>
-      body,
-      html {
-        height: 100%;
-        margin: 0;
-      }
-      .wrapper {
-        display: flex;
-        flex-direction: column;
-        min-height: 100%;
-      }
-      .content {
-        flex: 1;
-      }
-      .navbar {
-        height: 100px;
-        font-size: 1.2em;
-      }
-      .navbar-brand {
-        font-weight: bold;
-      }
-      .carousel-item {
-        height: 100vh;
-      }
-      /* section {
-            height: 75vh;
-        } */
-      footer {
-        background-color: #333;
-        color: #fff;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="wrapper">
-      <!-- Navbar -->
-      <nav class="navbar navbar-expand-lg navbar-light bg-light fixed">
-        <div class="container">
-          <a class="navbar-brand" href="#">Pesantren</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto d-flex gap-4">
-              <li class="nav-item">
-                <a class="nav-link" href="index.html">Beranda</a>
+{% include 'user_page/layouts/header.html' %}
+<body>
+  <!-- Offcanvas & Header Menu Begin -->
+  {% include 'user_page/layouts/navbar.html' %}
+  <!-- Offcanvas & Header Menu End -->
+  <!-- Breadcrumb Begin -->
+  <div class="breadcrumb-section">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="breadcrumb__option">
+            <a href="/"><span class="fa fa-home"></span> Home</a>
+            <span>Kontak</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Breadcrumb End -->
+
+  <!-- Contact Section Begin -->
+  <section class="contact-section spad">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="contact__text">
+            <h3>Contact info</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <ul>
+              <li>
+                <span class="fa fa-map-marker"></span>
+                <h5>Address</h5>
+                <p>160 Pennsylvania Ave NW, Washington Castle, PA 16101-5161</p>
               </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Profil</a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Sejarah</a></li>
-                  <li><a class="dropdown-item" href="#">Visi dan Misi</a></li>
-                  <li><a class="dropdown-item" href="#">Kegiatan & Fasilitas</a></li>
-                </ul>
+              <li>
+                <span class="fa fa-mobile"></span>
+                <h5>Address</h5>
+                <p>125-711-811 | 125-668-886</p>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#pendaftaran">Pendaftaran Santri Baru (PSB)</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#kontak">Kontak Kami</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#login">Login</a>
+              <li>
+                <span class="fa fa-headphones"></span>
+                <h5>Address</h5>
+                <p>Support.photography@gmail.com</p>
               </li>
             </ul>
-          </div>
-        </div>
-      </nav>
-
-      <section class="about bg-light p-4 mb-3" id="about">
-        <div class="row mb-5">
-          <div class="col text-center">
-            <h1 class="fw-bolder">Tentang Kami</h1>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col">
-            <div class="card">
-              <div class="card-header text-center">
-                <h1>Sejarah Ulumul Quran</h1>
-              </div>
-              <div class="card-body">
-                <p>
-                  Pesantren Ulumul Qur'an digagas berdasarkan ide dari H. Syahrial Abdul Malik Sulaiman (AMS), SH, M.Hum. Ide bermula ketika beliau menjabat Kepala Kantor Departemen Agama (sekarang Kementerian Agama) Kabupaten Langkat pada
-                  tahun 1983-1990. Pembentukan Pondok Pesantren ini sejalan dengan keinginan Pemerintah dan masyarakat Kabupaten Langkat agar Langkat dapat kembali menjadi juara umum dalam pentas Musabaqoh Tilawatil Qur'an (MTQ) tingkat
-                  Provinsi sebagaimana yang pernah didapatkan oleh Kafilah Kabupaten Langkat pada Sayembara Al-Qur'an Provinsi ke-1 yang dilaksanakan di Kabupaten Langkat tahun 1951, tepatnya di Kota Binjai (pada waktu itu Kota Binjai
-                  adalah Ibukota Kabupaten Langkat).
-                </p>
-                <p>
-                  Kondisi diatas semakin diperkuat lagi dengan realitas Kabupaten Langkat adalah basis penghasil para Ulama. Diperkirakan pada waktu itu 92% (sembilan puluh dua per seratus) masyarakat Kabupaten Langkat merupakan pemeluk
-                  agama Islam. Disamping itu juga Kabupaten Langkat juga merupakan pusat Thariqat Naqsabandiah Babusalam, tepatnya di Desa religius Besilam, Kecamatan Padang Tualang.
-                </p>
-                <p>
-                  Gagasan untuk pendirian Pondok Pesantren semakin mendapat momentum ketika MTQ tingkat Provinsi Sumatera Utara XVIII yang dilaksanakan di Kota Tebing Tinggi tahun 1984. Pada waktu itu, oleh Lembaga Pengembangan Tilawatil
-                  Qur'an (LPTQ) Provinsi Sumatera Utara menunjuk Kabupaten Langkat sebagai tuan rumah MTQN tingkat Provinsi ke XIX pada tahun 1986. Kabupaten Langkat yang pada waktu dibawah pimpinan Alm. Bapak H. Marzuki Erman (1984 - 1989)
-                  sebagai Bupati, Sekretaris Daerah Bapak Drs. H. Hakimil Nasution dan Ketua DPRD adalah Alm. Bapak Drs. Hasan Saidi. Serta Ketua MUI (Majelis Ulama Indonesia) H. Wahab Lubis. Pada saat awal pendiriannya, sosok penting
-                  diluar jajaran pejabat Kabupaten Langkat adalah Alm. H. Azrai Abdurrauf, seorang ulama Al-Qur'an untuk tingkat nasional dan juga internasional yang banyak memberikan motivasi berdirinya Pesantren Ulumul Qur'an.
-                </p>
-                <p>
-                  Upaya penyelenggaraan kegiatan pendidikan Pesantren Ulumul Qur'an memerlukan badan hukum yang dibuat secara khusus untuk tujuan pendiriannya, maka setelah melalui konsultasi antara Bupati, Kemenang Langkat dan pihak
-                  lainnya Bupati Langkat Bapak H. Marzuki Erman merestui dibentuknya Yayasan sebagai Badan Penyelenggara Pondok Pesantren. Pada awal pendiriannya, H. Syahrial AMS yang berlatar belakang PNS Kemenag dan H. Marzuki Erman
-                  berlatang belakang Bupati Kepala Pemerintahan Kabupaten Langkat membuat kerjasama antara kedua instansi ini secara bahu membahu untuk membangun Pondok Pesantren ini menjadi semakin mendapat dukungan semua pihak.
-                </p>
-                <p>
-                  Pilihan untuk mententukan Yayasan sebagai badan penyelenggara pondok Pesantren Ulumul Qur'an pada waktu itu didasarkan pertimbangan agar lebih fokusnya pimpinan Yayasan nantinya dalam memperjuangkan eksistensi Yayasan,
-                  disamping itu juga Yayasan dapat membuka partisipasi semua elemen lintas pemerintahan dan masyarakat untuk turut berpartisipasi dalam pengembang Pondok Pesantren, dan untuk pertama sekali langsung Bapak H. Marzuki Erman
-                  menjadi Ketua Umum Yayasan, hal ini didasarkan atas tekad beliau bagaimana agar proses pendirian Pondok Pesantren ini dapat berjalan baik dari sisi dukungan operasional, maupun dukugan secara kelembagaan dan masyarakat.
-                  Walaupun H. Marzuki Erman menjadi ketua Umum Yayasan dan beberapa personil lainnya adalah pejabat pemerintahan di kabupaten Langkat, tidak ada pola khusus yang mewajibkan sistim rekrutmen personil Yayasan harus dari
-                  Pemerintahan Kabupaten Langkat.
-                </p>
-              </div>
+            <div class="contact__social">
+              <a href="#" class="facebook"><i class="fa fa-facebook"></i></a>
+              <a href="#" class="twitter"><i class="fa fa-twitter"></i></a>
+              <a href="#" class="youtube"><i class="fa fa-youtube-play"></i></a>
+              <a href="#" class="instagram"><i class="fa fa-instagram"></i></a>
             </div>
           </div>
         </div>
-
-        <div class="row my-5">
-          <div class="col">
-            <div class="card">
-              <div class="card-header text-center">
-                <h1>Kata Sambutan</h1>
-              </div>
-              <div class="card-body">
-                <p class="text-end">ِبِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيْم</p>
-                <p>Puji syukur kami panjatkan ke hadirat Allah SWT, yang telah melimpahkan hidayah, taufiq serta inayah-Nya kepada kita semua semoga dalam menjalankan segala aktivitas selalu dalam lindungan dan bimbingan-Nya.</p>
-                <p>Shalawat serta salam kami sanjungkan kepada junjungan kita Nabi Muhammad SAW. yang telah membawa umatnya dari alam kegelapan menuju ke alam terang benderang berupa ajaran agama Islam.</p>
-                <p>
-                  Pembuatan website Yayasan Ulumul Qur'an ini dimaksudkan untuk memperkenalkan pondok pesantren secara luas kepada masyarakat dan sebagai sarana informasi dan komunikasi antara pondok pesantren dengan orang tua/wali santri,
-                  guru karyawan dan alumni. Disamping itu website juga dapat menjadi sarana promosi pesantren yang cukup efektif. Berbagai kegiatan positif pesantren dapat diunggah dan disertai gambar-gambar yang relevan sehingga dapat
-                  diketahui masyarakat seluruhnya.
-                </p>
-                <p>
-                  Akhir kata kami memberikan iringan do'a semoga website ini dapat menjadikan manfaat dan barokah untuk kita semua. Kepada Allah Subhanahuwata'ala kita bertawakal dan menyerahkan diri, semoga kita selalu dalam bimbinganNya
-                  serta diberi kekuatan, kesehatan dan kemampuan dalam mengemban amanah mulia ini dengan sebaik-baiknya.
-                </p>
-                <p class="text-end">والله الموّفق إلى أقوام الطريق</p>
-              </div>
-            </div>
+        <div class="col-lg-8">
+          <div class="map">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d20151.047591375514!2d-0.5735782106784704!3d50.85188881113048!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4875a4d10c96d8bf%3A0xe9a76e70e6b7cc5a!2sArundel%2C%20UK!5e0!3m2!1sen!2sbd!4v1584862449435!5m2!1sen!2sbd"
+              height="515"
+              style="border: 0"
+              allowfullscreen=""
+              aria-hidden="false"
+              tabindex="0"
+            ></iframe>
           </div>
         </div>
-
-        <div class="row my-5">
-          <div class="col">
-            <div class="card" style="height: 400px">
-              <div class="card-header text-center">
-                <h1>Visi</h1>
-              </div>
-              <div class="card-body d-flex align-items-center">
-                <p>Membentuk generasi muda Islam Ahlusunnah Wal Jama'ah yang Qur'ani, Beriman, Berakhlakul karimah, Bertaqwa kepada Allah SWT, Berilmu pengetahuan, Cerdas, Setia Kepada Pancasila,UUD 1945 dan NKRI.</p>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card">
-              <div class="card-header text-center">
-                <h1>Misi</h1>
-              </div>
-              <div class="card-body">
-                <ol class="list-group list-group-numbered">
-                  <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
-                      <div class="">Mewujudkan Pesantren Ulumul Qur'an Sebagai Pusat Pendidikan Islam</div>
-                    </div>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
-                      <div class="">Menciptakan Kader Pemimpin Yang Bermoral dan Berakhlaqul Karimah Sesuai Tuntunan Al-Qur'an</div>
-                    </div>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
-                      <div class="">Menciptakan Kader Ulama, Huffadzh dan Qurra' Al-Qur'an</div>
-                    </div>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
-                      <div class="">Menciptakan Kader Fahmil Qur'an, Syarhil Qur'an, Khattil Qur'an, dan Mufassir Al-Qur'an</div>
-                    </div>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
-                      <div class="">Meningkatkan Kualitas Sumber Daya Manusia Yang Terampil</div>
-                    </div>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
-                      <div class="">Mewujudkan Pusat Informasi Pesantren</div>
-                    </div>
-                  </li>
-                </ol>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row my-5">
-          <div class="col">
-            <div class="card">
-              <div class="card-header text-center">
-                <h1>Sarana Prasarana</h1>
-              </div>
-              <div class="card-body">
-                <p>Guna menunjang kegiatan para santri, Yayasan Ulumul Qur'an menyediakan Sarana dan Prasarana sebagai berikut</p>
-                <div class="row">
-                  <div class="col">
-                    <ol class="list-group">
-                      <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                          <div class="">Ruang Perkantoran</div>
-                        </div>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                          <div class="">Ruang Kelas</div>
-                        </div>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                          <div class="">Ruang Aula</div>
-                        </div>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                          <div class="">Laboratorium Komputer</div>
-                        </div>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                          <div class="">Laboratorium Bahasa</div>
-                        </div>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                          <div class="">Perpustakaan</div>
-                        </div>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                          <div class="">Asrama Santri Putra</div>
-                        </div>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                          <div class="">Asrama Santri Putri</div>
-                        </div>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                          <div class="">Masjid</div>
-                        </div>
-                      </li>
-                    </ol>
-                  </div>
-                  <div class="col">
-                    <ol class="list-group">
-                      <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                          <div class="">Toilet</div>
-                        </div>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                          <div class="">Lapangan Serbaguna (futsal, sepakbola, basket, badminton, voli)</div>
-                        </div>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                          <div class="">Ruang Makan Santri Putra</div>
-                        </div>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                          <div class="">Ruang Makan Santri Putri</div>
-                        </div>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                          <div class="">Lahan Parkir Luas</div>
-                        </div>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                          <div class="">Kantin</div>
-                        </div>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                          <div class="">Dapur</div>
-                        </div>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                          <div class="">Kendaraan Operasional Dinas Roda Empat</div>
-                        </div>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                          <div class="">Klinik Kesehatan</div>
-                        </div>
-                      </li>
-                    </ol>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-    <footer class="bg-dark text-white text-center py-4">
-      <div class="container">
-        <p>&copy; 2024 Pesantren. All Rights Reserved.</p>
-        <ul class="list-inline">
-          <li class="list-inline-item"><a class="text-white" href="#">Home</a></li>
-          <li class="list-inline-item"><a class="text-white" href="#profil">Profil</a></li>
-          <li class="list-inline-item"><a class="text-white" href="#kontak">Kontak</a></li>
-          <li class="list-inline-item"><a class="text-white" href="#pendaftaran">Pendaftaran</a></li>
-          <li class="list-inline-item"><a class="text-white" href="#login">Login</a></li>
-        </ul>
       </div>
-    </footer>
+    </div>
+  </section>
+  <!-- Contact Section End -->
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  </body>
-</html>
+  <!-- Contact Form Begin -->
+  <div class="contact-form spad">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <h3>SEND MESSAGE</h3>
+          <form action="#">
+            <div class="input-list">
+              <input type="text" placeholder="Name" />
+              <input type="text" placeholder="Email" />a
+              <input type="text" placeholder="Website" />
+            </div>
+            <textarea placeholder="Question"></textarea>
+            <button type="submit" class="site-btn">Send question</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% include 'user_page/layouts/footer.html' %}
+  <script>
+    $(document).ready(function () {
+      $("#profil").addClass("active");
+    });
+  </script>
+</body>

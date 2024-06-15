@@ -6,7 +6,6 @@ import jwt
 import hashlib
 from pymongo import MongoClient
 from datetime import datetime, timedelta
-import re
 
 
 dotenv_path = join(dirname(__file__), '.env')
@@ -28,6 +27,16 @@ app.config["UPLOAD_FOLDER"] = "./static/dokumen"
 
 @app.route('/auth')
 def showAuth():
+    data = {
+        'title': 'Login/Register',
+    }
+    token = request.cookies.get('tokenLogin')
+    if token:
+        try:
+            jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            return redirect(url_for('showDashUser'))
+        except (jwt.ExpiredSignatureError, jwt.DecodeError):
+            pass
     data = {
         'title': 'Login/Register',
     }
@@ -80,23 +89,65 @@ def showHome():
     data = {
         'title': 'Beranda',
     }
-    return render_template('user_page/index.html', data=data)
+    token_receive = request.cookies.get("tokenLogin")
+    if token_receive:
+            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+            user_info = db.users.find_one({"email": payload["email"]})
+            return render_template('user_page/index.html', data=data, user_info=user_info)
+    else:
+        return render_template('user_page/index.html', data=data)
 
 @app.route('/sejarah')
 def showSejarah():
-    return render_template('user_page/sejarah.html')
+    data = {
+        "title": "Ulumul Qur'an | Sejarah",
+    }
+    token_receive = request.cookies.get("tokenLogin")
+    if token_receive:
+            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+            user_info = db.users.find_one({"email": payload["email"]})
+            return render_template('user_page/sejarah.html', data=data, user_info=user_info)
+    else:
+        return render_template('user_page/sejarah.html', data=data)
 
 @app.route('/kontak')
 def showKontak():
-    return render_template('user_page/kontak.html')
+    data = {
+        "title": "Ulumul Qur'an | Kontak",
+    }
+    token_receive = request.cookies.get("tokenLogin")
+    if token_receive:
+            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+            user_info = db.users.find_one({"email": payload["email"]})
+            return render_template('user_page/kontak.html', data=data, user_info=user_info)
+    else:
+        return render_template('user_page/kontak.html' , data=data)
 
 @app.route('/visimisi')
 def showVisiMisi():
-    return render_template('user_page/visimisi.html')
+    data = {
+        "title": "Ulumul Qur'an | Visi & Misi",
+    }
+    token_receive = request.cookies.get("tokenLogin")
+    if token_receive:
+            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+            user_info = db.users.find_one({"email": payload["email"]})
+            return render_template('user_page/visimisi.html', data=data, user_info=user_info)
+    else:
+        return render_template('user_page/visimisi.html' , data=data)
 
 @app.route('/kegiatan')
 def showKegiatan():
-    return render_template('user_page/kegiatan.html')
+    data = {
+        "title": "Ulumul Qur'an | Kegiatan & Fasilitas",
+    }
+    token_receive = request.cookies.get("tokenLogin")
+    if token_receive:
+            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+            user_info = db.users.find_one({"email": payload["email"]})
+            return render_template('user_page/kegiatan.html', data=data, user_info=user_info)
+    else:
+        return render_template('user_page/kegiatan.html' , data=data)
 
 @app.route('/template')
 def showTemp():
@@ -343,7 +394,7 @@ def showDashUser():
         response.delete_cookie("tokenLogin")
         return response
     except jwt.exceptions.DecodeError:
-        flash("Token anda tidak valid, silahkan login kembali", "danger")
+        flash("silahkan login terlebih dahulu", "danger")
         response = make_response(redirect(url_for("showAuth")))
         response.delete_cookie("tokenLogin")
         return response
@@ -355,7 +406,7 @@ def showformulir():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.users.find_one({"email": payload["email"]})
-        return render_template("dashboard_user/index.html", user_info=user_info, data=data)
+        return render_template("dashboard_user/formulir.html", user_info=user_info, data=data)
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
         response = make_response(redirect(url_for("authAdmin")))
@@ -394,7 +445,7 @@ def postformulir():
             "no_hp_ayah" : request.form["no_hp_ayah"]
         }
         db.form.insert_one(data)
-        return render_template('dashboard_user/Formulir.html', data=data)
+        return render_template('dashboard_user/formulir.html', data=data)
 
 @app.route('/dashboard/dokumen', methods=["GET"])
 def showdoc():
