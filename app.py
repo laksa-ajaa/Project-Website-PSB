@@ -2,6 +2,7 @@ import os
 from os.path import join, dirname
 from dotenv import load_dotenv
 from flask import Flask, render_template, jsonify, request, url_for, redirect, flash, session
+from werkzeug.utils import secure_filename
 import jwt
 import hashlib
 from pymongo import MongoClient
@@ -12,16 +13,25 @@ dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
 MONGODB_URI = os.environ.get("MONGODB_URI")
-DB_NAME =  os.environ.get("DB_NAME")
+DB_NAME = os.environ.get("DB_NAME")
+
+app = Flask(__name__)
+SECRET_KEY = "users"
 
 client = MongoClient(MONGODB_URI)
 db = client[DB_NAME]
 
 app = Flask(__name__)
-SECRET_KEY = "users"
+app.secret_key = "users"
 
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["UPLOAD_FOLDER"] = "./static/dokumen"
+app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024 
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/')
 def showHome():
@@ -228,10 +238,59 @@ def showformulir():
         return render_template('dashboard_user/Formulir.html', data=data)
     return render_template('dashboard_user/Formulir.html', data=data)
 
-@app.route('/dashboard/dokumen', methods=["GET","POST"])
+@app.route('/dashboard/dokumen', methods=["GET", "POST"])
 def showdoc():
+    if request.method == 'POST':
+        # Daftar file yang diunggah
+        file_fields = [
+            'pas_foto', 'ijazah_sd', 'ijazah_mts', 
+            'surat_keterangan_lulus', 'akta_kelahiran', 
+            'surat_memilik_nisn', 'surat_peryataan'
+        ]
+        
+        # Menyimpan jalur file yang diunggah
+        file_paths = {}
+
+        for field in file_fields:
+            if field in request.files:
+                file = request.files[field]
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    try:
+                        file.save(file_path)
+                        file_paths[field] = file_path
+                        flash(f'File {filename} berhasil diunggah', 'success')
+                    except Exception as e:
+                        flash(f'Error saat menyimpan file {filename}: {e}', 'danger')
+                else:
+                    flash(f'File {file.filename} tidak diizinkan', 'danger')
+
+        # Simpan informasi jalur file ke MongoDB
+        try:
+            db.uploaded_files.insert_one(file_paths)
+            flash('Semua file berhasil disimpan ke database', 'success')
+        except Exception as e:
+            flash(f'Error saat menyimpan data ke database: {e}', 'danger')
+        
+        if 'user_email' in session:
+            user_email = session['user_email']
+            try:
+                db.pend_santri.update_one(
+                    {"email": user_email},
+                    {"$set": {"status": "Menunggu Verifikasi", **file_paths}},
+                    upsert=True
+                )
+                flash('Semua file berhasil disimpan ke database dan status pendaftaran diubah ke Menunggu Verifikasi', 'success')
+            except Exception as e:
+                flash(f'Error saat menyimpan data ke database: {e}', 'danger')
+        else:
+            flash('Anda harus login terlebih dahulu untuk mengunggah dokumen', 'danger')
+
+        return redirect(url_for('showdoc'))
 
     return render_template('dashboard_user/dokumen.html')
+
 @app.route('/dashboard/status')
 def showVer():
     if 'user_email' in session:
@@ -257,14 +316,21 @@ def showPembayaran():
         tanggal = request.form.get('tanggal')
         bukti = request.files.get('bukti')
 
-        if not bukti:
-            flash('wajib upload bukti pembayaran', 'danger')
+        if not bukti or not allowed_file(bukti.filename):
+            flash('Wajib upload bukti pembayaran dengan format yang benar (png, jpg, jpeg, gif)', 'danger')
             return redirect(url_for('showPembayaran'))
         
-        bukti_filename = bukti.filename
-        bukti_path = os.path.join("UPLOAD_FOLDER", bukti_filename)
-        bukti.save(bukti_path)
+        filename = secure_filename(bukti.filename)
+        bukti_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        
+        # Save the file
+        try:
+            bukti.save(bukti_path)
+        except Exception as e:
+            flash(f'Error menyimpan file: {e}', 'danger')
+            return redirect(url_for('showPembayaran'))
 
+        # Save to database
         doc = {
             'nama': nama,
             'kelas': kelas,
@@ -276,7 +342,7 @@ def showPembayaran():
         }
         db.pembayaran.insert_one(doc)
 
-        flash('pembayaran berhasil dikirim, menunggu verifikasi.', 'success')
+        flash('Pembayaran berhasil dikirim, menunggu verifikasi.', 'success')
         return redirect(url_for('showPembayaran'))
 
     return render_template('dashboard_user/Pembayaran.html')
