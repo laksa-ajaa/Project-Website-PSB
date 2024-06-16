@@ -8,33 +8,30 @@
   </div>
   <nav class="offcanvas__menu mobile-menu">
     <ul>
-      <li class="active"><a href="./index.html">Home</a></li>
-      <li><a href="./about.html">About</a></li>
-      <li><a href="./hosting.html">Hosting</a></li>
+      <li class="active"><a href="/">Beranda</a></li>
       <li>
-        <a href="#">Pages</a>
+        <a href="#">Profil</a>
         <ul class="dropdown">
-          <li><a href="./pricing.html">Pricing</a></li>
-          <li><a href="./blog-details.html">Blog Details</a></li>
-          <li><a href="./404.html">404</a></li>
+          <li><a href="/sejarah">Sejarah</a></li>
+          <li><a href="/visimisi">Visi & Misi</a></li>
+          <li><a href="/kegiatan">Kegiatan & Fasilitas</a></li>
         </ul>
       </li>
-      <li><a href="./blog.html">News</a></li>
-      <li><a href="./contact.html">Contact</a></li>
+      <li><a href="/kontak">Contact</a></li>
     </ul>
   </nav>
   <div id="mobile-menu-wrap"></div>
   <div class="offcanvas__auth">
     <ul>
       <li>
-        <a href="./auth"><span class="fa fa-user"></span> Login / Register</a>
+        <a href="/auth"><span class="fa fa-user"></span>{% if user_info %} {{ user_info.nama }} {% else %} Login / Register {% endif %}</a>
       </li>
     </ul>
   </div>
   <div class="offcanvas__info">
     <ul>
       <li><span class="icon_phone"></span> +1 123-456-7890</li>
-      <li><span class="fa fa-envelope"></span> Support@gmail.com</li>
+      <li><span class="fa fa-envelope"></span> ulumulquran@gmail.com</li>
     </ul>
   </div>
 </div>
@@ -56,7 +53,7 @@
           <div class="header__info-right">
             <ul>
               <li>
-                <a href="./auth"><span class="fa fa-user"></span> Login / Register</a>
+                <a href="/auth"><span class="fa fa-user"></span>{% if user_info %} {{ user_info.nama }} {% else %} Login / Register {% endif %}</a>
               </li>
             </ul>
           </div>
@@ -68,26 +65,25 @@
     <div class="row">
       <div class="col-lg-6 col-md-3 d-flex align-items-center">
         <div class="header__logo">
-          <a href="./index.html"><img src="../../static/assetsUserPage/img/logo.png" alt="" /></a>
+          <a href="/"><img src="../../static/assetsUserPage/img/logo.png" alt="" /></a>
         </div>
         <div class="header__text2">
-          <a href="./index.html"><h4 class="fw-bold text-white ml-3">YAYASAN ULUMUL QUR'AN</h4></a>
+          <a href="/"><h4 class="fw-bold text-white ml-3">YAYASAN ULUMUL QUR'AN</h4></a>
         </div>
       </div>
       <div class="col-lg-6 col-md-9">
         <nav class="header__menu">
           <ul>
-            <li class="active"><a href="./index.html">Beranda</a></li>
-
-            <li>
+            <li id="beranda"><a href="/">Beranda</a></li>
+            <li id="profil">
               <a href="#">Profil</a>
               <ul class="dropdown">
-                <li><a href="./pricing.html">Sejarah</a></li>
-                <li><a href="./blog-details.html">Visi & Misi</a></li>
-                <li><a href="./404.html">Kegiatan & Fasilitas</a></li>
+                <li><a href="/sejarah">Sejarah</a></li>
+                <li><a href="/visimisi">Visi & Misi</a></li>
+                <li><a href="/kegiatan">Kegiatan & Fasilitas</a></li>
               </ul>
             </li>
-            <li><a href="./contact.html">Kontak Kami</a></li>
+            <li id="kontak"><a href="/kontak">Kontak Kami</a></li>
           </ul>
         </nav>
       </div>

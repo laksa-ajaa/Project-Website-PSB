@@ -1,136 +1,97 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Landing Page</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
-    <style>
-      body,
-      html {
-        height: 100%;
-        margin: 0;
-      }
-      .wrapper {
-        display: flex;
-        flex-direction: column;
-        min-height: 100%;
-      }
-      .content {
-        flex: 1;
-      }
-      .navbar {
-        height: 100px;
-        font-size: 1.2em;
-      }
-      .navbar-brand {
-        font-weight: bold;
-      }
-      .carousel-item {
-        height: 100vh;
-      }
-      section {
-        height: 75vh;
-      }
-      footer {
-        background-color: #333;
-        color: #fff;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="wrapper">
-      <!-- Navbar -->
-      <nav class="navbar navbar-expand-lg navbar-light bg-light fixed">
-        <div class="container">
-          <a class="navbar-brand" href="#">Pesantren</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto d-flex gap-4">
-              <li class="nav-item">
-                <a class="nav-link" href="index.html">Beranda</a>
+{% include 'user_page/layouts/header.html' %}
+<body>
+  <!-- Offcanvas & Header Menu Begin -->
+  {% include 'user_page/layouts/navbar.html' %}
+  <!-- Offcanvas & Header Menu End -->
+  <!-- Breadcrumb Begin -->
+  <div class="breadcrumb-section">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="breadcrumb__option">
+            <a href="/"><span class="fa fa-home"></span> Home</a>
+            <span>Kontak</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Breadcrumb End -->
+
+  <!-- Contact Section Begin -->
+  <section class="contact-section spad">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="contact__text">
+            <h3>Contact info</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <ul>
+              <li>
+                <span class="fa fa-map-marker"></span>
+                <h5>Address</h5>
+                <p>160 Pennsylvania Ave NW, Washington Castle, PA 16101-5161</p>
               </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Profil</a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Sejarah</a></li>
-                  <li><a class="dropdown-item" href="#">Visi dan Misi</a></li>
-                  <li><a class="dropdown-item" href="#">Kegiatan & Fasilitas</a></li>
-                </ul>
+              <li>
+                <span class="fa fa-mobile"></span>
+                <h5>Address</h5>
+                <p>125-711-811 | 125-668-886</p>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#pendaftaran">Pendaftaran Santri Baru (PSB)</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#kontak">Kontak Kami</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#login">Login</a>
+              <li>
+                <span class="fa fa-headphones"></span>
+                <h5>Address</h5>
+                <p>Support.photography@gmail.com</p>
               </li>
             </ul>
-          </div>
-        </div>
-      </nav>
-
-      <!-- Profil Section -->
-      <section id="profil" class="content py-5">
-        <div class="container">
-          <nav class="mb-5" aria-label="breadcrumb">
-            <h2>Fasilitas dan Kegiatan</h2>
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="#">Beranda</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Fasilitas dan Kegiatan</li>
-            </ol>
-          </nav>
-          <div class="row">
-            <div class="col-md-6">
-              <h3>Fasilitas</h3>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate suscipit, deleniti, doloremque recusandae minus voluptatibus eveniet amet assumenda nisi numquam aspernatur, ipsa possimus quis natus veritatis quidem facere
-                dicta debitis?Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem aperiam officiis ea, labore voluptatem, commodi nostrum, rem qui sit odit amet error eaque. Eaque laborum modi deleniti natus, inventore ullam.
-                Impedit amet quas quam molestias, error officia aliquam consectetur nostrum, libero animi culpa. Possimus tempore quas dolor ex officia, provident est animi sequi velit modi id, mollitia unde natus voluptatum.
-              </p>
-            </div>
-            <div class="col-md-6">
-              <h3>Kegiatan</h3>
-              <p>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Error ex obcaecati quasi labore excepturi aperiam, eaque beatae sint nesciunt, recusandae sed architecto. Labore sint explicabo mollitia incidunt architecto obcaecati
-                dolore?Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero nam laudantium sed ipsum quos temporibus nostrum ipsa neque eveniet? Omnis ipsa sint placeat assumenda! Libero itaque officiis optio quis repellat!
-                Voluptatum assumenda culpa ducimus, accusantium illo placeat eveniet omnis fuga, quis id maxime nam quisquam sapiente eos voluptatibus a aliquid labore, odio doloremque officiis velit esse? Explicabo suscipit est maiores.
-              </p>
-            </div>
-            <div class="d-flex justify-content-center mt-5">
-              <div class="col-md-6">
-                <h3>Ekstrakurikuler</h3>
-                <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate suscipit, deleniti, doloremque recusandae minus voluptatibus eveniet amet assumenda nisi numquam aspernatur, ipsa possimus quis natus veritatis quidem
-                  facere dicta debitis?Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem aperiam officiis ea, labore voluptatem, commodi nostrum, rem qui sit odit amet error eaque. Eaque laborum modi deleniti natus, inventore
-                  ullam. Impedit amet quas quam molestias, error officia aliquam consectetur nostrum, libero animi culpa. Possimus tempore quas dolor ex officia, provident est animi sequi velit modi id, mollitia unde natus voluptatum.
-                </p>
-              </div>
+            <div class="contact__social">
+              <a href="#" class="facebook"><i class="fa fa-facebook"></i></a>
+              <a href="#" class="twitter"><i class="fa fa-twitter"></i></a>
+              <a href="#" class="youtube"><i class="fa fa-youtube-play"></i></a>
+              <a href="#" class="instagram"><i class="fa fa-instagram"></i></a>
             </div>
           </div>
         </div>
-      </section>
-
-      <footer class="bg-dark text-white text-center py-4">
-        <div class="container">
-          <p>&copy; 2024 Pesantren. All Rights Reserved.</p>
-          <ul class="list-inline">
-            <li class="list-inline-item"><a class="text-white" href="#">Home</a></li>
-            <li class="list-inline-item"><a class="text-white" href="#profil">Profil</a></li>
-            <li class="list-inline-item"><a class="text-white" href="#kontak">Kontak</a></li>
-            <li class="list-inline-item"><a class="text-white" href="#pendaftaran">Pendaftaran</a></li>
-            <li class="list-inline-item"><a class="text-white" href="#login">Login</a></li>
-          </ul>
+        <div class="col-lg-8">
+          <div class="map">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d20151.047591375514!2d-0.5735782106784704!3d50.85188881113048!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4875a4d10c96d8bf%3A0xe9a76e70e6b7cc5a!2sArundel%2C%20UK!5e0!3m2!1sen!2sbd!4v1584862449435!5m2!1sen!2sbd"
+              height="515"
+              style="border: 0"
+              allowfullscreen=""
+              aria-hidden="false"
+              tabindex="0"
+            ></iframe>
+          </div>
         </div>
-      </footer>
+      </div>
     </div>
+  </section>
+  <!-- Contact Section End -->
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  </body>
-</html>
+  <!-- Contact Form Begin -->
+  <div class="contact-form spad">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <h3>SEND MESSAGE</h3>
+          <form action="#">
+            <div class="input-list">
+              <input type="text" placeholder="Name" />
+              <input type="text" placeholder="Email" />a
+              <input type="text" placeholder="Website" />
+            </div>
+            <textarea placeholder="Question"></textarea>
+            <button type="submit" class="site-btn">Send question</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% include 'user_page/layouts/footer.html' %}
+  <script>
+    $(document).ready(function () {
+      $("#profil").addClass("active");
+    });
+  </script>
+</body>

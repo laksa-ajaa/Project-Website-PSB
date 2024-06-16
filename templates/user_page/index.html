@@ -12,33 +12,30 @@
     </div>
     <nav class="offcanvas__menu mobile-menu">
       <ul>
-        <li class="active"><a href="./index.html">Home</a></li>
-        <li><a href="./about.html">About</a></li>
-        <li><a href="./hosting.html">Hosting</a></li>
+        <li class="active"><a href="/">Beranda</a></li>
         <li>
-          <a href="#">Pages</a>
+          <a href="#">Profil</a>
           <ul class="dropdown">
-            <li><a href="./pricing.html">Pricing</a></li>
-            <li><a href="./blog-details.html">Blog Details</a></li>
-            <li><a href="./404.html">404</a></li>
+            <li><a href="/sejarah">Sejarah</a></li>
+            <li><a href="/visimisi">Visi & Misi</a></li>
+            <li><a href="/kegiatan">Kegiatan & Fasilitas</a></li>
           </ul>
         </li>
-        <li><a href="./blog.html">News</a></li>
-        <li><a href="./contact.html">Contact</a></li>
+        <li><a href="/kontak">Contact</a></li>
       </ul>
     </nav>
     <div id="mobile-menu-wrap"></div>
     <div class="offcanvas__auth">
       <ul>
         <li>
-          <a href="#"><span class="fa fa-user"></span> Login / Register</a>
+          <a href="/auth"><span class="fa fa-user"></span>{% if user_info %} {{ user_info.nama }} {% else %} Login / Register {% endif %}</a>
         </li>
       </ul>
     </div>
     <div class="offcanvas__info">
       <ul>
         <li><span class="icon_phone"></span> +1 123-456-7890</li>
-        <li><span class="fa fa-envelope"></span> Support@gmail.com</li>
+        <li><span class="fa fa-envelope"></span> ulumulquran@gmail.com</li>
       </ul>
     </div>
   </div>
@@ -61,7 +58,7 @@
             <div class="header__info-right">
               <ul>
                 <li>
-                  <a href="/auth"><span class="fa fa-user"></span> Login / Register</a>
+                  <a href="/auth"><span class="fa fa-user"></span>{% if user_info %} {{ user_info.nama }} {% else %} Login / Register {% endif %}</a>
                 </li>
               </ul>
             </div>
@@ -73,7 +70,7 @@
       <div class="row">
         <div class="col-lg-6 col-md-3 d-flex align-items-center">
           <div class="header__logo">
-            <a href="./index.html"><img src="../../static/assetsUserPage/img/logo.png" alt="" /></a>
+            <a href="/"><img src="../../static/assetsUserPage/img/logo.png" alt="" /></a>
           </div>
           <div class="header__text">
             <h4 class="fw-bold text-white ml-3">YAYASAN ULUMUL QUR'AN</h4>
@@ -82,17 +79,17 @@
         <div class="col-lg-6 col-md-9">
           <nav class="header__menu">
             <ul>
-              <li class="active"><a href="./index.html">Beranda</a></li>
+              <li class="active"><a href="/">Beranda</a></li>
 
               <li>
                 <a href="#">Profil</a>
                 <ul class="dropdown">
-                  <li><a href="./pricing.html">Sejarah</a></li>
-                  <li><a href="./blog-details.html">Visi & Misi</a></li>
-                  <li><a href="./404.html">Kegiatan & Fasilitas</a></li>
+                  <li><a href="/sejarah">Sejarah</a></li>
+                  <li><a href="/visimisi">Visi & Misi</a></li>
+                  <li><a href="/kegiatan">Kegiatan & Fasilitas</a></li>
                 </ul>
               </li>
-              <li><a href="./contact.html">Kontak Kami</a></li>
+              <li><a href="/kontak">Kontak Kami</a></li>
             </ul>
           </nav>
         </div>
@@ -117,7 +114,7 @@
                   Website Official<br />
                   Yayasan Ulumul Qur'an
                 </h2>
-                <a href="#" class="primary-btn">Lihat selengkapnya</a>
+                <a href="#sejarah" class="primary-btn">Lihat selengkapnya</a>
               </div>
             </div>
           </div>
@@ -132,7 +129,7 @@
                   Pendaftaran Santri Baru<br />
                   Telah dibuka
                 </h2>
-                <a href="#" class="primary-btn">Daftar Sekarang</a>
+                <a href="#daftar" class="primary-btn">Daftar Sekarang</a>
               </div>
             </div>
           </div>
@@ -144,23 +141,50 @@
 
   <!-- Register Domain Section Begin -->
   <!-- Register Domain Section End -->
-  <section class="choose-plan-section spad">
+  <section class="sejarah-section spad" id="sejarah">
     <div class="container">
       <div class="row">
-        <div class="col-lg-6 col-md-6">
+        <div class="col-lg-6 col-md-6 d-flex align-items-center justify-content-center">
           <img src="../../static/assetsUserPage/img/logo.png" alt="" style="width: 300px" />
         </div>
         <div class="col-lg-6 col-md-6">
           <div class="plan__text">
             <h3>Sejarah Singkat Yayasan Ulumul Qur'an</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum, sunt laboriosam dolore tempora cum error voluptatum nobis quos rem placeat veritatis consectetur fuga corporis, voluptate cupiditate ab ex laborum a.</p>
+            <p class="text-justify">
+              Pesantren Ulumul Qur'an didirikan oleh H. Syahrial Abdul Malik Sulaiman (AMS), SH, M.Hum, terinspirasi saat menjabat Kepala Kantor Departemen Agama Kabupaten Langkat (1983-1990), dengan tujuan mengembalikan kejayaan Langkat
+              sebagai juara MTQ tingkat Provinsi, seperti pada Sayembara Al-Qur'an Provinsi pertama tahun 1951. Dukungan kuat datang dari masyarakat Langkat yang mayoritas Muslim dan merupakan basis ulama serta pusat Thariqat Naqsabandiah
+              Babusalam. Pada MTQ Provinsi Sumatera Utara XVIII tahun 1984 di Kota Tebing Tinggi, Langkat ditunjuk sebagai tuan rumah MTQ ke XIX tahun 1986. Dukungan operasional dan kelembagaan didapat dari Bupati H. Marzuki Erman, Sekda
+              Drs. H. Hakimil Nasution, Ketua DPRD Drs. Hasan Saidi, Ketua MUI H. Wahab Lubis, serta ulama nasional H. Azrai Abdurrauf. Yayasan sebagai badan hukum penyelenggara didirikan untuk melibatkan berbagai elemen dalam pengembangan
+              pesantren, dengan H. Marzuki Erman sebagai Ketua Umum Yayasan.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-lg-6 col-md-6">
+          <div class="section-title">
+            <h3>Visi</h3>
+            <p class="mt-5">Membentuk generasi muda Islam Ahlusunnah Wal Jama'ah yang Qur'ani, Beriman, Berakhlakul karimah, Bertaqwa kepada Allah SWT, Berilmu pengetahuan, Cerdas, Setia Kepada Pancasila,UUD 1945 dan NKRI.</p>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6">
+          <div class="section-title">
+            <h3>Misi</h3>
+            <ol class="mt-5">
+              <li>Mewujudkan Pesantren Ulumul Qur'an Sebagai Pusat Pendidikan Islam</li>
+              <li>Menciptakan Kader Pemimpin Yang Bermoral dan Berakhlaqul Karimah Sesuai Tuntunan Al-Qur'an</li>
+              <li>Menciptakan Kader Ulama, Huffadzh dan Qurra' Al-Qur'an</li>
+              <li>Menciptakan Kader Fahmil Qur'an, Syarhil Qur'an, Khattil Qur'an, dan Mufassir Al-Qur'an</li>
+              <li>Meningkatkan Kualitas Sumber Daya Manusia Yang Terampil</li>
+              <li>Mewujudkan Pusat Informasi Pesantren</li>
+            </ol>
           </div>
         </div>
       </div>
     </div>
   </section>
   <!-- Services Section Begin -->
-  <section class="services-section spad">
+  <section class="program-section spad">
     <div class="container">
       <div class="row">
         <div class="col-lg-12">
@@ -173,25 +197,22 @@
         <div class="col-lg-4 col-md-4 col-sm-6">
           <div class="services__item">
             <h5>Madrasah Tsanawiyah</h5>
-            <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
           </div>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-6">
           <div class="services__item">
             <h5>Madrasah Aliyah</h5>
-            <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
           </div>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-6">
           <div class="services__item">
             <h5>tahfidz</h5>
-            <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
-  <section class="choose-plan-section spad">
+  <section class="daftar-section spad" id="daftar">
     <div class="container">
       <div class="row">
         <div class="col-lg-12">
@@ -204,24 +225,30 @@
         <div class="col-lg-4 col-md-4 col-sm-6">
           <div class="services__item">
             <h5>1. Daftar Akun</h5>
-            <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Calon santri wajib mendaftarkan akun terlebih dahulu di website ini.</p>
           </div>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-6">
           <div class="services__item">
-            <h5>2. Mengisi Form</h5>
-            <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <h5>2. Mengisi Formulir & Dokumen</h5>
+            <p>Setelah mendaftar, calon santri diarahkan untuk mengisi formulir dan mengirimkan dokumen yang diperlukan.</p>
           </div>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-6">
           <div class="services__item">
             <h5>3. Pembayaran</h5>
-            <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Setelah mengisi semua dokumen, calon santri lanjut ke proses administrasi.</p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="text-center">
+            <a href="/dashboard" class="primary-btn">Daftar Sekarang</a>
           </div>
         </div>
       </div>
     </div>
   </section>
+  {% include 'user_page/layouts/footer.html' %}
 </body>
-
-{% include 'user_page/layouts/footer.html' %}
