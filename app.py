@@ -281,12 +281,18 @@ def indexAdmin():
         
         admin_info = db.admin.find_one({"username": payload["username"], "role": payload["role"]})
         if payload["role"] == "admin":
-            return render_template("dashboard_admin/index.html", admin_info=admin_info, data=data)
+            pending_students = list(db.users.find({}))
+            
+            # Debugging
+            print("Pending students:", pending_students)
+            
+            return render_template("dashboard_admin/index.html", admin_info=admin_info, data=data, pending_students=pending_students)
         else:
             flash("Anda tidak memiliki izin untuk mengakses halaman ini", "danger")
             response = make_response(redirect(url_for("authAdmin")))
             response.delete_cookie("tokenLogin")
             return response
+
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
         response = make_response(redirect(url_for("authAdmin")))
@@ -297,6 +303,7 @@ def indexAdmin():
         response = make_response(redirect(url_for("authAdmin")))
         response.delete_cookie("tokenLogin")
         return response
+
     
 @app.route('/admin/datapeserta')
 def pesertaAdmin():
@@ -363,10 +370,10 @@ def verifyAdmin():
             action = request.form.get('action')
 
             if action == 'approve':
-                db.users.update_one({"_id": ObjectId(student_id)}, {"$set": {"status": "verified", "status_pembayaran": "verified", "status_dokumen": "verified"}})
+                db.users.update_one({"_id": ObjectId(student_id)}, {"$set": {"status": "verified"}})
                 flash("Siswa berhasil diverifikasi", "success")
             elif action == 'reject':
-                db.users.update_one({"_id": ObjectId(student_id)}, {"$set": {"status": "rejected", "status_pembayaran": "rejected", "status_dokumen": "rejected"}})
+                db.users.update_one({"_id": ObjectId(student_id)}, {"$set": {"status": "rejected"}})
                 flash("Verifikasi siswa ditolak", "warning")
 
         return render_template("dashboard_admin/verifikasi.html", admin_info=admin_info, data=data, pending_students=pending_students)
@@ -381,7 +388,7 @@ def verifyAdmin():
         response.delete_cookie("tokenLogin")
         return response
 
-@app.route('/admin/pembayaran')
+@app.route('/admin/pembayaran', methods=['GET', 'POST'])
 def paymentAdmin():
     data = {
         'title': 'Dashboard Admin',
@@ -397,12 +404,26 @@ def paymentAdmin():
         
         admin_info = db.admin.find_one({"username": payload["username"], "role": payload["role"]})
         if payload["role"] == "admin":
-            return render_template("dashboard_admin/pembayaran.html", admin_info=admin_info, data=data)
+            if request.method == 'POST':
+                student_id = request.form.get('student_id')
+                action = request.form.get('action')
+                
+                if action == 'approve':
+                    db.pembayaran.update_one({'_id': ObjectId(student_id)}, {'$set': {'status': 'Approved'}})
+                    flash("Pembayaran telah disetujui", "success")
+                elif action == 'reject':
+                    db.pembayaran.update_one({'_id': ObjectId(student_id)}, {'$set': {'status': 'Rejected'}})
+                    flash("Pembayaran telah ditolak", "danger")
+                return redirect(url_for('paymentAdmin'))
+            
+            pembayaran_siswa = list(db.pembayaran.find({}))
+            return render_template("dashboard_admin/pembayaran.html", admin_info=admin_info, data=data, pembayaran_siswa=pembayaran_siswa)
         else:
             flash("Anda tidak memiliki izin untuk mengakses halaman ini", "danger")
             response = make_response(redirect(url_for("authAdmin")))
             response.delete_cookie("tokenLogin")
             return response
+
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
         response = make_response(redirect(url_for("authAdmin")))
@@ -413,6 +434,8 @@ def paymentAdmin():
         response = make_response(redirect(url_for("authAdmin")))
         response.delete_cookie("tokenLogin")
         return response
+
+
 
 
 
@@ -629,7 +652,7 @@ def showVer():
             'nama': user_info.get('nama', ''),
             'tanggal_pendaftaran': user_info.get('tanggal_pendaftaran', ''),
             'catatan': 'Pendaftaran berhasil',
-            'statusformulir': user_info.get('status', ''),
+            'statusformulir': user_info.get('status_formulir', ''),
             'statusdoc': user_info.get('status_dokumen', ''),
             'statuspembayaran': user_info.get('status_pembayaran', '')
         }
@@ -646,6 +669,7 @@ def showVer():
         response = make_response(redirect(url_for("showAuth")))
         response.delete_cookie("tokenLogin")
         return response
+
 
 
     
