@@ -1,12 +1,8 @@
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
-#<<<<<<< HEAD
-from flask import Flask, render_template, jsonify, request, url_for, redirect, flash, session
 from werkzeug.utils import secure_filename
-#=======
 from flask import Flask, render_template, jsonify, request, url_for, redirect, flash, session, make_response
-#>>>>>>> 1706386eb7fd5654a166d9060a3616968d51b5df
 import jwt
 import hashlib
 from pymongo import MongoClient
@@ -17,26 +13,16 @@ dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
 MONGODB_URI = os.environ.get("MONGODB_URI")
-#<<<<<<< HEAD
 DB_NAME = os.environ.get("DB_NAME")
-
-app = Flask(__name__)
-SECRET_KEY = "users"
-#=======
-DB_NAME =  os.environ.get("DB_NAME")
 SECRET_KEY = os.environ.get("SECRET_KEY")
-#>>>>>>> 1706386eb7fd5654a166d9060a3616968d51b5df
 
 client = MongoClient(MONGODB_URI)
 db = client[DB_NAME]
 
 app = Flask(__name__)
-#<<<<<<< HEAD
-app.secret_key = "users"
-#=======
-app.secret_key = SECRET_KEY
-#>>>>>>> 1706386eb7fd5654a166d9060a3616968d51b5df
 
+app.secret_key = SECRET_KEY
+ 
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["UPLOAD_FOLDER"] = "./static/dokumen"
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024 
@@ -70,7 +56,6 @@ def auth():
     password = request.form["password"]
     password_hash = hashlib.sha256(password.encode('utf-8')).hexdigest()
 
-    # Perhatikan: Di sini Anda harus memeriksa dengan password_hash, bukan password biasa
     cek_login = db.users.find_one({"email": email, "password": password_hash})
     if cek_login:
         payload = {
@@ -91,7 +76,6 @@ def register():
     phone = request.form["phone"]
     password = request.form["password"]
     
-    # Periksa apakah email sudah terdaftar
     cek_email = db.users.find_one({"email": email})
     if cek_email:
         return jsonify({"status": "error", "msg": "Email sudah terdaftar"})
