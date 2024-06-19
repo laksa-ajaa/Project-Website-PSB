@@ -1,6 +1,7 @@
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
+
 from flask import Flask, render_template, jsonify, request, url_for, redirect, flash, session, make_response
 from werkzeug.utils import secure_filename
 import jwt
@@ -15,8 +16,8 @@ load_dotenv(dotenv_path)
 
 MONGODB_URI = os.environ.get("MONGODB_URI")
 DB_NAME = os.environ.get("DB_NAME")
-SECRET_KEY = os.environ.get("SECRET_KEY")  # Mengambil secret key dari file .env
 
+SECRET_KEY = os.environ.get("SECRET_KEY")  # Mengambil secret key dari file .env
 if not SECRET_KEY:
     raise ValueError("No SECRET_KEY set for Flask application")
 
@@ -24,8 +25,7 @@ client = MongoClient(MONGODB_URI)
 db = client[DB_NAME]
 
 app = Flask(__name__)
-app.secret_key = SECRET_KEY  # Menetapkan secret key untuk aplikasi Flask
-
+app.secret_key = SECRET_KEY
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["UPLOAD_FOLDER"] = "./static/dokumen"
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
@@ -34,7 +34,6 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 
 
 @app.route('/auth')
@@ -60,7 +59,6 @@ def auth():
     password = request.form["password"]
     password_hash = hashlib.sha256(password.encode('utf-8')).hexdigest()
 
-    # Perhatikan: Di sini Anda harus memeriksa dengan password_hash, bukan password biasa
     cek_login = db.users.find_one({"email": email, "password": password_hash})
     if cek_login:
         payload = {
@@ -81,7 +79,6 @@ def register():
     phone = request.form["phone"]
     password = request.form["password"]
     
-    # Periksa apakah email sudah terdaftar
     cek_email = db.users.find_one({"email": email})
     if cek_email:
         return jsonify({"status": "error", "msg": "Email sudah terdaftar"})
@@ -98,34 +95,19 @@ def register():
 
 @app.route('/')
 def showHome():
+    data = {
+        'title': 'Beranda',
+    }
     token_receive = request.cookies.get("tokenLogin")
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-        if 'email' not in payload:
-            flash("Token tidak valid, silahkan login kembali", "danger")
-            response = make_response(redirect(url_for("showAuth")))
-            response.delete_cookie("tokenLogin")
-            return response
-
-        # Pastikan kunci 'email' ada dalam payload sebelum mengaksesnya
-        user_email = payload["email"]
-        user_info = db.users.find_one({"email": user_email})
-        if user_info:
-            # Lakukan sesuatu dengan user_info
-            return render_template("home.html", user_info=user_info)
-        else:
-            flash("Informasi pengguna tidak ditemukan", "danger")
-            return redirect(url_for("showAuth"))
-    except jwt.ExpiredSignatureError:
-        flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
-        response = make_response(redirect(url_for("showAuth")))
-        response.delete_cookie("tokenLogin")
-        return response
-    except jwt.exceptions.DecodeError:
-        flash("Token anda tidak valid, silahkan login kembali", "danger")
-        response = make_response(redirect(url_for("showAuth")))
-        response.delete_cookie("tokenLogin")
-        return response
+    if token_receive:
+        try:
+            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+            user_info = db.users.find_one({"email": payload["email"]})
+            return render_template('user_page/index.html', data=data, user_info=user_info)
+        except (jwt.ExpiredSignatureError, jwt.DecodeError):
+            return render_template('user_page/index.html', data=data)
+    else:
+        return render_template('user_page/index.html', data=data)
         
 @app.route('/sejarah')
 def showSejarah():
@@ -320,8 +302,9 @@ def pesertaAdmin():
             return response
         
         admin_info = db.admin.find_one({"username": payload["username"], "role": payload["role"]})
+        pendaftar = db.form.find({})
         if payload["role"] == "admin":
-            return render_template("dashboard_admin/dataPeserta.html", admin_info=admin_info, data=data)
+            return render_template("dashboard_admin/dataPeserta.html", admin_info=admin_info, data=data, pendaftar=pendaftar)
         else:
             flash("Anda tidak memiliki izin untuk mengakses halaman ini", "danger")
             response = make_response(redirect(url_for("authAdmin")))
@@ -480,7 +463,7 @@ def showformulir():
 
 from datetime import datetime
 
-@app.route('/dashboard/formulir', methods=["POST"])
+@app.route('/dashboard/formulir', methods=["GET","POST"])
 def postformulir():
     if request.method == "POST":
         data = {
@@ -491,7 +474,6 @@ def postformulir():
             "alamat": request.form["alamat"],
             "sekolah_asal": request.form["sekolah_asal"],
             "nisn": request.form["nisn"],
-            "anak_ke": request.form["anak_ke"],
             "email": request.form["email"],
             "pendidikan": request.form["pendidikan"],
             "program": request.form["program"],
@@ -506,7 +488,7 @@ def postformulir():
             "tempat_lahir_ayah": request.form["tempat_lahir_ayah"],
             "tanggal_lahir_ayah": request.form["tanggal_lahir_ayah"],
             "no_hp_ayah": request.form["no_hp_ayah"],
-            "tanggal_pendaftaran": datetime.now().strftime("%Y-%m-%d")  # Menggunakan tanggal saat ini
+            "tanggal_pendaftaran": datetime.now().strftime("%Y-%m-%d")
         }
 
         token_receive = request.cookies.get("tokenLogin")
@@ -555,6 +537,9 @@ def postformulir():
 #<<<<<<< HEAD
 @app.route('/dashboard/dokumen', methods=["GET", "POST"])
 def showdoc():
+    data = {
+        'title': 'Dokumen',
+    }
     token_receive = request.cookies.get("tokenLogin")
     try:
         payload = jwt.decode(token_receive, app.config['SECRET_KEY'], algorithms=["HS256"])
@@ -600,7 +585,7 @@ def showdoc():
 
             return redirect(url_for('showdoc'))
 
-        return render_template("dashboard_user/dokumen.html", user_info=user_info)
+        return render_template("dashboard_user/dokumen.html", user_info=user_info, data=data)
     
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
@@ -613,13 +598,14 @@ def showdoc():
         response.delete_cookie("tokenLogin")
         return response
 
-    return render_template('dashboard_user/dokumen.html')
-
 
 
 
 @app.route('/dashboard/status', methods=['GET', 'POST'])
 def showVer():
+    data = {
+        'title': 'Status Pendaftaran',
+    }
     token_receive = request.cookies.get("tokenLogin")
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
@@ -675,16 +661,16 @@ def showVer():
     
 @app.route('/dashboard/pembayaran', methods=['GET', 'POST'])
 def showPembayaran():
+    data = {
+        'title': 'Pembayaran',
+    }
     token_receive = request.cookies.get("tokenLogin")
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.users.find_one({"email": payload["email"]})
         
         if request.method == 'POST':
-            nama = request.form.get('nama')
-            jumlah = request.form.get('jumlah')
-            metode = request.form.get('metode')
-            tanggal = request.form.get('tanggal')
+            
             bukti = request.files.get('bukti')
 
             if not bukti or not allowed_file(bukti.filename):
@@ -703,10 +689,7 @@ def showPembayaran():
 
             # Save to database
             doc = {
-                'nama': nama,
-                'jumlah': jumlah,
-                'metode': metode,
-                'tanggal': tanggal,
+                'tanggal': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                 'bukti_path': bukti_path,
                 'status': 'Menunggu Verifikasi',
                 'user_email': user_info['email']
@@ -722,7 +705,7 @@ def showPembayaran():
             flash('Pembayaran berhasil dikirim, menunggu verifikasi.', 'success')
             return redirect(url_for('showPembayaran'))
 
-        return render_template('dashboard_user/Pembayaran.html', user_info=user_info)
+        return render_template('dashboard_user/Pembayaran.html', user_info=user_info , data=data)
 
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
