@@ -95,16 +95,10 @@ def register():
 
 @app.route('/')
 def showHome():
+    data = {
+        'title': 'Beranda',
+    }
     token_receive = request.cookies.get("tokenLogin")
-<<<<<<< Updated upstream
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-        if 'email' not in payload:
-            flash("Token tidak valid, silahkan login kembali", "danger")
-            response = make_response(redirect(url_for("showAuth")))
-            response.delete_cookie("tokenLogin")
-            return response
-=======
     if token_receive:
         try:
             payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
@@ -114,27 +108,6 @@ def showHome():
             return render_template('user_page/index.html', data=data)
     else:
         return render_template('user_page/index.html', data=data)
->>>>>>> Stashed changes
-
-        # Pastikan kunci 'email' ada dalam payload sebelum mengaksesnya
-        user_email = payload["email"]
-        user_info = db.users.find_one({"email": user_email})
-        if user_info:
-            # Lakukan sesuatu dengan user_info
-            return render_template("home.html", user_info=user_info)
-        else:
-            flash("Informasi pengguna tidak ditemukan", "danger")
-            return redirect(url_for("showAuth"))
-    except jwt.ExpiredSignatureError:
-        flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
-        response = make_response(redirect(url_for("showAuth")))
-        response.delete_cookie("tokenLogin")
-        return response
-    except jwt.exceptions.DecodeError:
-        flash("Token anda tidak valid, silahkan login kembali", "danger")
-        response = make_response(redirect(url_for("showAuth")))
-        response.delete_cookie("tokenLogin")
-        return response
         
 @app.route('/sejarah')
 def showSejarah():
@@ -322,8 +295,9 @@ def pesertaAdmin():
             return response
         
         admin_info = db.admin.find_one({"username": payload["username"], "role": payload["role"]})
+        pendaftar = db.form.find({})
         if payload["role"] == "admin":
-            return render_template("dashboard_admin/dataPeserta.html", admin_info=admin_info, data=data)
+            return render_template("dashboard_admin/dataPeserta.html", admin_info=admin_info, data=data, pendaftar=pendaftar)
         else:
             flash("Anda tidak memiliki izin untuk mengakses halaman ini", "danger")
             response = make_response(redirect(url_for("authAdmin")))
@@ -466,7 +440,7 @@ def showformulir():
 
 from datetime import datetime
 
-@app.route('/dashboard/formulir', methods=["POST"])
+@app.route('/dashboard/formulir', methods=["GET","POST"])
 def postformulir():
     if request.method == "POST":
         data = {
@@ -477,7 +451,6 @@ def postformulir():
             "alamat": request.form["alamat"],
             "sekolah_asal": request.form["sekolah_asal"],
             "nisn": request.form["nisn"],
-            "anak_ke": request.form["anak_ke"],
             "email": request.form["email"],
             "pendidikan": request.form["pendidikan"],
             "program": request.form["program"],
@@ -492,7 +465,7 @@ def postformulir():
             "tempat_lahir_ayah": request.form["tempat_lahir_ayah"],
             "tanggal_lahir_ayah": request.form["tanggal_lahir_ayah"],
             "no_hp_ayah": request.form["no_hp_ayah"],
-            "tanggal_pendaftaran": datetime.now().strftime("%Y-%m-%d")  # Menggunakan tanggal saat ini
+            "tanggal_pendaftaran": datetime.now().strftime("%Y-%m-%d")
         }
 
         token_receive = request.cookies.get("tokenLogin")
@@ -541,6 +514,9 @@ def postformulir():
 #<<<<<<< HEAD
 @app.route('/dashboard/dokumen', methods=["GET", "POST"])
 def showdoc():
+    data = {
+        'title': 'Dokumen',
+    }
     token_receive = request.cookies.get("tokenLogin")
     try:
         payload = jwt.decode(token_receive, app.config['SECRET_KEY'], algorithms=["HS256"])
@@ -586,7 +562,7 @@ def showdoc():
 
             return redirect(url_for('showdoc'))
 
-        return render_template("dashboard_user/dokumen.html", user_info=user_info)
+        return render_template("dashboard_user/dokumen.html", user_info=user_info, data=data)
     
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
@@ -599,13 +575,14 @@ def showdoc():
         response.delete_cookie("tokenLogin")
         return response
 
-    return render_template('dashboard_user/dokumen.html')
-
 
 
 
 @app.route('/dashboard/status', methods=['GET', 'POST'])
 def showVer():
+    data = {
+        'title': 'Status Pendaftaran',
+    }
     token_receive = request.cookies.get("tokenLogin")
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
@@ -637,7 +614,6 @@ def showVer():
         data = {
             'nama': user_info.get('nama', ''),
             'tanggal_pendaftaran': user_info.get('tanggal_pendaftaran', ''),
-            'catatan': 'Pendaftaran berhasil',
             'statusformulir': user_info.get('status', ''),
             'statusdoc': user_info.get('status_dokumen', ''),
             'statuspembayaran': user_info.get('status_pembayaran', '')
@@ -660,16 +636,16 @@ def showVer():
     
 @app.route('/dashboard/pembayaran', methods=['GET', 'POST'])
 def showPembayaran():
+    data = {
+        'title': 'Pembayaran',
+    }
     token_receive = request.cookies.get("tokenLogin")
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.users.find_one({"email": payload["email"]})
         
         if request.method == 'POST':
-            nama = request.form.get('nama')
-            jumlah = request.form.get('jumlah')
-            metode = request.form.get('metode')
-            tanggal = request.form.get('tanggal')
+            
             bukti = request.files.get('bukti')
 
             if not bukti or not allowed_file(bukti.filename):
@@ -688,10 +664,7 @@ def showPembayaran():
 
             # Save to database
             doc = {
-                'nama': nama,
-                'jumlah': jumlah,
-                'metode': metode,
-                'tanggal': tanggal,
+                'tanggal': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                 'bukti_path': bukti_path,
                 'status': 'Menunggu Verifikasi',
                 'user_email': user_info['email']
@@ -707,7 +680,7 @@ def showPembayaran():
             flash('Pembayaran berhasil dikirim, menunggu verifikasi.', 'success')
             return redirect(url_for('showPembayaran'))
 
-        return render_template('dashboard_user/Pembayaran.html', user_info=user_info)
+        return render_template('dashboard_user/Pembayaran.html', user_info=user_info , data=data)
 
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
