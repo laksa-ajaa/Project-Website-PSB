@@ -96,6 +96,7 @@ def register():
 @app.route('/')
 def showHome():
     token_receive = request.cookies.get("tokenLogin")
+<<<<<<< Updated upstream
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         if 'email' not in payload:
@@ -103,6 +104,17 @@ def showHome():
             response = make_response(redirect(url_for("showAuth")))
             response.delete_cookie("tokenLogin")
             return response
+=======
+    if token_receive:
+        try:
+            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+            user_info = db.users.find_one({"email": payload["email"]})
+            return render_template('user_page/index.html', data=data, user_info=user_info)
+        except (jwt.ExpiredSignatureError, jwt.DecodeError):
+            return render_template('user_page/index.html', data=data)
+    else:
+        return render_template('user_page/index.html', data=data)
+>>>>>>> Stashed changes
 
         # Pastikan kunci 'email' ada dalam payload sebelum mengaksesnya
         user_email = payload["email"]
