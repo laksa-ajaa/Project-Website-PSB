@@ -24,7 +24,10 @@
   <div class="offcanvas__auth">
     <ul>
       <li>
-        <a href="/auth"><span class="fa fa-user"></span>{% if user_info %} {{ user_info.nama }} {% else %} Login / Register {% endif %}</a>
+        <a href="/auth"
+          ><span class="fa fa-user"></span>
+          {% if user_info %} {{ user_info.nama }} {% else %} Login / Register {% endif %}
+        </a>
       </li>
     </ul>
   </div>

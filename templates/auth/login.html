@@ -61,14 +61,21 @@
       </div>
     </div>
 
-    {% with msg = get_flashed_messages() %} {% if msg %}
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %} {% if category == 'danger' %}
     <script>
       swal({
         icon: "error",
-        text: "{{ msg[0] }}",
+        text: "{{ message }}",
       });
     </script>
-    {% endif %} {% endwith %}
+    {% elif category == 'success' %}
+    <script>
+      swal({
+        icon: "success",
+        text: "{{ message }}",
+      });
+    </script>
+    {% endif %} {% endfor %} {% endif %} {% endwith %}
 
     <!-- Bootstrap JS and dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
@@ -116,8 +123,8 @@
               password: password,
             },
             success: function (response) {
-              if (response) {
-                swal("Hore", "Login Berhasil!", "success").then(() => {
+              if (response["status"] === "success") {
+                swal("Hore", response["msg"], "success").then(() => {
                   window.location.href = "/dashboard";
                 });
               } else {

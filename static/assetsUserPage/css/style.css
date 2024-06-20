@@ -180,6 +180,14 @@ a:focus {
   border-radius: 50px;
 }
 
+.btn-user {
+  background: #17594a;
+  color: #ffffff;
+}
+.btn-user:hover {
+  background: #033527;
+  color: #ffffff;
+}
 .site-btn {
   font-size: 14px;
   color: #ffffff;

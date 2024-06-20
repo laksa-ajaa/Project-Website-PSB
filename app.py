@@ -1,7 +1,6 @@
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
-
 from flask import Flask, render_template, jsonify, request, url_for, redirect, flash, session, make_response
 from werkzeug.utils import secure_filename
 import jwt
@@ -59,18 +58,21 @@ def auth():
     password = request.form["password"]
     password_hash = hashlib.sha256(password.encode('utf-8')).hexdigest()
 
-    cek_login = db.users.find_one({"email": email, "password": password_hash})
-    if cek_login:
-        payload = {
-            "email": email,
-            "exp": datetime.utcnow() + timedelta(hours=1)
-        }
-        token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
-        response = make_response(redirect(url_for('showDashUser')))
-        response.set_cookie("tokenLogin", token)
-        return response
+    user = db.users.find_one({"email": email})
+    if user:
+        if user['password'] == password_hash:
+            payload = {
+                "_id": str(user["_id"]),
+                "exp": datetime.utcnow() + timedelta(hours=1)
+            }
+            token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+            response = make_response(jsonify({"status": "success", "msg": "Login Berhasil!"}))
+            response.set_cookie("tokenLogin", token)
+            return response
+        else:
+            return jsonify({"status": "error", "msg": "Password salah"})
     else:
-        return jsonify({"status": "error", "msg": "Email atau password salah"})
+        return jsonify({"status": "error", "msg": "Email tidak terdaftar"})
 
 @app.route('/register', methods = ["post"])
 def register():
@@ -88,10 +90,22 @@ def register():
         "nama": nama,
         "email": email,
         "phone": phone,
-        "password": password_hash
+        "password": password_hash,
+        "status formulir": "None",
+        "status dokumen": "None",
+        "status pembayaran": "None"
     }
     db.users.insert_one(doc)
     return jsonify({"status": "success"})
+
+@app.route('/logout')
+def logout():
+    flash("Anda telah logout", "success")
+    response = make_response(redirect(url_for('showAuth')))
+    response.delete_cookie("tokenLogin")
+    return response
+
+
 
 @app.route('/')
 def showHome():
@@ -102,8 +116,9 @@ def showHome():
     if token_receive:
         try:
             payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-            user_info = db.users.find_one({"email": payload["email"]})
-            return render_template('user_page/index.html', data=data, user_info=user_info)
+            user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
+            admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"]), "role": payload["role"]})
+            return render_template('user_page/index.html', data=data, user_info=user_info, admin_info=admin_info)
         except (jwt.ExpiredSignatureError, jwt.DecodeError):
             return render_template('user_page/index.html', data=data)
     else:
@@ -117,7 +132,7 @@ def showSejarah():
     token_receive = request.cookies.get("tokenLogin")
     if token_receive:
             payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-            user_info = db.users.find_one({"email": payload["email"]})
+            user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
             return render_template('user_page/sejarah.html', data=data, user_info=user_info)
     else:
         return render_template('user_page/sejarah.html', data=data)
@@ -130,7 +145,7 @@ def showKontak():
     token_receive = request.cookies.get("tokenLogin")
     if token_receive:
             payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-            user_info = db.users.find_one({"email": payload["email"]})
+            user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
             return render_template('user_page/kontak.html', data=data, user_info=user_info)
     else:
         return render_template('user_page/kontak.html' , data=data)
@@ -143,7 +158,7 @@ def showVisiMisi():
     token_receive = request.cookies.get("tokenLogin")
     if token_receive:
             payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-            user_info = db.users.find_one({"email": payload["email"]})
+            user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
             return render_template('user_page/visimisi.html', data=data, user_info=user_info)
     else:
         return render_template('user_page/visimisi.html' , data=data)
@@ -156,31 +171,17 @@ def showKegiatan():
     token_receive = request.cookies.get("tokenLogin")
     if token_receive:
             payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-            user_info = db.users.find_one({"email": payload["email"]})
+            user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
             return render_template('user_page/kegiatan.html', data=data, user_info=user_info)
     else:
         return render_template('user_page/kegiatan.html' , data=data)
 
-@app.route('/template')
-def showTemp():
-    data = {
-        'title': 'Template',
-    }
-    token_receive = request.cookies.get("tokenLogin")
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-        user_info = db.users.find_one({"email": payload["email"]})
-        return render_template("dashboard_user/index.html", user_info=user_info, data=data)
-    except jwt.ExpiredSignatureError:
-        flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
-        response = make_response(redirect(url_for("authAdmin")))
-        response.delete_cookie("tokenLogin")
-        return response
-    except jwt.exceptions.DecodeError:
-        flash("Token anda tidak valid, silahkan login kembali", "danger")
-        response = make_response(redirect(url_for("showAuth")))
-        response.delete_cookie("tokenLogin")
-        return response
+
+
+
+
+
+
 
 
 #Admin Backend
@@ -198,7 +199,7 @@ def authAdmin():
         if cek_login:
             if cek_login.get("role") == "admin":
                 payload = {
-                    "username": username,
+                    "_id": str(cek_login["_id"]),
                     "role": "admin",
                     "exp": datetime.utcnow() + timedelta(hours=1)
                 }
@@ -212,6 +213,12 @@ def authAdmin():
             return jsonify({"status": "error", "msg": "Username atau password salah"}), 401
     return render_template('auth/login_admin.html', data=data)
 
+@app.route('/admin/logout')
+def logout_admin():
+    flash("Anda telah logout", "success")
+    response = make_response(redirect(url_for('authAdmin')))
+    response.delete_cookie("tokenLogin")
+    return response
     
 @app.route('/templateAdmin')
 def showTempAdmin():
@@ -227,7 +234,7 @@ def showTempAdmin():
             response.delete_cookie("tokenLogin")
             return response
         
-        admin_info = db.admin.find_one({"username": payload["username"], "role": payload["role"]})
+        admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"]), "role": payload["role"]})
         if payload["role"] == "admin":
             return render_template("dashboard_admin/index.html", admin_info=admin_info, data=data)
         else:
@@ -253,6 +260,9 @@ def indexAdmin():
         'title': 'Dashboard Admin',
     }
     token_receive = request.cookies.get("tokenLogin")
+    if not token_receive:
+        flash("Silahkan login terlebih dahulu", "danger")
+        return redirect(url_for("authAdmin"))
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         if 'role' not in payload:
@@ -261,7 +271,7 @@ def indexAdmin():
             response.delete_cookie("tokenLogin")
             return response
         
-        admin_info = db.admin.find_one({"username": payload["username"], "role": payload["role"]})
+        admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"]), "role": payload["role"]})
         if payload["role"] == "admin":
             pending_students = list(db.users.find({}))
             
@@ -301,7 +311,7 @@ def pesertaAdmin():
             response.delete_cookie("tokenLogin")
             return response
         
-        admin_info = db.admin.find_one({"username": payload["username"], "role": payload["role"]})
+        admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"]), "role": payload["role"]})
         pendaftar = db.form.find({})
         if payload["role"] == "admin":
             return render_template("dashboard_admin/dataPeserta.html", admin_info=admin_info, data=data, pendaftar=pendaftar)
@@ -335,7 +345,7 @@ def verifyAdmin():
             response.delete_cookie("tokenLogin")
             return response
         
-        admin_info = db.admin.find_one({"username": payload["username"], "role": payload["role"]})
+        admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"]), "role": payload["role"]})
         if payload["role"] != "admin":
             flash("Anda tidak memiliki izin untuk mengakses halaman ini", "danger")
             response = make_response(redirect(url_for("authAdmin")))
@@ -385,7 +395,7 @@ def paymentAdmin():
             response.delete_cookie("tokenLogin")
             return response
         
-        admin_info = db.admin.find_one({"username": payload["username"], "role": payload["role"]})
+        admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"]), "role": payload["role"]})
         if payload["role"] == "admin":
             if request.method == 'POST':
                 student_id = request.form.get('student_id')
@@ -439,102 +449,109 @@ def showDashUser():
         'title': 'Dashboard User',
     }
     token_receive = request.cookies.get("tokenLogin")
+    if not token_receive:
+        flash("Silahkan login terlebih dahulu", "danger")
+        return redirect(url_for("showAuth"))
+
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-        user_info = db.users.find_one({"email": payload["email"]})
+
+        if 'role' in payload and payload['role'] == 'admin':
+            flash("Halaman ini tidak dapat diakses oleh admin", "danger")
+            return redirect(url_for("indexAdmin"))
+
+        user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
         return render_template("dashboard_user/index.html", user_info=user_info, data=data)
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
-        response = make_response(redirect(url_for("authAdmin")))
+        response = make_response(redirect(url_for("showAuth")))
         response.delete_cookie("tokenLogin")
         return response
     except jwt.exceptions.DecodeError:
-        flash("silahkan login terlebih dahulu", "danger")
+        flash("Token anda tidak valid, silahkan login kembali", "danger")
         response = make_response(redirect(url_for("showAuth")))
         response.delete_cookie("tokenLogin")
         return response
 
+
+
 # Untuk menampilkan formulir
-@app.route('/dashboard/formulir', methods=["GET"])
+@app.route('/dashboard/formulir', methods=["GET", "POST"])
 def showformulir():
-    return render_template('dashboard_user/formulir.html', data=None)
+    data = {
+        'title': 'Formulir',
+    }
+    token_receive = request.cookies.get("tokenLogin")
+    if not token_receive:
+        flash("Silahkan login terlebih dahulu", "danger")
+        return redirect(url_for("showAuth"))
 
-# Untuk memproses formulir yang dikirim
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        if 'role' in payload and payload['role'] == 'admin':
+            flash("Halaman ini tidak dapat diakses oleh admin", "danger")
+            return redirect(url_for("indexAdmin"))
+        
+        user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
+        
+        existing_form = db.form.find_one({"user_id": user_info["_id"]})
+        form_submitted = bool(existing_form)
+        
+        if request.method == "POST" and not form_submitted:
+            data = {
+                "user_id": user_info["_id"],
+                "nama": request.form["nama"],
+                "tempat lahir": request.form["tempat_lahir"],
+                "tanggal lahir": request.form["tanggal_lahir"],
+                "jenis kelamin": request.form["jenis_kelamin"],
+                "alamat": request.form["alamat"],
+                "NISN": request.form["nisn"],
+                "sekolah asal": request.form["sekolah_asal"],
+                "pendidikan": request.form["pendidikan"],
+                "program": request.form["program"],
+                "nama ibu": request.form["nama_ibu"],
+                "nik ibu": request.form["nik_ibu"],
+                "tempat lahir ibu": request.form["tempat_lahir_ibu"],
+                "tanggal lahir ibu": request.form["tanggal_lahir_ibu"],
+                "no telepon ibu": request.form["no_hp_ibu"],
+                "nama ayah": request.form["nama_ayah"],
+                "nik ayah": request.form["nik_ayah"],
+                "tempat lahir ayah": request.form["tempat_lahir_ayah"],
+                "tanggal lahir ayah": request.form["tanggal_lahir_ayah"],
+                "no telepon ayah": request.form["no_hp_ayah"],
+                "tanggal pendaftaran": datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
+            }
 
-from datetime import datetime
+            db.form.insert_one(data)
 
-@app.route('/dashboard/formulir', methods=["GET","POST"])
-def postformulir():
-    if request.method == "POST":
-        data = {
-            "nama": request.form["nama"],
-            "tempat_lahir": request.form["tempat_lahir"],
-            "tanggal_lahir": request.form["tanggal_lahir"],
-            "jenis_kelamin": request.form["jenis_kelamin"],
-            "alamat": request.form["alamat"],
-            "sekolah_asal": request.form["sekolah_asal"],
-            "nisn": request.form["nisn"],
-            "email": request.form["email"],
-            "pendidikan": request.form["pendidikan"],
-            "program": request.form["program"],
-            "motivasi": request.form["motivasi"],
-            "nama_ibu": request.form["nama_ibu"],
-            "nik_ibu": request.form["nik_ibu"],
-            "tempat_lahir_ibu": request.form["tempat_lahir_ibu"],
-            "tanggal_lahir_ibu": request.form["tanggal_lahir_ibu"],
-            "no_hp_ibu": request.form["no_hp_ibu"],
-            "nama_ayah": request.form["nama_ayah"],
-            "nik_ayah": request.form["nik_ayah"],
-            "tempat_lahir_ayah": request.form["tempat_lahir_ayah"],
-            "tanggal_lahir_ayah": request.form["tanggal_lahir_ayah"],
-            "no_hp_ayah": request.form["no_hp_ayah"],
-            "tanggal_pendaftaran": datetime.now().strftime("%Y-%m-%d")
-        }
-
-        token_receive = request.cookies.get("tokenLogin")
-        try:
-            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-            user_info = db.users.find_one({"email": payload["email"]})
-
-            # Cek apakah status formulir sudah diisi sebelumnya
-            if user_info.get("status_formulir") != "formulir sudah di isi":
-                # Menyimpan data ke database
-                db.form.insert_one(data)
-
-                # Memperbarui status dan informasi pengguna di database
-                db.users.update_one(
-                    {"email": user_info['email']},
-                    {
-                        "$set": {
-                            "status_formulir": "formulir sudah di isi",
-                            "status": "pending",  # Set status to pending
-                            "nama": data["nama"],
-                            "tanggal_pendaftaran": data["tanggal_pendaftaran"]
-                        }
+            db.users.update_one(
+                {"_id": ObjectId(user_info["_id"])},
+                {
+                    "$set": {
+                        "status formulir": "Pending",
+                        "tanggal pendaftaran": data["tanggal pendaftaran"]
                     }
-                )
+                }
+            )
 
-            # Mengarahkan pengguna ke halaman status setelah formulir diisi
             return redirect(url_for('showVer'))
-
-        except jwt.ExpiredSignatureError:
-            flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
-            response = make_response(redirect(url_for("authAdmin")))
-            response.delete_cookie("tokenLogin")
-            return response
-        except jwt.exceptions.DecodeError:
-            flash("Token anda tidak valid, silahkan login kembali", "danger")
-            response = make_response(redirect(url_for("showAuth")))
-            response.delete_cookie("tokenLogin")
-            return response
-    
-    return render_template('dashboard_user/formulir.html', data=None)
-
+        else:
+            return render_template('dashboard_user/formulir.html', data=data, user_info=user_info, form_submitted=form_submitted)
+    except jwt.ExpiredSignatureError:
+        flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("showAuth")))
+        response.delete_cookie("tokenLogin")
+        return response
+    except jwt.exceptions.DecodeError:
+        flash("Token anda tidak valid, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("showAuth")))
+        response.delete_cookie("tokenLogin")
+        return response
 
 
 
 
-#<<<<<<< HEAD
+
 @app.route('/dashboard/dokumen', methods=["GET", "POST"])
 def showdoc():
     data = {
@@ -543,7 +560,7 @@ def showdoc():
     token_receive = request.cookies.get("tokenLogin")
     try:
         payload = jwt.decode(token_receive, app.config['SECRET_KEY'], algorithms=["HS256"])
-        user_info = db.users.find_one({"email": payload["email"]})
+        user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
 
         if request.method == 'POST':
             file_fields = ['pas_foto', 'ijazah_sd', 'ijazah_mts', 'surat_keterangan_lulus', 'akta_kelahiran', 'surat_memiliki_nisn', 'surat_peryataan']
@@ -607,47 +624,55 @@ def showVer():
         'title': 'Status Pendaftaran',
     }
     token_receive = request.cookies.get("tokenLogin")
+    if not token_receive:
+        flash("Silahkan login terlebih dahulu", "danger")
+        return redirect(url_for("showAuth"))
+    
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-        user_info = db.users.find_one({"email": payload["email"]})
-
-        if request.method == 'POST':
-            statusformulir = request.form.get('status')  # Pastikan nama elemen formulir sesuai
-            statusdoc = request.form.get('status_dokumen')  # Pastikan nama elemen formulir sesuai
-            statuspembayaran = request.form.get('status_pembayaran')  # Pastikan nama elemen formulir sesuai
-
-            if statusformulir == 'formulir sudah di isi':
-                db.users.update_one(
-                    {"email": user_info['email']},
-                    {"$set": {"status_formulir": 'formulir sudah di isi'}}
-                )
-
-            if statusformulir == 'formulir sudah di isi' and statusdoc != 'dokumen sudah di isi':
-                db.users.update_one(
-                    {"email": user_info['email']},
-                    {"$set": {"status_dokumen": 'dokumen belum di isi'}}
-                )
-
-            if statusdoc == 'dokumen sudah di isi' and statuspembayaran != 'pembayaran sudah di isi':
-                db.users.update_one(
-                    {"email": user_info['email']},
-                    {"$set": {"status_pembayaran": 'belum di bayar'}}
-                )
+        if 'role' in payload and payload['role'] == 'admin':
+            flash("Halaman ini tidak dapat diakses oleh admin", "danger")
+            return redirect(url_for("indexAdmin"))
+        
+        user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
+        if not user_info:
+            flash("User tidak ditemukan", "danger")
+            return redirect(url_for("showAuth"))
 
         data = {
-            'nama': user_info.get('nama', ''),
-            'tanggal_pendaftaran': user_info.get('tanggal_pendaftaran', ''),
-            'catatan': 'Pendaftaran berhasil',
-            'statusformulir': user_info.get('status_formulir', ''),
-            'statusdoc': user_info.get('status_dokumen', ''),
-            'statuspembayaran': user_info.get('status_pembayaran', '')
+            'status_formulir': user_info.get('status formulir', ''),
+            'status_dokumen': user_info.get('status dokumen', ''),
+            'status_pembayaran': user_info.get('status pembayaran', ''),
         }
+        data['nama'] = db.form.find_one({"user_id": ObjectId(user_info['_id'])})['nama']
+        
 
-        return render_template('dashboard_user/StatusPendaftaran.html', data=data)
+        if user_info['status formulir'] == 'Pending':
+            data['message_formulir'] = "Pendaftaran anda sedang diverifikasi"
+        elif user_info['status formulir'] == 'Done':
+            data['message_formulir'] = "Pendaftaran anda telah diterima"
+        else:
+            data['message_formulir'] = "Belum mengisi"
+
+        if user_info['status dokumen'] == 'Pending':
+            data['message_dokumen'] = "Dokumen anda sedang diverifikasi"
+        elif user_info['status dokumen'] == 'Done':
+            data['message_dokumen'] = "Dokumen anda telah diterima"
+        else:
+            data['message_dokumen'] = "Belum mengisi"
+
+        if user_info['status pembayaran'] == 'Pending':
+            data['message_pembayaran'] = "Pembayaran anda sedang diverifikasi"
+        elif user_info['status pembayaran'] == 'Done':
+            data['message_pembayaran'] = "Pembayaran anda telah diterima"
+        else:
+            data['message_pembayaran'] = "Belum mengisi"
+
+        return render_template('dashboard_user/StatusPendaftaran.html', data=data, user_info=user_info)
 
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
-        response = make_response(redirect(url_for("authAdmin")))
+        response = make_response(redirect(url_for("showAuth")))
         response.delete_cookie("tokenLogin")
         return response
     except jwt.exceptions.DecodeError:
@@ -667,7 +692,7 @@ def showPembayaran():
     token_receive = request.cookies.get("tokenLogin")
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-        user_info = db.users.find_one({"email": payload["email"]})
+        user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
         
         if request.method == 'POST':
             

@@ -313,8 +313,17 @@
     <script src="../../static/assestAdmin/lib/tempusdominus/js/moment.min.js"></script>
     <script src="../../static/assestAdmin/lib/tempusdominus/js/moment-timezone.min.js"></script>
     <script src="../../static/assestAdmin/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
-    <!-- Template Javascript -->
+
+    {% with msg = get_flashed_messages() %} {% if msg %}
+    <script>
+      swal({
+        icon: "error",
+        text: "{{ msg[0] }}",
+      });
+    </script>
+    {% endif %} {% endwith %}
     <script src="../../static/assestAdmin/js/main.js"></script>
 </body>
 

@@ -50,10 +50,10 @@
                 <div class="card-text">
                   <h5 class="mb-3">Informasi Status Pendaftaran</h5>
                   <p>Nama: <strong>{{ data.nama }}</strong></p>
-                  <p>Status formulir: <strong class="{% if data.statusformulir == 'formulir sudah di isi' %}status-verified{% else %}status-pending{% endif %}">{{ data.statusformulir }}</strong></p>
-                  <p>Status Dokumen: <strong class="{% if data.statusdoc == 'dokumen sudah di isi' %}status-verified{% else %}status-pending{% endif %}">{{ data.statusdoc }}</strong></p>
-                  <p>Status Pembayaran: <strong class="{% if data.statuspembayaran == 'pembayaran sudah di isi' %}status-verified{% else %}status-pending{% endif %}">{{ data.statuspembayaran }}</strong></p>
-                  <p>Tanggal Pendaftaran: <strong>{{ data.tanggal_pendaftaran }}</strong></p>
+                  <p>Status formulir: <strong>{{ data.status_formulir }} ({{ data.message_formulir }})</strong></p>
+                  <p>Status Dokumen: <strong>{{ data.status_dokumen }} ({{ data.message_dokumen }})</strong></p>
+                  <p>Status Pembayaran: <strong>{{ data.status_pembayaran }} ({{ data.message_pembayaran }})</strong></p>
+                  <p>Tanggal Pendaftaran: <strong>{{ user_info['tanggal pendaftaran'] }}</strong></p>
                 </div>
               </div>
             </div>

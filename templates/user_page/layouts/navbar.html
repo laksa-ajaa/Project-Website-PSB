@@ -24,7 +24,7 @@
   <div class="offcanvas__auth">
     <ul>
       <li>
-        <a href="/auth"><span class="fa fa-user"></span>{% if user_info %} {{ user_info.nama }} {% else %} Login / Register {% endif %}</a>
+        <a href="/auth"><span class="fa fa-user"></span> {% if user_info %} {{ user_info.nama }} {% elif admin_info %} {{ admin_info.username }} ( {{ admin_info.role }} ) {% else %} Login / Register {% endif %} </a>
       </li>
     </ul>
   </div>
@@ -53,7 +53,10 @@
           <div class="header__info-right">
             <ul>
               <li>
-                <a href="/auth"><span class="fa fa-user"></span>{% if user_info %} {{ user_info.nama }} {% else %} Login / Register {% endif %}</a>
+                <a href="/auth"
+                  ><span class="fa fa-user"></span>
+                  {% if user_info %} {{ user_info.nama }} {% elif admin_info %} {{ admin_info.username }} ( {{ admin_info.role }} ) {% else %} Login / Register {% endif %}
+                </a>
               </li>
             </ul>
           </div>
