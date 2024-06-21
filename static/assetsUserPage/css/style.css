@@ -81,6 +81,8 @@ p {
   font-family: "Montserrat", sans-serif;
   color: #444444;
   font-weight: 400;
+  margin-top: 10px;
+  margin-bottom: 0;
 }
 
 img {

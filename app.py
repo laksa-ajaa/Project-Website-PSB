@@ -2,12 +2,12 @@ import os
 from os.path import join, dirname
 from dotenv import load_dotenv
 from flask import Flask, render_template, jsonify, request, url_for, redirect, flash, session, make_response
-from werkzeug.utils import secure_filename
 import jwt
 from bson.objectid import ObjectId
 import hashlib
 from pymongo import MongoClient
 from datetime import datetime, timedelta
+from pathlib import Path
 
 # Memuat variabel lingkungan dari file .env
 dotenv_path = join(dirname(__file__), '.env')
@@ -26,10 +26,11 @@ db = client[DB_NAME]
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-app.config["UPLOAD_FOLDER"] = "./static/dokumen"
-app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
+app.config["UPLOAD_DOKUMEN"] = "static/santri/dokumen"
+app.config["UPLOAD_PEMBAYARAN"] = "static/santri/pembayaran"
+app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -47,9 +48,7 @@ def showAuth():
             return redirect(url_for('showDashUser'))
         except (jwt.ExpiredSignatureError, jwt.DecodeError):
             pass
-    data = {
-        'title': 'Login/Register',
-    }
+    
     return render_template('auth/login.html', data=data)
 
 @app.route('/login', methods=['POST'])
@@ -63,7 +62,7 @@ def auth():
         if user['password'] == password_hash:
             payload = {
                 "_id": str(user["_id"]),
-                "exp": datetime.utcnow() + timedelta(hours=1)
+                "exp": datetime.utcnow() + timedelta(hours=1),
             }
             token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
             response = make_response(jsonify({"status": "success", "msg": "Login Berhasil!"}))
@@ -117,10 +116,12 @@ def showHome():
         try:
             payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
             user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
-            admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"]), "role": payload["role"]})
+            admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"])})
             return render_template('user_page/index.html', data=data, user_info=user_info, admin_info=admin_info)
         except (jwt.ExpiredSignatureError, jwt.DecodeError):
-            return render_template('user_page/index.html', data=data)
+            response = make_response(redirect(url_for('showHome')))
+            response.delete_cookie("tokenLogin")
+            return response
     else:
         return render_template('user_page/index.html', data=data)
         
@@ -131,9 +132,15 @@ def showSejarah():
     }
     token_receive = request.cookies.get("tokenLogin")
     if token_receive:
+        try:
             payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
             user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
-            return render_template('user_page/sejarah.html', data=data, user_info=user_info)
+            admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"])})
+            return render_template('user_page/index.html', data=data, user_info=user_info, admin_info=admin_info)
+        except (jwt.ExpiredSignatureError, jwt.DecodeError):
+            response = make_response(redirect(url_for('showHome')))
+            response.delete_cookie("tokenLogin")
+            return response
     else:
         return render_template('user_page/sejarah.html', data=data)
 
@@ -144,9 +151,15 @@ def showKontak():
     }
     token_receive = request.cookies.get("tokenLogin")
     if token_receive:
+        try:
             payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
             user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
-            return render_template('user_page/kontak.html', data=data, user_info=user_info)
+            admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"])})
+            return render_template('user_page/index.html', data=data, user_info=user_info, admin_info=admin_info)
+        except (jwt.ExpiredSignatureError, jwt.DecodeError):
+            response = make_response(redirect(url_for('showHome')))
+            response.delete_cookie("tokenLogin")
+            return response
     else:
         return render_template('user_page/kontak.html' , data=data)
 
@@ -157,9 +170,15 @@ def showVisiMisi():
     }
     token_receive = request.cookies.get("tokenLogin")
     if token_receive:
+        try:
             payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
             user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
-            return render_template('user_page/visimisi.html', data=data, user_info=user_info)
+            admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"])})
+            return render_template('user_page/index.html', data=data, user_info=user_info, admin_info=admin_info)
+        except (jwt.ExpiredSignatureError, jwt.DecodeError):
+            response = make_response(redirect(url_for('showHome')))
+            response.delete_cookie("tokenLogin")
+            return response
     else:
         return render_template('user_page/visimisi.html' , data=data)
 
@@ -170,18 +189,17 @@ def showKegiatan():
     }
     token_receive = request.cookies.get("tokenLogin")
     if token_receive:
+        try:
             payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
             user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
-            return render_template('user_page/kegiatan.html', data=data, user_info=user_info)
+            admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"])})
+            return render_template('user_page/index.html', data=data, user_info=user_info, admin_info=admin_info)
+        except (jwt.ExpiredSignatureError, jwt.DecodeError):
+            response = make_response(redirect(url_for('showHome')))
+            response.delete_cookie("tokenLogin")
+            return response
     else:
         return render_template('user_page/kegiatan.html' , data=data)
-
-
-
-
-
-
-
 
 
 #Admin Backend
@@ -430,18 +448,6 @@ def paymentAdmin():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 # User Backend
 @app.route('/dashboard')
 def showDashUser():
@@ -455,12 +461,14 @@ def showDashUser():
 
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-
         if 'role' in payload and payload['role'] == 'admin':
             flash("Halaman ini tidak dapat diakses oleh admin", "danger")
             return redirect(url_for("indexAdmin"))
 
         user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
+        if not user_info:
+            flash("User tidak ditemukan", "danger")
+            return redirect(url_for("showAuth"))
         return render_template("dashboard_user/index.html", user_info=user_info, data=data)
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
@@ -493,6 +501,9 @@ def showformulir():
             return redirect(url_for("indexAdmin"))
         
         user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
+        if not user_info:
+            flash("User tidak ditemukan", "danger")
+            return redirect(url_for("showAuth"))
         
         existing_form = db.form.find_one({"user_id": user_info["_id"]})
         form_submitted = bool(existing_form)
@@ -529,12 +540,13 @@ def showformulir():
                 {
                     "$set": {
                         "status formulir": "Pending",
+                        "nama": data["nama"],
                         "tanggal pendaftaran": data["tanggal pendaftaran"]
                     }
                 }
             )
-
-            return redirect(url_for('showVer'))
+            flash('Formulir berhasil dikirim', 'success')
+            return redirect(url_for('showformulir'))
         else:
             return render_template('dashboard_user/formulir.html', data=data, user_info=user_info, form_submitted=form_submitted)
     except jwt.ExpiredSignatureError:
@@ -555,58 +567,87 @@ def showformulir():
 @app.route('/dashboard/dokumen', methods=["GET", "POST"])
 def showdoc():
     data = {
-        'title': 'Dokumen',
+        'title': 'Upload Dokumen',
     }
     token_receive = request.cookies.get("tokenLogin")
+    if not token_receive:
+        flash("Silahkan login terlebih dahulu", "danger")
+        return redirect(url_for("showAuth"))
+
     try:
         payload = jwt.decode(token_receive, app.config['SECRET_KEY'], algorithms=["HS256"])
+        if 'role' in payload and payload['role'] == 'admin':
+            flash("Halaman ini tidak dapat diakses oleh admin", "danger")
+            return redirect(url_for("indexAdmin"))
+
         user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
+        if not user_info:
+            flash("User tidak ditemukan", "danger")
+            return redirect(url_for("showAuth"))
+        
+        form_info = db.form.find_one({"user_id": ObjectId(payload["_id"])})
+
+        existing_doc = db.dokumen_santri.find_one({"user_id": user_info["_id"]})
+        doc_submitted = bool(existing_doc)
+        existing_form = db.form.find_one({"user_id": user_info["_id"]})
+        form_submitted = bool(existing_form)
 
         if request.method == 'POST':
-            file_fields = ['pas_foto', 'ijazah_sd', 'ijazah_mts', 'surat_keterangan_lulus', 'akta_kelahiran', 'surat_memiliki_nisn', 'surat_peryataan']
+            file_fields = ['pas_foto', 'ijazah', 'surat_keterangan_lulus', 'akta_kelahiran', 'kartu_keluarga', 'surat_memiliki_nisn']
             file_paths = {}
+            missing_files = [field for field in file_fields if field not in request.files or request.files[field].filename == '']
+
+            if missing_files:
+                flash(f'Dokumen berikut belum lengkap: {", ".join(missing_files)}', 'danger')
+                return redirect(url_for('showdoc'))
+
+            all_files_saved = True
 
             for field in file_fields:
                 if field in request.files:
                     file = request.files[field]
-                    if file and allowed_file(file.filename):
-                        filename = secure_filename(file.filename)
-                        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                        try:
-                            file.save(file_path)
-                            file_paths[field] = file_path
-                            flash(f'File {filename} berhasil diunggah', 'success')
-                        except Exception as e:
-                            flash(f'Error saat menyimpan file {filename}: {e}', 'danger')
-                    else:
-                        flash(f'File {file.filename} tidak diizinkan', 'danger')
+                    if file.filename == '':
+                        flash(f'Nama file tidak valid untuk {field}', 'danger')
+                        all_files_saved = False
+                        break
 
-            try:
-                db_status = "Dokumen sudah diisi" if len(file_paths) == len(file_fields) else "Dokumen belum lengkap"
-                status_verifikasi = "Pending" if db_status == "Dokumen sudah diisi" else "Belum diverifikasi"
-                file_paths['status_dokumen'] = db_status
-                file_paths['status_verifikasi'] = status_verifikasi
-                
-                db.uploaded_documen.insert_one(file_paths)  # Simpan file ke koleksi dokumen
-                
-                # Update status perubahan hanya di users
-                db.users.update_one(
-                    {"email": user_info['email']},
-                    {"$set": {"status_dokumen": status_verifikasi, "status_verifikasi": db_status}},
-                    upsert=True
-                )
-                
-                flash('Semua file berhasil disimpan ke database dan status pendaftaran diubah', 'success')
-            except Exception as e:
-                flash(f'Error saat menyimpan data ke database: {e}', 'danger')
+                    if not allowed_file(file.filename):
+                        flash(f'Tipe file tidak diizinkan untuk {field}', 'danger')
+                        all_files_saved = False
+                        break
+
+                    filename = f"{user_info['_id']}_{field}.jpg"
+                    file_path = Path(app.config['UPLOAD_DOKUMEN']) / filename
+                    try:
+                        file.save(file_path)
+                        file_paths[field] = f"/{file_path.as_posix()}"
+                    except Exception as e:
+                        flash(f'Error saat menyimpan file {filename}: {e}', 'danger')
+                        all_files_saved = False
+                        break
+
+            if all_files_saved:
+                try:
+                    file_paths['user_id'] = user_info['_id']
+                    file_paths['tanggal upload'] = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+                    db.dokumen_santri.insert_one(file_paths)
+                    
+                    db.users.update_one(
+                        {"_id": user_info['_id']},
+                        {"$set": {"status dokumen": "Pending", "tanggal upload dokumen": file_paths['tanggal upload']}}
+                    )
+                    flash('Dokumen berhasil diupload', 'success')
+                except Exception as e:
+                    flash(f'Error saat mengupload dokumen: {e}', 'danger')
+                    return redirect(url_for('showdoc'))
 
             return redirect(url_for('showdoc'))
 
-        return render_template("dashboard_user/dokumen.html", user_info=user_info, data=data)
-    
+        return render_template("dashboard_user/dokumen.html", user_info=user_info, form_info=form_info, data=data, doc_submitted=doc_submitted, form_submitted=form_submitted, existing_doc=existing_doc)
+
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
-        response = make_response(redirect(url_for("authAdmin")))
+        response = make_response(redirect(url_for("showAuth")))
         response.delete_cookie("tokenLogin")
         return response
     except jwt.exceptions.DecodeError:
@@ -644,9 +685,7 @@ def showVer():
             'status_dokumen': user_info.get('status dokumen', ''),
             'status_pembayaran': user_info.get('status pembayaran', ''),
         }
-        data['nama'] = db.form.find_one({"user_id": ObjectId(user_info['_id'])})['nama']
         
-
         if user_info['status formulir'] == 'Pending':
             data['message_formulir'] = "Pendaftaran anda sedang diverifikasi"
         elif user_info['status formulir'] == 'Done':
@@ -683,58 +722,72 @@ def showVer():
 
 
 
-    
+
 @app.route('/dashboard/pembayaran', methods=['GET', 'POST'])
 def showPembayaran():
     data = {
         'title': 'Pembayaran',
     }
     token_receive = request.cookies.get("tokenLogin")
+    if not token_receive:
+        flash("Silahkan login terlebih dahulu", "danger")
+        return redirect(url_for("showAuth"))
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        if 'role' in payload and payload['role'] == 'admin':
+            flash("Halaman ini tidak dapat diakses oleh admin", "danger")
+            return redirect(url_for("indexAdmin"))
+        
         user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
+        if not user_info:
+            flash("User tidak ditemukan", "danger")
+            return redirect(url_for("showAuth"))
+        
+        existing_pay = db.pembayaran.find_one({"user_id": user_info["_id"]})
+        pay_submitted = bool(existing_pay)
+        
         
         if request.method == 'POST':
-            
             bukti = request.files.get('bukti')
 
             if not bukti or not allowed_file(bukti.filename):
-                flash('Wajib upload bukti pembayaran dengan format yang benar (png, jpg, jpeg, gif)', 'danger')
+                flash('Wajib upload bukti pembayaran dengan format yang benar (png, jpg, jpeg)', 'danger')
                 return redirect(url_for('showPembayaran'))
             
-            filename = secure_filename(bukti.filename)
-            bukti_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            filename = f"pembayaran_{user_info['_id']}.jpg"
+            file_path = Path(app.config['UPLOAD_PEMBAYARAN']) / filename
             
-            # Save the file
             try:
-                bukti.save(bukti_path)
+                bukti.save(file_path)
             except Exception as e:
                 flash(f'Error menyimpan file: {e}', 'danger')
                 return redirect(url_for('showPembayaran'))
 
-            # Save to database
-            doc = {
-                'tanggal': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                'bukti_path': bukti_path,
-                'status': 'Menunggu Verifikasi',
-                'user_email': user_info['email']
-            }
-            db.pembayaran.insert_one(doc)
+            try:
+                doc = {
+                    'user_id': user_info['_id'],
+                    'foto bukti': f'/{file_path.as_posix()}'
+                }
+                doc['tanggal bayar'] = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+                db.pembayaran.insert_one(doc)
 
-            # Update user status
-            db.users.update_one(
-                {"email": user_info['email']},
-                {"$set": {"status_pembayaran": "pending"}}
-            )
+                db.users.update_one(
+                        {"_id": user_info['_id']},
+                        {"$set": {"status pembayaran": "Pending", "tanggal bayar": doc['tanggal bayar']}}
+                    )
 
-            flash('Pembayaran berhasil dikirim, menunggu verifikasi.', 'success')
+                flash('Bukti pembayaran berhasil dikirim, menunggu verifikasi.', 'success')
+            except Exception as e:
+                flash(f'Error saat mengupload dokumen: {e}', 'danger')
+                return redirect(url_for('showPembayaran'))
+
             return redirect(url_for('showPembayaran'))
 
-        return render_template('dashboard_user/Pembayaran.html', user_info=user_info , data=data)
+        return render_template('dashboard_user/Pembayaran.html', user_info=user_info, data=data, pay_submitted=pay_submitted)
 
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
-        response = make_response(redirect(url_for("authAdmin")))
+        response = make_response(redirect(url_for("showAuth")))
         response.delete_cookie("tokenLogin")
         return response
     except jwt.exceptions.DecodeError:

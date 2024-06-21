@@ -54,15 +54,15 @@
           <div class="card">
             <div class="card-body">
               <h4 class="card-title">Formulir Sudah Diisi</h4>
-              <p class="card-text">Anda sudah mengisi formulir, silahkan cek status pendaftaran</p>
+              <p class="card-text mb-2">Anda sudah mengisi formulir, silahkan cek status pendaftaran</p>
               <a href="/dashboard/status" class="btn btn-user">Cek status pendaftaran</a>
             </div>
           </div>
           {% else %}
           <!-- Form Pendaftaran Pesantren Begin -->
-          <div class="card my-5">
+          <div class="card mb-5">
             <div class="card-body">
-              <form action="{{ url_for('showformulir') }}" method="post">
+              <form id="form" action="{{ url_for('showformulir') }}" method="post">
                 <div class="form-section current" id="form1">
                   <h4 class="mt-3 mb-3">Identitas Calon Santri</h4>
                   <div class="mb-3">
@@ -114,11 +114,7 @@
                   </div>
                   <div class="mb-3">
                     <label for="program" class="form-label">Program yang ingin didaftar</label>
-                    <select class="form-select" id="program" name="program" required>
-                      <option selected disabled>-- Pilih --</option>
-                      <option value="MTs">Madrasah Tsanawiyah</option>
-                      <option value="MAS">Madrasah Aliyah</option>
-                    </select>
+                    <input type="text" class="form-control" id="program" name="program" value="" required readonly />
                   </div>
                   <div class="d-flex justify-content-between gap-3">
                     <button type="button" class="btn btn-secondary w-50" id="backForm1">Kembali</button>
@@ -189,6 +185,21 @@
         </div>
       </div>
     </div>
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %} {% if category == 'danger' %}
+    <script>
+      swal({
+        icon: "error",
+        text: "{{ message }}",
+      });
+    </script>
+    {% elif category == 'success' %}
+    <script>
+      swal({
+        icon: "success",
+        text: "{{ message }}",
+      });
+    </script>
+    {% endif %} {% endfor %} {% endif %} {% endwith %}
     <!-- Main Content End -->
 
     {% include 'dashboard_user/layouts/footer.html' %}
@@ -199,7 +210,10 @@
           document.getElementById("form1").classList.remove("current");
           document.getElementById("form2").classList.add("current");
         } else {
-          alert("Harap lengkapi semua field pada Identitas Calon Santri sebelum melanjutkan.");
+          swal({
+            icon: "error",
+            text: "Harap lengkapi semua field pada Identitas Calon Santri sebelum melanjutkan.",
+          });
         }
       });
 
@@ -208,7 +222,10 @@
           document.getElementById("form2").classList.remove("current");
           document.getElementById("form3").classList.add("current");
         } else {
-          alert("Harap lengkapi semua field pada Data Sekolah sebelum melanjutkan.");
+          swal({
+            icon: "error",
+            text: "Harap lengkapi semua field pada Data Sekolah sebelum melanjutkan.",
+          });
         }
       });
 
@@ -225,7 +242,10 @@
       document.getElementById("form").addEventListener("submit", function (event) {
         if (!validateForm3()) {
           event.preventDefault();
-          alert("Harap lengkapi semua field pada Identitas Ibu dan Identitas Ayah sebelum mengirimkan formulir.");
+          swal({
+            icon: "error",
+            text: "Harap lengkapi semua field pada Identitas Ibu dan Identitas Ayah sebelum mengirimkan formulir.",
+          });
         }
       });
 
@@ -253,7 +273,20 @@
         }
         return true;
       }
+      document.addEventListener("DOMContentLoaded", function () {
+        const pendidikanSelect = document.getElementById("pendidikan");
+        const programSelect = document.getElementById("program");
 
+        pendidikanSelect.addEventListener("change", function () {
+          if (pendidikanSelect.value === "SD/MI") {
+            programSelect.value = "MTs";
+          } else if (pendidikanSelect.value === "SMP/MTs") {
+            programSelect.value = "MAS";
+          } else {
+            programSelect.value = ""; // reset to default if none of the conditions match
+          }
+        });
+      });
       function validateForm3() {
         var nama_ibu = document.getElementById("nama_ibu").value.trim();
         var nik_ibu = document.getElementById("nik_ibu").value.trim();
