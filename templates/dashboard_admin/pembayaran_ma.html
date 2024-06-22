@@ -32,26 +32,26 @@
                                         <tr>
                                             <th scope="col">No</th>
                                             <th scope="col">Nama</th>
-                                            <th scope="col">NISN</th>
-                                            <th scope="col">Asal Sekolah</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">No Telepon</th>
                                             <th scope="col">Status Pembayaran</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for form in user_form %}
-                                        {% if user_info['status pembayaran'] == 'Pending' or user_info['status pembayaran'] == 'Done' %}
+                                        {% for user in user_info %}
+                                        {% if user['status pembayaran'] == 'Pending' or user['status pembayaran'] == 'Done' %}
                                         <tr>
                                             <th scope="row">{{ loop.index }}</th>
-                                            <td>{{ form.nama }}</td>
-                                            <td>{{ form.NISN }}</td>
-                                            <td>{{ form['sekolah asal'] }}</td>
-                                            <td>{{ user_info['status pembayaran'] }}</td>
+                                            <td>{{ user.nama }}</td>
+                                            <td>{{ user.email }}</td>
+                                            <td>{{ user.phone }}</td>
+                                            <td>{{ user['status pembayaran'] }}</td>
                                             <td>
                                                 <div class="d-flex flex-row gap-1">
-                                                    <a class="btn btn-sm btn-secondary" href="/admin/pembayaran/aliyah/{{ form.user_id }}"><i class="fa fa-eye"></i></a>
+                                                    <a class="btn btn-sm btn-secondary" href="/admin/pembayaran/aliyah/{{ user._id }}"><i class="fa fa-eye"></i></a>
                                                     {% if user_info['status pembayaran'] == 'Pending' %}
-                                                    <form id="approveForm" action="/admin/pembayaran/aliyah/{{ form.user_id }}" method="POST">
+                                                    <form id="approveForm" action="/admin/pembayaran/aliyah/{{ user._id }}" method="POST">
                                                         <button id="approveButton" class="btn btn-sm btn-success" type="submit"><i class="fa fa-check"></i></button>
                                                     </form>
                                                     {% endif %}

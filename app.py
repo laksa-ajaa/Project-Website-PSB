@@ -375,11 +375,9 @@ def verifyFormulirMA():
             return response
         
         # Mendapatkan data siswa yang sedang menunggu verifikasi
-        user_form = list(db.form.find({}))
-        user_id = user_form[0]['user_id']
-        user_info = db.users.find_one({"_id": ObjectId(user_id)})
+        user_info = list(db.users.find({}))
                 
-        return render_template("dashboard_admin/formulir_ma.html", admin_info=admin_info, user_info=user_info, data=data, user_form=user_form)
+        return render_template("dashboard_admin/formulir_ma.html", admin_info=admin_info, user_info=user_info, data=data)
 
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
@@ -479,11 +477,9 @@ def verifyDokumenMA():
             response.delete_cookie("tokenLogin")
             return response
         
-        user_form = list(db.form.find({}))
-        user_id = user_form[0]['user_id']
-        user_info = db.users.find_one({"_id": ObjectId(user_id)})
+        user_info = list(db.users.find({}))
         
-        return render_template("dashboard_admin/dokumen_ma.html", data=data, admin_info=admin_info , user_info=user_info, user_form=user_form)
+        return render_template("dashboard_admin/dokumen_ma.html", data=data, admin_info=admin_info , user_info=user_info)
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
         response = make_response(redirect(url_for("authAdmin")))
@@ -583,11 +579,9 @@ def verifyPembayaranMA():
             response.delete_cookie("tokenLogin")
             return response
         
-        user_form = list(db.form.find({}))
-        user_id = user_form[0]['user_id']
-        user_info = db.users.find_one({"_id": ObjectId(user_id)})
+        user_info = list(db.users.find({}))
         
-        return render_template("dashboard_admin/pembayaran_ma.html", data=data, admin_info=admin_info , user_info=user_info, user_form=user_form)
+        return render_template("dashboard_admin/pembayaran_ma.html", data=data, admin_info=admin_info , user_info=user_info)
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
         response = make_response(redirect(url_for("authAdmin")))
