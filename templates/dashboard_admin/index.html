@@ -29,28 +29,55 @@
                 <div class="row g-4">
                     <div class="col-sm-6 col-xl-4">
                         <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-line fa-3x text-primary"></i>
+                            <i class="fa fa-users fa-3x text-primary"></i>
                             <div class="ms-3">
                                 <p class="mb-2">Pendaftar</p>
-                                <h6 class="mb-0">234</h6>
+                                <h6 class="mb-0">{{ data['pendaftar']|length }}</h6>
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-6 col-xl-4">
                         <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-bar fa-3x text-primary"></i>
+                            <i class="fa fa-user fa-3x text-primary"></i>
                             <div class="ms-3">
-                                <p class="mb-2">Verifikasi</p>
-                                <h6 class="mb-0">34</h6>
+                                <p class="mb-2">Calon Santri Tsanawiyah</p>
+                                <h6 class="mb-0">{{ data['mts']|length }}</h6>
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-6 col-xl-4">
                         <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-area fa-3x text-primary"></i>
+                            <i class="fa fa-user fa-3x text-primary"></i>
                             <div class="ms-3">
-                                <p class="mb-2">Pembayaran</p>
-                                <h6 class="mb-0">204</h6>
+                                <p class="mb-2">Calon Santri Aliyah</p>
+                                <h6 class="mb-0">{{ data['mas']|length }}</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-4">
+                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                            <i class="fa fa-file-alt fa-3x text-primary"></i>
+                            <div class="ms-3">
+                                <p class="mb-2">Verifikasi Formulir</p>
+                                <h6 class="mb-0">{{ data['form']|length }}</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-4">
+                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                            <i class="fa fa-file-image fa-3x text-primary"></i>
+                            <div class="ms-3">
+                                <p class="mb-2">Verifikasi Dokumen</p>
+                                <h6 class="mb-0">{{ data['doc']|length }}</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-4">
+                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                            <i class="fa fa-credit-card fa-3x text-primary"></i>
+                            <div class="ms-3">
+                                <p class="mb-2">Verifikasi Pembayaran</p>
+                                <h6 class="mb-0">{{ data['pembayaran']|length }}</h6>
                             </div>
                         </div>
                     </div>
@@ -92,38 +119,7 @@
                 </div>
             </div>
 
-            <div class="container-fluid pt-4 px-4">
-                <div class="bg-light text-center rounded p-4">
-                    <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h6 class="mb-0">Status Formulir</h6>
-                        <a href="">Show All</a>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table text-start align-middle table-bordered table-hover mb-0">
-                            <thead>
-                                <tr class="text-dark">
-                                    <th scope="col">No</th>
-                                    <th scope="col">Nama</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Aksi</th>
-                                    
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    {% for pendaftar in data['formulir'] %}
-                                <tr>
-                                    <th scope="row">{{ loop.index }}</th>
-                                    <td>{{ pendaftar.nama }}</td>
-                                    <td>{{ pendaftar.email }}</td>
-                                    <td>{{ pendaftar.status }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+            
             <!-- Recent Sales End -->
 
 

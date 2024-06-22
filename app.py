@@ -105,7 +105,6 @@ def logout():
     return response
 
 
-
 @app.route('/')
 def showHome():
     data = {
@@ -136,7 +135,7 @@ def showSejarah():
             payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
             user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
             admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"])})
-            return render_template('user_page/index.html', data=data, user_info=user_info, admin_info=admin_info)
+            return render_template('user_page/sejarah.html', data=data, user_info=user_info, admin_info=admin_info)
         except (jwt.ExpiredSignatureError, jwt.DecodeError):
             response = make_response(redirect(url_for('showHome')))
             response.delete_cookie("tokenLogin")
@@ -155,7 +154,7 @@ def showKontak():
             payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
             user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
             admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"])})
-            return render_template('user_page/index.html', data=data, user_info=user_info, admin_info=admin_info)
+            return render_template('user_page/kontak.html', data=data, user_info=user_info, admin_info=admin_info)
         except (jwt.ExpiredSignatureError, jwt.DecodeError):
             response = make_response(redirect(url_for('showHome')))
             response.delete_cookie("tokenLogin")
@@ -174,7 +173,7 @@ def showVisiMisi():
             payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
             user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
             admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"])})
-            return render_template('user_page/index.html', data=data, user_info=user_info, admin_info=admin_info)
+            return render_template('user_page/visimisi.html', data=data, user_info=user_info, admin_info=admin_info)
         except (jwt.ExpiredSignatureError, jwt.DecodeError):
             response = make_response(redirect(url_for('showHome')))
             response.delete_cookie("tokenLogin")
@@ -193,7 +192,7 @@ def showKegiatan():
             payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
             user_info = db.users.find_one({"_id": ObjectId(payload["_id"])})
             admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"])})
-            return render_template('user_page/index.html', data=data, user_info=user_info, admin_info=admin_info)
+            return render_template('user_page/kegiatan.html', data=data, user_info=user_info, admin_info=admin_info)
         except (jwt.ExpiredSignatureError, jwt.DecodeError):
             response = make_response(redirect(url_for('showHome')))
             response.delete_cookie("tokenLogin")
@@ -292,8 +291,10 @@ def indexAdmin():
         admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"]), "role": payload["role"]})
         if payload["role"] == "admin":
             data['pendaftar'] = list(db.users.find({}))
+            data['mts'] = list(db.form.find({ "program": "MTs" }))
+            data['mas'] = list(db.form.find({ "program": "MAS" }))
             data['form'] = list(db.form.find({}))
-            data['doc'] = list(db.doc.find({}))
+            data['doc'] = list(db.dokumen_santri.find({}))
             data['pembayaran'] = list(db.pembayaran.find({}))
             
             return render_template("dashboard_admin/index.html", admin_info=admin_info, data=data)
@@ -406,7 +407,7 @@ def approveFormulirMA(id):
             response = make_response(redirect(url_for("authAdmin")))
             response.delete_cookie("tokenLogin")
             return response
-        db.users.update_one({'_id': ObjectId(id)}, {'$set': {'status formulir': 'Done'}})
+        db.users.update_one({'_id': ObjectId(id)}, {'$set': {'status formulir': 'Done', 'tolak_form': ''}})
         return redirect(url_for("verifyFormulirMA"))
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
@@ -419,7 +420,44 @@ def approveFormulirMA(id):
         response.delete_cookie("tokenLogin")
         return response
 
-@app.route('/admin/formulir/santri/<id>')
+@app.route('/admin/formulir/aliyah/reject/<id>', methods=['POST'])
+def rejectFormulirMA(id):
+    token_receive = request.cookies.get("tokenLogin")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        if 'role' not in payload:
+            flash("Halaman ini tidak dapat diakses, silahkan login kembali", "danger")
+            response = make_response(redirect(url_for("showAuth")))
+            response.delete_cookie("tokenLogin")
+            return response
+        
+        if payload["role"] != "admin":
+            flash("Anda tidak memiliki izin untuk mengakses halaman ini", "danger")
+            response = make_response(redirect(url_for("authAdmin")))
+            response.delete_cookie("tokenLogin")
+            return response
+        
+        data = request.get_json()
+        rejection_message = data.get('rejectionMessage')
+        db.users.update_one({'_id': ObjectId(id)}, {'$set': {'status formulir': 'Rejected', 'tolak_form': rejection_message}})
+        db.form.delete_one({'user_id': ObjectId(id)})
+        return jsonify({'message': 'Formulir telah ditolak.'}), 200
+    
+    except jwt.ExpiredSignatureError:
+        flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("authAdmin")))
+        response.delete_cookie("tokenLogin")
+        return response
+    except jwt.exceptions.DecodeError:
+        flash("Token anda tidak valid, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("showAuth")))
+        response.delete_cookie("tokenLogin")
+        return response
+    except Exception as e:
+        return jsonify({'message': 'Terjadi kesalahan, silahkan coba lagi.'}), 500
+
+
+@app.route('/admin/formulir/aliyah/<id>')
 def detailFormulir(id):
     data = {
         'title': 'Detail Formulir',
@@ -442,7 +480,8 @@ def detailFormulir(id):
             response.delete_cookie("tokenLogin")
             return response
         user_form = db.form.find_one({"user_id": ObjectId(id)})
-        return render_template("dashboard_admin/form_detail.html", data=data, user_form=user_form , admin_info=admin_info)
+        user_info = db.users.find_one({"_id": ObjectId(id)})
+        return render_template("dashboard_admin/form_detail_ma.html", data=data, user_form=user_form , admin_info=admin_info, user_info=user_info)
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
         response = make_response(redirect(url_for("authAdmin")))
@@ -513,7 +552,8 @@ def detailDokumenMA(id):
             response.delete_cookie("tokenLogin")
             return response
         user_doc = db.dokumen_santri.find_one({"user_id": ObjectId(id)})
-        return render_template("dashboard_admin/doc_detail_ma.html", data=data, user_doc=user_doc , admin_info=admin_info)
+        user_info = db.users.find_one({"_id": ObjectId(id)})
+        return render_template("dashboard_admin/doc_detail_ma.html", data=data, user_doc=user_doc , user_info=user_info, admin_info=admin_info)
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
         response = make_response(redirect(url_for("authAdmin")))
@@ -541,7 +581,7 @@ def approveDokumenMA(id):
             response = make_response(redirect(url_for("authAdmin")))
             response.delete_cookie("tokenLogin")
             return response
-        db.users.update_one({'_id': ObjectId(id)}, {'$set': {'status dokumen': 'Done'}})
+        db.users.update_one({'_id': ObjectId(id)}, {'$set': {'status dokumen': 'Done', 'tolak_doc': ''}})
         return redirect(url_for("verifyDokumenMA"))
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
@@ -553,6 +593,57 @@ def approveDokumenMA(id):
         response = make_response(redirect(url_for("showAuth")))
         response.delete_cookie("tokenLogin")
         return response
+
+@app.route('/admin/dokumen/aliyah/reject/<id>', methods=['POST'])
+def rejectDokumenMA(id):
+    token_receive = request.cookies.get("tokenLogin")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        if 'role' not in payload:
+            flash("Halaman ini tidak dapat diakses, silahkan login kembali", "danger")
+            response = make_response(redirect(url_for("showAuth")))
+            response.delete_cookie("tokenLogin")
+            return response
+        
+        if payload["role"] != "admin":
+            flash("Anda tidak memiliki izin untuk mengakses halaman ini", "danger")
+            response = make_response(redirect(url_for("authAdmin")))
+            response.delete_cookie("tokenLogin")
+            return response
+        
+        data = request.get_json()
+        rejection_message = data.get('rejectionMessage')
+        
+        user_doc = db.dokumen_santri.find_one({'user_id': ObjectId(id)})
+        if not user_doc:
+            return jsonify({'message': 'Dokumen tidak ditemukan.'}), 404
+        
+        file_keys = ['pas_foto', 'ijazah', 'surat_keterangan_lulus', 'akta_kelahiran', 'kartu_keluarga', 'surat_memiliki_nisn']
+        
+        for key in file_keys:
+            if key in user_doc:
+                file_path = user_doc[key].replace('/static/santri/dokumen/', '')
+                full_path = os.path.join('static/santri/dokumen', file_path)
+                if os.path.exists(full_path):
+                    os.remove(full_path)
+        
+        db.users.update_one({'_id': ObjectId(id)}, {'$set': {'status dokumen': 'Rejected', 'tolak_doc': rejection_message}})
+        db.dokumen_santri.delete_one({'user_id': ObjectId(id)})
+        
+        return jsonify({'message': 'Dokumen telah ditolak.'}), 200
+    
+    except jwt.ExpiredSignatureError:
+        flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("authAdmin")))
+        response.delete_cookie("tokenLogin")
+        return response
+    except jwt.exceptions.DecodeError:
+        flash("Token anda tidak valid, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("showAuth")))
+        response.delete_cookie("tokenLogin")
+        return response
+    except Exception as e:
+        return jsonify({'message': 'Terjadi kesalahan, silahkan coba lagi.'}), 500
 
 
 
@@ -615,7 +706,8 @@ def detailPembayaranMA(id):
             response.delete_cookie("tokenLogin")
             return response
         user_pay = db.pembayaran.find_one({"user_id": ObjectId(id)})
-        return render_template("dashboard_admin/pay_detail_ma.html", data=data, user_pay=user_pay , admin_info=admin_info)
+        user_info = db.users.find_one({"_id": ObjectId(id)})
+        return render_template("dashboard_admin/pay_detail_ma.html", data=data, user_pay=user_pay, user_info=user_info, admin_info=admin_info)
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
         response = make_response(redirect(url_for("authAdmin")))
@@ -644,7 +736,7 @@ def approvePembayaranMA(id):
             response = make_response(redirect(url_for("authAdmin")))
             response.delete_cookie("tokenLogin")
             return response
-        db.users.update_one({'_id': ObjectId(id)}, {'$set': {'status pembayaran': 'Done'}})
+        db.users.update_one({'_id': ObjectId(id)}, {'$set': {'status pembayaran': 'Done', 'tolak_pay' : ''}})
         return redirect(url_for("verifyPembayaranMA"))
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
@@ -657,7 +749,52 @@ def approvePembayaranMA(id):
         response.delete_cookie("tokenLogin")
         return response
 
-
+@app.route('/admin/pembayaran/aliyah/reject/<id>', methods=['POST'])
+def rejectPembayaranMA(id):
+    token_receive = request.cookies.get("tokenLogin")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        if 'role' not in payload:
+            flash("Halaman ini tidak dapat diakses, silahkan login kembali", "danger")
+            response = make_response(redirect(url_for("showAuth")))
+            response.delete_cookie("tokenLogin")
+            return response
+        
+        if payload["role"] != "admin":
+            flash("Anda tidak memiliki izin untuk mengakses halaman ini", "danger")
+            response = make_response(redirect(url_for("authAdmin")))
+            response.delete_cookie("tokenLogin")
+            return response
+        
+        data = request.get_json()
+        rejection_message = data.get('rejectionMessage')
+        
+        user_pay = db.pembayaran.find_one({'user_id': ObjectId(id)})
+        if not user_pay:
+            return jsonify({'message': 'Pembayaran tidak ditemukan.'}), 404
+        
+        file_path = user_pay['foto bukti'].replace('/static/santri/pembayaran/', '')
+        full_path = os.path.join('static/santri/pembayaran', file_path)
+        if os.path.exists(full_path):
+            os.remove(full_path)
+        
+        db.users.update_one({'_id': ObjectId(id)}, {'$set': {'status pembayaran': 'Rejected', 'tolak_pay': rejection_message}})
+        db.pembayaran.delete_one({'user_id': ObjectId(id)})
+        
+        return jsonify({'message': 'Pembayaran telah ditolak.'}), 200
+    
+    except jwt.ExpiredSignatureError:
+        flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("authAdmin")))
+        response.delete_cookie("tokenLogin")
+        return response
+    except jwt.exceptions.DecodeError:
+        flash("Token anda tidak valid, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("showAuth")))
+        response.delete_cookie("tokenLogin")
+        return response
+    except Exception as e:
+        return jsonify({'message': 'Terjadi kesalahan, silahkan coba lagi.'}), 500
 
 # User Backend
 @app.route('/dashboard')
@@ -827,7 +964,7 @@ def showdoc():
                         all_files_saved = False
                         break
 
-                    filename = f"{user_info['_id']}_{field}.jpg"
+                    filename = f"{field}_{user_info['_id']}_{datetime.now().strftime('$%d%m%Y%H%M%S')}.jpg"
                     file_path = Path(app.config['UPLOAD_DOKUMEN']) / filename
                     try:
                         file.save(file_path)
@@ -901,6 +1038,8 @@ def showVer():
             data['message_formulir'] = "Pendaftaran anda sedang diverifikasi"
         elif user_info['status formulir'] == 'Done':
             data['message_formulir'] = "Pendaftaran anda telah diterima"
+        elif user_info['status formulir'] == 'Rejected':
+            data['message_formulir'] = user_info.get('tolak_form')
         else:
             data['message_formulir'] = "Belum mengisi"
 
@@ -908,6 +1047,8 @@ def showVer():
             data['message_dokumen'] = "Dokumen anda sedang diverifikasi"
         elif user_info['status dokumen'] == 'Done':
             data['message_dokumen'] = "Dokumen anda telah diterima"
+        elif user_info['status dokumen'] == 'Rejected':
+            data['message_dokumen'] = user_info.get('tolak_doc')
         else:
             data['message_dokumen'] = "Belum mengisi"
 
@@ -915,6 +1056,8 @@ def showVer():
             data['message_pembayaran'] = "Pembayaran anda sedang diverifikasi"
         elif user_info['status pembayaran'] == 'Done':
             data['message_pembayaran'] = "Pembayaran anda telah diterima"
+        elif user_info['status pembayaran'] == 'Rejected':
+            data['message_pembayaran'] = user_info.get('tolak_pay')
         else:
             data['message_pembayaran'] = "Belum mengisi"
 
@@ -965,7 +1108,7 @@ def showPembayaran():
                 flash('Wajib upload bukti pembayaran dengan format yang benar (png, jpg, jpeg)', 'danger')
                 return redirect(url_for('showPembayaran'))
             
-            filename = f"pembayaran_{user_info['_id']}.jpg"
+            filename = f"pembayaran_{user_info['_id']}_{datetime.now().strftime('%d%m%Y%H%M%S')}.jpg"
             file_path = Path(app.config['UPLOAD_PEMBAYARAN']) / filename
             
             try:

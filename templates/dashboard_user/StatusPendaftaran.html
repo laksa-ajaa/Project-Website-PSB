@@ -50,18 +50,63 @@
                 <div class="card-text">
                   <h5 class="mb-3">Informasi Status Pendaftaran</h5>
                   <p>Nama: <strong>{{ user_info.nama }}</strong></p>
-                  <p>Status formulir: <strong>{{ data.status_formulir }} ({{ data.message_formulir }})</strong></p>
+                  <p>
+                    Status formulir:
+                    <strong
+                      >{% if data.status_formulir == 'Pending' %}
+                      <span class="text-warning">{{ data.status_formulir }}</span>
+                      {% elif data.status_formulir == 'Done' %}
+                      <span class="text-success">{{ data.status_formulir }}</span>
+                      {% elif data.status_formulir == 'Rejected' %}
+                      <span class="text-danger">{{ data.status_formulir }}</span>
+                      {% else %}
+                      <span class="text-secondary">{{ data.status_formulir }}</span>
+                      {% endif %} ({{ data.message_formulir }})
+                    </strong>
+                  </p>
                   {% if data.status_formulir == 'None' %}
                   <a href="/dashboard/formulir" class="btn btn-sm btn-user">Upload Formulir <i class="fa fa-upload"></i></a>
+                  {% elif data.status_formulir == 'Rejected' %}
+                  <a href="/dashboard/formulir" class="btn btn-sm btn-user">Upload Ulang Formulir <i class="fa fa-upload"></i></a>
                   {% endif %}
-                  <p>Status Dokumen: <strong>{{ data.status_dokumen }} ({{ data.message_dokumen }})</strong></p>
+
+                  <p>
+                    Status Dokumen:
+                    <strong
+                      >{% if data.status_dokumen == 'Pending' %}
+                      <span class="text-warning">{{ data.status_dokumen }}</span>
+                      {% elif data.status_dokumen == 'Done' %}
+                      <span class="text-success">{{ data.status_dokumen }}</span>
+                      {% elif data.status_dokumen == 'Rejected' %}
+                      <span class="text-danger">{{ data.status_dokumen }}</span>
+                      {% else %}
+                      <span class="text-secondary">{{ data.status_dokumen }}</span>
+                      {% endif %} ({{ data.message_dokumen }})
+                    </strong>
+                  </p>
                   {% if data.status_formulir == 'Done' %} {% if data.status_dokumen == 'None' %}
                   <a href="/dashboard/dokumen" class="btn btn-sm btn-user">Upload Dokumen <i class="fa fa-upload"></i></a>
+                  {% elif data.status_dokumen == 'Rejected' %}
+                  <a href="/dashboard/dokumen" class="btn btn-sm btn-user">Upload Ulang Dokumen <i class="fa fa-upload"></i></a>
                   {% endif %} {% endif %}
-                  <p>Status Pembayaran: <strong>{{ data.status_pembayaran }} ({{ data.message_pembayaran }})</strong></p>
+                  <p>
+                    Status Pembayaran:
+                    <strong
+                      >{% if data.status_pembayaran == 'Pending' %}
+                      <span class="text-warning">{{ data.status_pembayaran }}</span>
+                      {% elif data.status_pembayaran == 'Done' %}
+                      <span class="text-success">{{ data.status_pembayaran }}</span>
+                      {% elif data.status_pembayaran == 'Rejected' %}
+                      <span class="text-danger">{{ data.status_pembayaran }}</span>
+                      {% else %}
+                      <span class="text-secondary">{{ data.status_pembayaran }}</span>
+                      {% endif %} ({{ data.message_pembayaran }})
+                    </strong>
+                  </p>
                   {% if data.status_dokumen == 'Done' %} {% if data.status_pembayaran == 'None' %}
                   <a href="/dashboard/pembayaran" class="btn btn-sm btn-user">Upload Pembayaran <i class="fa fa-upload"></i></a>
-                  {% endif %} {% endif %}
+                  {% elif data.status_pembayaran == 'Rejected' %}
+                  <a href="/dashboard/pembayaran" class="btn btn-sm btn-user">Upload Ulang Pembayaran <i class="fa fa-upload"></i></a>{% endif %} {% endif %}
                 </div>
               </div>
             </div>

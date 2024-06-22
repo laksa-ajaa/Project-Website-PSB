@@ -1,4 +1,4 @@
-{% include 'dashboard_admin/layouts/header.html'   %}
+{% include 'dashboard_admin/layouts/header.html' %}
 <body>
     <div class="container-xxl position-relative bg-white d-flex p-0">
         <!-- Spinner Start -->
@@ -50,10 +50,11 @@
                                             <td>
                                                 <div class="d-flex flex-row gap-1">
                                                     <a class="btn btn-sm btn-secondary" href="/admin/dokumen/aliyah/{{ user._id }}"><i class="fa fa-eye"></i></a>
-                                                    {% if user_info['status dokumen'] == 'Pending' %}
-                                                    <form id="approveForm" action="/admin/dokumen/aliyah/{{ user._id }}" method="POST">
+                                                    {% if user['status dokumen'] == 'Pending' %}
+                                                    <form id="approveDoc" action="/admin/dokumen/aliyah/{{ user._id }}" method="POST">
                                                         <button id="approveButton" class="btn btn-sm btn-success" type="submit"><i class="fa fa-check"></i></button>
                                                     </form>
+                                                    <button class="btn btn-sm btn-danger" type="button" onclick="rejectDoc('{{ user._id }}')"><i class="fa fa-times"></i></button>
                                                     {% endif %}
                                                 </div>
                                             </td>
@@ -73,7 +74,58 @@
             {% include 'dashboard_admin/layouts/footer.html' %}
             <!-- Footer End -->
             <script>
-                document.getElementById("approveForm").addEventListener("submit", function(event) {
+                function rejectDoc(userId) {
+                    swal({
+                        title: "Apakah kamu yakin?",
+                        text: "Tulis pesan penolakan:",
+                        content: {
+                            element: "input",
+                            attributes: {
+                                placeholder: "Pesan penolakan",
+                                type: "text"
+                            },
+                        },
+                        icon: "warning",
+                        buttons: {
+                            cancel: {
+                                text: "Batal",
+                                visible: true,
+                                className: "btn btn-secondary"
+                            },
+                            confirm: {
+                                text: "Tolak",
+                                className: "btn btn-danger"
+                            }
+                        },
+                        dangerMode: true
+                    }).then((value) => {
+                        if (value) {
+                            let rejectionMessage = value;
+                            fetch(`/admin/dokumen/aliyah/reject/${userId}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ rejectionMessage: rejectionMessage })
+                            })
+                            .then(response => {
+                                if (response.ok) {
+                                    swal("Dokumen sudah ditolak", {
+                                        icon: "success",
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    swal("Terjadi kesalahan, silahkan coba lagi", {
+                                        icon: "error",
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+
+                document.getElementById("approveDoc").addEventListener("submit", function(event) {
                     event.preventDefault();
                     swal({
                         title: "Apakah kamu yakin?",
@@ -97,7 +149,7 @@
                                 text: "Dokumen sudah disetujui.",
                                 icon: "success"
                             }).then(() => {
-                                document.getElementById("approveForm").submit();
+                                document.getElementById("approveDoc").submit();
                             });
                         }
                     });
