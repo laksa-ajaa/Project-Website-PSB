@@ -9,7 +9,6 @@ from pymongo import MongoClient
 from datetime import datetime, timedelta
 from pathlib import Path
 
-# Memuat variabel lingkungan dari file .env
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
@@ -35,7 +34,7 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
+# AUTH USER BACKEND
 @app.route('/auth')
 def showAuth():
     data = {
@@ -104,7 +103,7 @@ def logout():
     response.delete_cookie("tokenLogin")
     return response
 
-
+#USER PAGE ROUTES
 @app.route('/')
 def showHome():
     data = {
@@ -200,8 +199,7 @@ def showKegiatan():
     else:
         return render_template('user_page/kegiatan.html' , data=data)
 
-
-#Admin Backend
+# ADMIN AUTH BACKEND
 @app.route('/authAdmin', methods=["GET", "POST"])
 def authAdmin():
     data = {
@@ -236,41 +234,8 @@ def logout_admin():
     response = make_response(redirect(url_for('authAdmin')))
     response.delete_cookie("tokenLogin")
     return response
-    
-@app.route('/templateAdmin')
-def showTempAdmin():
-    data = {
-        'title': 'TemplateAdmin',
-    }
-    token_receive = request.cookies.get("tokenLogin")
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-        if 'role' not in payload:
-            flash("Halaman ini tidak dapat diakses, silahkan login kembali", "danger")
-            response = make_response(redirect(url_for("showAuth")))
-            response.delete_cookie("tokenLogin")
-            return response
-        
-        admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"]), "role": payload["role"]})
-        if payload["role"] == "admin":
-            return render_template("dashboard_admin/index.html", admin_info=admin_info, data=data)
-        else:
-            flash("Anda tidak memiliki izin untuk mengakses halaman ini", "danger")
-            response = make_response(redirect(url_for("authAdmin")))
-            response.delete_cookie("tokenLogin")
-            return response
-    except jwt.ExpiredSignatureError:
-        flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
-        response = make_response(redirect(url_for("authAdmin")))
-        response.delete_cookie("tokenLogin")
-        return response
-    except jwt.exceptions.DecodeError:
-        flash("Token anda tidak valid, silahkan login kembali", "danger")
-        response = make_response(redirect(url_for("showAuth")))
-        response.delete_cookie("tokenLogin")
-        return response
 
-# Routes Dashboard Admin
+# DASHBOARD ADMIN ROUTES
 @app.route('/admin')
 def indexAdmin():
     data = {
@@ -315,7 +280,6 @@ def indexAdmin():
         response.delete_cookie("tokenLogin")
         return response
 
-    
 @app.route('/admin/pendaftar')
 def pesertaAdmin():
     data = {
@@ -352,7 +316,7 @@ def pesertaAdmin():
         response.delete_cookie("tokenLogin")
         return response
 
-#VERIFIKASI FORMULIR
+#VERIFIKASI FORMULIR MA
 @app.route('/admin/formulir/aliyah', methods=['GET'])
 def verifyFormulirMA():
     data = {
@@ -456,9 +420,8 @@ def rejectFormulirMA(id):
     except Exception as e:
         return jsonify({'message': 'Terjadi kesalahan, silahkan coba lagi.'}), 500
 
-
 @app.route('/admin/formulir/aliyah/<id>')
-def detailFormulir(id):
+def detailFormulirMA(id):
     data = {
         'title': 'Detail Formulir',
         'active': 'verifikasi'
@@ -493,7 +456,7 @@ def detailFormulir(id):
         response.delete_cookie("tokenLogin")
         return response
 
-#VERIFIKASI DOKUMEN
+#VERIFIKASI DOKUMEN MA
 @app.route('/admin/dokumen/aliyah', methods=['GET'])
 def verifyDokumenMA():
     data = {
@@ -645,9 +608,7 @@ def rejectDokumenMA(id):
     except Exception as e:
         return jsonify({'message': 'Terjadi kesalahan, silahkan coba lagi.'}), 500
 
-
-
-#VERIFIKASI PEMBAYARAN 
+#VERIFIKASI PEMBAYARAN MA
 @app.route('/admin/pembayaran/aliyah', methods=['GET'])
 def verifyPembayaranMA():
     data = {
@@ -718,7 +679,6 @@ def detailPembayaranMA(id):
         response = make_response(redirect(url_for("showAuth")))
         response.delete_cookie("tokenLogin")
         return response
-
 
 @app.route('/admin/pembayaran/aliyah/<id>', methods=['POST'])
 def approvePembayaranMA(id):
@@ -796,7 +756,7 @@ def rejectPembayaranMA(id):
     except Exception as e:
         return jsonify({'message': 'Terjadi kesalahan, silahkan coba lagi.'}), 500
 
-# User Backend
+# DASHBOARD USER ROUTES
 @app.route('/dashboard')
 def showDashUser():
     data = {
@@ -829,9 +789,7 @@ def showDashUser():
         response.delete_cookie("tokenLogin")
         return response
 
-
-
-# Untuk menampilkan formulir
+# DASHBOARD FORMULIR ROUTES
 @app.route('/dashboard/formulir', methods=["GET", "POST"])
 def showformulir():
     data = {
@@ -908,10 +866,7 @@ def showformulir():
         response.delete_cookie("tokenLogin")
         return response
 
-
-
-
-
+# DASHBOARD DOKUMEN ROUTES
 @app.route('/dashboard/dokumen', methods=["GET", "POST"])
 def showdoc():
     data = {
@@ -1004,9 +959,7 @@ def showdoc():
         response.delete_cookie("tokenLogin")
         return response
 
-
-
-
+# DASHBOARD STATUS ROUTES
 @app.route('/dashboard/status', methods=['GET', 'POST'])
 def showVer():
     data = {
@@ -1074,9 +1027,7 @@ def showVer():
         response.delete_cookie("tokenLogin")
         return response
 
-
-
-
+# DASHBOARD PEMBAYARAN ROUTES
 @app.route('/dashboard/pembayaran', methods=['GET', 'POST'])
 def showPembayaran():
     data = {
@@ -1149,8 +1100,6 @@ def showPembayaran():
         response = make_response(redirect(url_for("showAuth")))
         response.delete_cookie("tokenLogin")
         return response
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
