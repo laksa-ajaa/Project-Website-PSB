@@ -1,0 +1,105 @@
+{% include 'dashboard_admin/layouts/header.html'   %}
+<body>
+    <div class="container-xxl position-relative bg-white d-flex p-0">
+        <!-- Spinner Start -->
+        <div id="spinner"
+            class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+
+        <!-- Sidebar Start -->
+        {% include 'dashboard_admin/layouts/sidebar.html' %}
+        <!-- Sidebar End -->
+
+        <!-- Content Start -->
+        <div class="content">
+            <!-- Navbar Start -->
+            {% include 'dashboard_admin/layouts/navbar.html' %}
+            <!-- Navbar End -->
+
+            <!-- Table Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-12">
+                        <div class="bg-light rounded h-100 p-4">
+                            <h6 class="mb-4">Verifikasi Formulir Calon Santri Aliyah</h6>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">No</th>
+                                            <th scope="col">Nama</th>
+                                            <th scope="col">NISN</th>
+                                            <th scope="col">Asal Sekolah</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for form in user_form %}
+                                        <tr>
+                                            <th scope="row">{{ loop.index }}</th>
+                                            <td>{{ form.nama }}</td>
+                                            <td>{{ form.NISN }}</td>
+                                            <td>{{ form['sekolah asal'] }}</td>
+                                            <td>{{ user_info['status formulir'] }}</td>
+                                            <td>
+                                                <div class="d-flex flex-row gap-1">
+                                                    <a class="btn btn-sm btn-secondary" href="/admin/formulir/santri/{{ form.user_id }}"><i class="fa fa-eye"></i></a>
+                                                    {% if user_info['status formulir'] == 'Pending' %}
+                                                    <form id="approveForm" action="/admin/formulir/aliyah/{{ form.user_id }}" method="POST">
+                                                        <button id="approveButton" class="btn btn-sm btn-success" type="submit"><i class="fa fa-check"></i></button>
+                                                    </form>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Table End -->
+
+            <!-- Footer Start -->
+            {% include 'dashboard_admin/layouts/footer.html' %}
+            <!-- Footer End -->
+            <script>
+                document.getElementById("approveForm").addEventListener("submit", function(event) {
+                    event.preventDefault();
+                    swal({
+                        title: "Apakah kamu yakin?",
+                        text: "Formulir akan disetujui.",
+                        icon: "warning",
+                        buttons: {
+                            cancel: {
+                                text: "Batal",
+                                visible: true,
+                                className: "btn btn-danger"
+                            },
+                            confirm: {
+                                text: "Setujui",
+                                className: "btn btn-success"
+                            }
+                        },
+                        dangerMode: true
+                    }).then((willApprove) => {
+                        if (willApprove) {
+                            swal({
+                                text: "Formulir sudah disetujui.",
+                                icon: "success"
+                            }).then(() => {
+                                document.getElementById("approveForm").submit();
+                            });
+                        }
+                    });
+                });
+            </script>
+</body>

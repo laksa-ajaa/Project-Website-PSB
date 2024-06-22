@@ -16,7 +16,7 @@ load_dotenv(dotenv_path)
 MONGODB_URI = os.environ.get("MONGODB_URI")
 DB_NAME = os.environ.get("DB_NAME")
 
-SECRET_KEY = os.environ.get("SECRET_KEY")  # Mengambil secret key dari file .env
+SECRET_KEY = os.environ.get("SECRET_KEY") 
 if not SECRET_KEY:
     raise ValueError("No SECRET_KEY set for Flask application")
 
@@ -276,11 +276,11 @@ def showTempAdmin():
 def indexAdmin():
     data = {
         'title': 'Dashboard Admin',
+        'active': 'home',
+        
     }
     token_receive = request.cookies.get("tokenLogin")
-    if not token_receive:
-        flash("Silahkan login terlebih dahulu", "danger")
-        return redirect(url_for("authAdmin"))
+
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         if 'role' not in payload:
@@ -291,12 +291,12 @@ def indexAdmin():
         
         admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"]), "role": payload["role"]})
         if payload["role"] == "admin":
-            pending_students = list(db.users.find({}))
+            data['pendaftar'] = list(db.users.find({}))
+            data['form'] = list(db.form.find({}))
+            data['doc'] = list(db.doc.find({}))
+            data['pembayaran'] = list(db.pembayaran.find({}))
             
-            # Debugging
-            print("Pending students:", pending_students)
-            
-            return render_template("dashboard_admin/index.html", admin_info=admin_info, data=data, pending_students=pending_students)
+            return render_template("dashboard_admin/index.html", admin_info=admin_info, data=data)
         else:
             flash("Anda tidak memiliki izin untuk mengakses halaman ini", "danger")
             response = make_response(redirect(url_for("authAdmin")))
@@ -310,15 +310,16 @@ def indexAdmin():
         return response
     except jwt.exceptions.DecodeError:
         flash("Token anda tidak valid, silahkan login kembali", "danger")
-        response = make_response(redirect(url_for("authAdmin")))
+        response = make_response(redirect(url_for("showAuth")))
         response.delete_cookie("tokenLogin")
         return response
 
     
-@app.route('/admin/datapeserta')
+@app.route('/admin/pendaftar')
 def pesertaAdmin():
     data = {
         'title': 'Dashboard Admin',
+        'active': 'pendaftar'
     }
     token_receive = request.cookies.get("tokenLogin")
     try:
@@ -330,9 +331,10 @@ def pesertaAdmin():
             return response
         
         admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"]), "role": payload["role"]})
-        pendaftar = db.form.find({})
         if payload["role"] == "admin":
-            return render_template("dashboard_admin/dataPeserta.html", admin_info=admin_info, data=data, pendaftar=pendaftar)
+            data['pendaftar'] = list(db.users.find({}))
+            
+            return render_template("dashboard_admin/pendaftar.html", admin_info=admin_info, data=data)
         else:
             flash("Anda tidak memiliki izin untuk mengakses halaman ini", "danger")
             response = make_response(redirect(url_for("authAdmin")))
@@ -345,14 +347,16 @@ def pesertaAdmin():
         return response
     except jwt.exceptions.DecodeError:
         flash("Token anda tidak valid, silahkan login kembali", "danger")
-        response = make_response(redirect(url_for("authAdmin")))
+        response = make_response(redirect(url_for("showAuth")))
         response.delete_cookie("tokenLogin")
         return response
-    
-@app.route('/admin/verifikasipeserta', methods=['GET', 'POST'])
-def verifyAdmin():
+
+#VERIFIKASI FORMULIR
+@app.route('/admin/formulir/aliyah', methods=['GET'])
+def verifyFormulirMA():
     data = {
         'title': 'Dashboard Admin',
+        'active': 'verifikasi'
     }
     token_receive = request.cookies.get("tokenLogin")
     try:
@@ -371,23 +375,12 @@ def verifyAdmin():
             return response
         
         # Mendapatkan data siswa yang sedang menunggu verifikasi
-        pending_students = list(db.users.find({}))
-        
-        # Debugging
-        print("Pending students:", pending_students)
+        user_form = list(db.form.find({}))
+        user_id = user_form[0]['user_id']
+        user_info = db.users.find_one({"_id": ObjectId(user_id)})
+                
+        return render_template("dashboard_admin/formulir_ma.html", admin_info=admin_info, user_info=user_info, data=data, user_form=user_form)
 
-        if request.method == 'POST':
-            student_id = request.form.get('student_id')
-            action = request.form.get('action')
-
-            if action == 'approve':
-                db.users.update_one({"_id": ObjectId(student_id)}, {"$set": {"status": "verified"}})
-                flash("Siswa berhasil diverifikasi", "success")
-            elif action == 'reject':
-                db.users.update_one({"_id": ObjectId(student_id)}, {"$set": {"status": "rejected"}})
-                flash("Verifikasi siswa ditolak", "warning")
-
-        return render_template("dashboard_admin/verifikasi.html", admin_info=admin_info, data=data, pending_students=pending_students)
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
         response = make_response(redirect(url_for("authAdmin")))
@@ -395,14 +388,80 @@ def verifyAdmin():
         return response
     except jwt.exceptions.DecodeError:
         flash("Token anda tidak valid, silahkan login kembali", "danger")
-        response = make_response(redirect(url_for("authAdmin")))
+        response = make_response(redirect(url_for("showAuth")))
         response.delete_cookie("tokenLogin")
         return response
 
-@app.route('/admin/pembayaran', methods=['GET', 'POST'])
-def paymentAdmin():
+@app.route('/admin/formulir/aliyah/<id>', methods=['POST'])
+def approveFormulirMA(id):
+    token_receive = request.cookies.get("tokenLogin")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        if 'role' not in payload:
+            flash("Halaman ini tidak dapat diakses, silahkan login kembali", "danger")
+            response = make_response(redirect(url_for("showAuth")))
+            response.delete_cookie("tokenLogin")
+            return response
+        
+        if payload["role"] != "admin":
+            flash("Anda tidak memiliki izin untuk mengakses halaman ini", "danger")
+            response = make_response(redirect(url_for("authAdmin")))
+            response.delete_cookie("tokenLogin")
+            return response
+        db.users.update_one({'_id': ObjectId(id)}, {'$set': {'status formulir': 'Done'}})
+        return redirect(url_for("verifyFormulirMA"))
+    except jwt.ExpiredSignatureError:
+        flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("authAdmin")))
+        response.delete_cookie("tokenLogin")
+        return response
+    except jwt.exceptions.DecodeError:
+        flash("Token anda tidak valid, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("showAuth")))
+        response.delete_cookie("tokenLogin")
+        return response
+
+@app.route('/admin/formulir/santri/<id>')
+def detailFormulir(id):
+    data = {
+        'title': 'Detail Formulir',
+        'active': 'verifikasi'
+    }
+    token_receive = request.cookies.get("tokenLogin")
+    
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        if 'role' not in payload:
+            flash("Halaman ini tidak dapat diakses, silahkan login kembali", "danger")
+            response = make_response(redirect(url_for("showAuth")))
+            response.delete_cookie("tokenLogin")
+            return response
+        
+        admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"]), "role": payload["role"]})
+        if payload["role"] != "admin":
+            flash("Anda tidak memiliki izin untuk mengakses halaman ini", "danger")
+            response = make_response(redirect(url_for("authAdmin")))
+            response.delete_cookie("tokenLogin")
+            return response
+        user_form = db.form.find_one({"user_id": ObjectId(id)})
+        return render_template("dashboard_admin/form_detail.html", data=data, user_form=user_form , admin_info=admin_info)
+    except jwt.ExpiredSignatureError:
+        flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("authAdmin")))
+        response.delete_cookie("tokenLogin")
+        return response
+    except jwt.exceptions.DecodeError:
+        flash("Token anda tidak valid, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("showAuth")))
+        response.delete_cookie("tokenLogin")
+        return response
+
+#VERIFIKASI DOKUMEN
+@app.route('/admin/dokumen/aliyah', methods=['GET'])
+def verifyDokumenMA():
     data = {
         'title': 'Dashboard Admin',
+        'active': 'verifikasi'
     }
     token_receive = request.cookies.get("tokenLogin")
     try:
@@ -414,27 +473,17 @@ def paymentAdmin():
             return response
         
         admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"]), "role": payload["role"]})
-        if payload["role"] == "admin":
-            if request.method == 'POST':
-                student_id = request.form.get('student_id')
-                action = request.form.get('action')
-                
-                if action == 'approve':
-                    db.pembayaran.update_one({'_id': ObjectId(student_id)}, {'$set': {'status': 'Approved'}})
-                    flash("Pembayaran telah disetujui", "success")
-                elif action == 'reject':
-                    db.pembayaran.update_one({'_id': ObjectId(student_id)}, {'$set': {'status': 'Rejected'}})
-                    flash("Pembayaran telah ditolak", "danger")
-                return redirect(url_for('paymentAdmin'))
-            
-            pembayaran_siswa = list(db.pembayaran.find({}))
-            return render_template("dashboard_admin/pembayaran.html", admin_info=admin_info, data=data, pembayaran_siswa=pembayaran_siswa)
-        else:
+        if payload["role"] != "admin":
             flash("Anda tidak memiliki izin untuk mengakses halaman ini", "danger")
             response = make_response(redirect(url_for("authAdmin")))
             response.delete_cookie("tokenLogin")
             return response
-
+        
+        user_form = list(db.form.find({}))
+        user_id = user_form[0]['user_id']
+        user_info = db.users.find_one({"_id": ObjectId(user_id)})
+        
+        return render_template("dashboard_admin/dokumen_ma.html", data=data, admin_info=admin_info , user_info=user_info, user_form=user_form)
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
         response = make_response(redirect(url_for("authAdmin")))
@@ -442,7 +491,175 @@ def paymentAdmin():
         return response
     except jwt.exceptions.DecodeError:
         flash("Token anda tidak valid, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("showAuth")))
+        response.delete_cookie("tokenLogin")
+        return response
+
+@app.route('/admin/dokumen/aliyah/<id>')
+def detailDokumenMA(id):
+    data = {
+        'title': 'Detail Dokumen',
+        'active': 'verifikasi'
+    }
+    token_receive = request.cookies.get("tokenLogin")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        if 'role' not in payload:
+            flash("Halaman ini tidak dapat diakses, silahkan login kembali", "danger")
+            response = make_response(redirect(url_for("showAuth")))
+            response.delete_cookie("tokenLogin")
+            return response
+        
+        admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"]), "role": payload["role"]})
+        if payload["role"] != "admin":
+            flash("Anda tidak memiliki izin untuk mengakses halaman ini", "danger")
+            response = make_response(redirect(url_for("authAdmin")))
+            response.delete_cookie("tokenLogin")
+            return response
+        user_doc = db.dokumen_santri.find_one({"user_id": ObjectId(id)})
+        return render_template("dashboard_admin/doc_detail_ma.html", data=data, user_doc=user_doc , admin_info=admin_info)
+    except jwt.ExpiredSignatureError:
+        flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
         response = make_response(redirect(url_for("authAdmin")))
+        response.delete_cookie("tokenLogin")
+        return response
+    except jwt.exceptions.DecodeError:
+        flash("Token anda tidak valid, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("showAuth")))
+        response.delete_cookie("tokenLogin")
+        return response 
+
+@app.route('/admin/dokumen/aliyah/<id>', methods=['POST'])
+def approveDokumenMA(id):
+    token_receive = request.cookies.get("tokenLogin")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        if 'role' not in payload:
+            flash("Halaman ini tidak dapat diakses, silahkan login kembali", "danger")
+            response = make_response(redirect(url_for("showAuth")))
+            response.delete_cookie("tokenLogin")
+            return response
+        
+        if payload["role"] != "admin":
+            flash("Anda tidak memiliki izin untuk mengakses halaman ini", "danger")
+            response = make_response(redirect(url_for("authAdmin")))
+            response.delete_cookie("tokenLogin")
+            return response
+        db.users.update_one({'_id': ObjectId(id)}, {'$set': {'status dokumen': 'Done'}})
+        return redirect(url_for("verifyDokumenMA"))
+    except jwt.ExpiredSignatureError:
+        flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("authAdmin")))
+        response.delete_cookie("tokenLogin")
+        return response
+    except jwt.exceptions.DecodeError:
+        flash("Token anda tidak valid, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("showAuth")))
+        response.delete_cookie("tokenLogin")
+        return response
+
+
+
+#VERIFIKASI PEMBAYARAN 
+@app.route('/admin/pembayaran/aliyah', methods=['GET'])
+def verifyPembayaranMA():
+    data = {
+        'title': 'Dashboard Admin',
+        'active': 'verifikasi'
+    }
+    token_receive = request.cookies.get("tokenLogin")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        if 'role' not in payload:
+            flash("Halaman ini tidak dapat diakses, silahkan login kembali", "danger")
+            response = make_response(redirect(url_for("showAuth")))
+            response.delete_cookie("tokenLogin")
+            return response
+        
+        admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"]), "role": payload["role"]})
+        if payload["role"] != "admin":
+            flash("Anda tidak memiliki izin untuk mengakses halaman ini", "danger")
+            response = make_response(redirect(url_for("authAdmin")))
+            response.delete_cookie("tokenLogin")
+            return response
+        
+        user_form = list(db.form.find({}))
+        user_id = user_form[0]['user_id']
+        user_info = db.users.find_one({"_id": ObjectId(user_id)})
+        
+        return render_template("dashboard_admin/pembayaran_ma.html", data=data, admin_info=admin_info , user_info=user_info, user_form=user_form)
+    except jwt.ExpiredSignatureError:
+        flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("authAdmin")))
+        response.delete_cookie("tokenLogin")
+        return response
+    except jwt.exceptions.DecodeError:
+        flash("Token anda tidak valid, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("showAuth")))
+        response.delete_cookie("tokenLogin")
+        return response
+
+@app.route('/admin/pembayaran/aliyah/<id>')
+def detailPembayaranMA(id):
+    data = {
+        'title': 'Detail Pembayaran',
+        'active': 'verifikasi'
+    }
+    token_receive = request.cookies.get("tokenLogin")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        if 'role' not in payload:
+            flash("Halaman ini tidak dapat diakses, silahkan login kembali", "danger")
+            response = make_response(redirect(url_for("showAuth")))
+            response.delete_cookie("tokenLogin")
+            return response
+        
+        admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"]), "role": payload["role"]})
+        if payload["role"] != "admin":
+            flash("Anda tidak memiliki izin untuk mengakses halaman ini", "danger")
+            response = make_response(redirect(url_for("authAdmin")))
+            response.delete_cookie("tokenLogin")
+            return response
+        user_pay = db.pembayaran.find_one({"user_id": ObjectId(id)})
+        return render_template("dashboard_admin/pay_detail_ma.html", data=data, user_pay=user_pay , admin_info=admin_info)
+    except jwt.ExpiredSignatureError:
+        flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("authAdmin")))
+        response.delete_cookie("tokenLogin")
+        return response
+    except jwt.exceptions.DecodeError:
+        flash("Token anda tidak valid, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("showAuth")))
+        response.delete_cookie("tokenLogin")
+        return response
+
+
+@app.route('/admin/pembayaran/aliyah/<id>', methods=['POST'])
+def approvePembayaranMA(id):
+    token_receive = request.cookies.get("tokenLogin")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        if 'role' not in payload:
+            flash("Halaman ini tidak dapat diakses, silahkan login kembali", "danger")
+            response = make_response(redirect(url_for("showAuth")))
+            response.delete_cookie("tokenLogin")
+            return response
+        
+        if payload["role"] != "admin":
+            flash("Anda tidak memiliki izin untuk mengakses halaman ini", "danger")
+            response = make_response(redirect(url_for("authAdmin")))
+            response.delete_cookie("tokenLogin")
+            return response
+        db.users.update_one({'_id': ObjectId(id)}, {'$set': {'status pembayaran': 'Done'}})
+        return redirect(url_for("verifyPembayaranMA"))
+    except jwt.ExpiredSignatureError:
+        flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("authAdmin")))
+        response.delete_cookie("tokenLogin")
+        return response
+    except jwt.exceptions.DecodeError:
+        flash("Token anda tidak valid, silahkan login kembali", "danger")
+        response = make_response(redirect(url_for("showAuth")))
         response.delete_cookie("tokenLogin")
         return response
 
