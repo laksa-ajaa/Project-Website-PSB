@@ -35,7 +35,21 @@
           </div>
         </div>
         <!-- Breadcrumb End -->
-        {% if user_info['status formulir'] != "Done" and user_info['status dokumen'] != "Done" %}
+        {% if user_info['status formulir'] == "None" %}
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Formulir Belum Diupload</h4>
+            <p class="card-text mb-2">Anda belum mengisi formulir, silahkan isi formulir terlebih dahulu</p>
+            <a href="/dashboard/formulir" class="btn btn-user">Isi formulir</a>
+          </div>
+        </div>
+        {% elif user_info['status dokumen'] == "None" %}
+        <div class="card-body">
+          <h4 class="card-title">Dokumen Belum Diupload</h4>
+          <p class="card-text mb-2">Anda belum mengupload dokumen, silahkan upload dokumen terlebih dahulu</p>
+          <a href="/dashboard/dokumen" class="btn btn-user">Isi formulir</a>
+        </div>
+        {% elif user_info['status formulir'] != "Done" and user_info['status dokumen'] != "Done" %}
         <div class="card">
           <div class="card-body">
             <h4 class="card-title">Formulir dan Dokumen belum disetujui</h4>
