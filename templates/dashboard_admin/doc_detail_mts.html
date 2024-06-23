@@ -1,0 +1,90 @@
+{% include 'dashboard_admin/layouts/header.html'   %}
+  <body>
+    <div class="container-xxl position-relative bg-white d-flex p-0">
+      <!-- Spinner Start -->
+      <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+      <!-- Spinner End -->
+
+      <!-- Sidebar Start -->
+      {% include 'dashboard_admin/layouts/sidebar.html' %}
+      <!-- Sidebar End -->
+
+      <!-- Content Start -->
+      <div class="content">
+        <!-- Navbar Start -->
+        {% include 'dashboard_admin/layouts/navbar.html' %}
+        <!-- Navbar End -->
+
+        <!-- Form Start -->
+        <div class="bg-light rounded h-100 p-4">
+            <a href="/admin/dokumen/tsanawiyah" class="btn btn-sm btn-primary mb-4"><i class="fa fa-arrow-left"></i> Kembali</a>
+            <h5 class="mb-1">Detail Dokumen</h5>
+            <p class="mb-1 fw-bold">Tanggal dan Waktu Upload: {{user_info['tanggal upload dokumen']}} </p>
+            <p class="text-muted mb-3">Klik gambar untuk melihat lebih jelas</p>
+            <div class="row">
+                <div class="col-md-6 ">
+                    <div class="mb-4">
+                        <h6>Pas Foto</h6>
+                        <a href="{{user_doc.pas_foto}}" target="_blank">
+                            <img src="{{user_doc.pas_foto}}" alt="" style="width: 300px;">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <h6>Ijazah</h6>
+                        <a href="{{user_doc.ijazah}}" target="_blank">
+                            <img src="{{user_doc.ijazah}}" alt="" style="width: 300px;">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <h6>Surat Keterangan Lulus</h6>
+                        <a href="{{user_doc.surat_keterangan_lulus}}" target="_blank">
+                        <img src="{{user_doc.surat_keterangan_lulus}}" alt="" style="width: 300px;">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <h6>Akta Kelahiran</h6>
+                        <a href="{{user_doc.akta_kelahiran}}" target="_blank">
+                        <img src="{{user_doc.akta_kelahiran}}" alt="" style="width: 300px;">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <h6>Kartu Keluarga</h6>
+                        <a href="{{user_doc.kartu_keluarga}}" target="_blank">
+                        <img src="{{user_doc.kartu_keluarga}}" alt="" style="width: 300px;">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <h6>Surat Memiliki NISN</h6>
+                        <a href="{{user_doc.surat_memiliki_nisn}}" target="_blank">
+                        <img src="{{user_doc.surat_memiliki_nisn}}" alt="" style="width: 300px;">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end">
+                <a href="/admin/dokumen/tsanawiyah" class="btn btn-primary mt-3"><i class="bi bi-arrow-left"></i> Kembali</a>
+            </div>
+        </div>
+        <!-- Form End -->
+
+        <!-- Footer Start -->
+        {% include 'dashboard_admin/layouts/footer.html' %}
+  </body>

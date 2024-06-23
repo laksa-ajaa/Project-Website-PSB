@@ -16,7 +16,6 @@
     />
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../../static/assetAuth/css/style.css" />
-
     <!-- Script source -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
@@ -112,7 +111,12 @@
       signInButton_mobile.addEventListener("click", () => {
         container.classList.remove("right-panel-active");
       });
+
       $(document).ready(function () {
+        const namePattern = /^[a-zA-Z\s]+$/;
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const passwordMinLength = 8;
+
         $("#loginForm").submit(function (e) {
           e.preventDefault();
           let email = $("#email").val();
@@ -149,6 +153,7 @@
             },
           });
         });
+
         $("#registerForm").submit(function (e) {
           e.preventDefault();
           let nama = $("#nama").val();
@@ -161,8 +166,20 @@
             swal("Oops!", "Semua field harus diisi", "error");
             return;
           }
+          if (!nama) {
+            swal("Oops!", "Nama tidak boleh kosong", "error");
+            return;
+          }
+          if (!nama.match(namePattern)) {
+            swal("Oops!", "Nama tidak boleh mengandung karakter spesial", "error");
+            return;
+          }
           if (!email) {
-            swal("Oops!", "Email harus diisi", "error");
+            swal("Oops!", "Email tidak boleh kosong", "error");
+            return;
+          }
+          if (!email.match(emailPattern)) {
+            swal("Oops!", "Email harus memiliki domain yang valid", "error");
             return;
           }
           if (!phone) {
@@ -171,6 +188,10 @@
           }
           if (!password) {
             swal("Oops!", "Password harus diisi", "error");
+            return;
+          }
+          if (password.length < passwordMinLength) {
+            swal("Oops!", `Password harus memiliki minimal ${passwordMinLength} karakter`, "error");
             return;
           }
           if (password != repassword) {
