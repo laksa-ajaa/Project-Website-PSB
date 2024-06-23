@@ -1,310 +1,292 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Formulir Pendaftaran Pesantren</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <style>
-      .form-section {
-        display: none;
-      }
+{% include 'dashboard_user/layouts/header.html' %}
+<body>
+  <!-- Offcanvas & Header Menu Begin -->
+  {% include 'dashboard_user/layouts/navbar.html' %}
+  <!-- Offcanvas & Header Menu End -->
 
-      .form-section.current {
-        display: block;
-      }
-    </style>
-  </head>
+  <!-- Main Content Begin -->
+  <div class="d-flex" id="wrapper">
+    {% include 'dashboard_user/layouts/sidebar.html' %}
+    <!-- Sidebar End -->
 
-  <body>
-    <!-- Offcanvas & Header Menu Begin -->
-    {% include 'dashboard_user/layouts/header.html' %} {% include 'dashboard_user/layouts/navbar.html' %}
-    <!-- Offcanvas & Header Menu End -->
-
-    <!-- Main Content Begin -->
-    <div class="d-flex" id="wrapper">
-      {% include 'dashboard_user/layouts/sidebar.html' %}
-      <!-- Sidebar End -->
-
-      <!-- Page content wrapper-->
-      <div id="page-content-wrapper">
-        <!-- Top navigation-->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-          <div class="container-fluid">
-            <button class="border-0" id="sidebarToggle"><span class="navbar-toggler-icon"></span></button>
-          </div>
-        </nav>
-        <!-- Page content-->
-        <div class="container">
-          <!-- Breadcrumb Begin -->
-          <div class="breadcrumb-section">
-            <div class="container">
-              <div class="row">
-                <div class="col-lg-12">
-                  <div class="breadcrumb__option">
-                    <a href="/dashboard"><span class="fa fa-home"></span> Home</a>
-                    <span>Formulir</span>
-                  </div>
+    <!-- Page content wrapper-->
+    <div id="page-content-wrapper">
+      <!-- Top navigation-->
+      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        <div class="container-fluid">
+          <button class="border-0" id="sidebarToggle"><span class="navbar-toggler-icon"></span></button>
+        </div>
+      </nav>
+      <!-- Page content-->
+      <div class="container">
+        <!-- Breadcrumb Begin -->
+        <div class="breadcrumb-section">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="breadcrumb__option">
+                  <a href="/dashboard"><span class="fa fa-home"></span> Home</a>
+                  <span>Formulir</span>
                 </div>
               </div>
             </div>
           </div>
-          <!-- Breadcrumb End -->
-          {% if form_submitted %}
-          <div class="card">
-            <div class="card-body">
-              <h4 class="card-title">Formulir Sudah Diisi</h4>
-              <p class="card-text mb-2">Anda sudah mengisi formulir, silahkan cek status pendaftaran</p>
-              <a href="/dashboard/status" class="btn btn-user">Cek status pendaftaran</a>
-            </div>
-          </div>
-          {% else %}
-          <!-- Form Pendaftaran Pesantren Begin -->
-          <div class="card mb-5">
-            <div class="card-body">
-              <form id="form" action="{{ url_for('showformulir') }}" method="post">
-                <div class="form-section current" id="form1">
-                  <h4 class="mt-3 mb-3">Identitas Calon Santri</h4>
-                  <div class="mb-3">
-                    <label for="nama" class="form-label">Nama Lengkap</label>
-                    <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan nama lengkap Anda" required />
-                  </div>
-                  <div class="mb-3">
-                    <label for="tempat_lahir" class="form-label">Tempat Lahir</label>
-                    <input type="text" class="form-control" id="tempat_lahir" name="tempat_lahir" placeholder="Masukkan tempat lahir Anda" required />
-                  </div>
-                  <div class="mb-3">
-                    <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
-                    <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" required />
-                  </div>
-                  <div class="mb-3">
-                    <label for="jenis_kelamin" class="form-label">Jenis kelamin</label>
-                    <select class="form-select" id="jenis_kelamin" name="jenis_kelamin" required>
-                      <option selected disabled>-- Pilih --</option>
-                      <option value="Laki-laki">Laki-laki</option>
-                      <option value="Perempuan">Perempuan</option>
-                    </select>
-                  </div>
-                  <div class="mb-3">
-                    <label for="alamat" class="form-label">Alamat Lengkap</label>
-                    <textarea class="form-control" id="alamat" name="alamat" rows="3" placeholder="Masukkan alamat lengkap Anda" required></textarea>
-                  </div>
-                  <div class="d-flex justify-content-end">
-                    <button type="button" class="btn btn-user w-50" id="nextForm2">Next</button>
-                  </div>
-                </div>
-
-                <div class="form-section" id="form2">
-                  <h4 class="mt-3 mb-3">Data Sekolah</h4>
-                  <div class="mb-3">
-                    <label for="nisn" class="form-label">NISN</label>
-                    <input type="text" class="form-control" id="nisn" name="nisn" placeholder="Masukkan NISN Anda" required />
-                  </div>
-                  <div class="mb-3">
-                    <label for="sekolah_asal" class="form-label">Sekolah Asal</label>
-                    <input type="text" class="form-control" id="sekolah_asal" name="sekolah_asal" placeholder="Masukkan Sekolah Asal Anda" required />
-                  </div>
-                  <div class="mb-3">
-                    <label for="pendidikan" class="form-label">Pendidikan Terakhir</label>
-                    <select class="form-select" id="pendidikan" name="pendidikan" required>
-                      <option selected disabled>-- Pilih --</option>
-                      <option value="SD/MI">SD / MI</option>
-                      <option value="SMP/MTs">SMP / MTs</option>
-                    </select>
-                  </div>
-                  <div class="mb-3">
-                    <label for="program" class="form-label">Program yang ingin didaftar</label>
-                    <input type="text" class="form-control" id="program" name="program" value="" required readonly />
-                  </div>
-                  <div class="d-flex justify-content-between gap-3">
-                    <button type="button" class="btn btn-secondary w-50" id="backForm1">Kembali</button>
-                    <button type="button" class="btn btn-user w-50" id="nextForm3">Selanjutnya</button>
-                  </div>
-                </div>
-
-                <div class="form-section" id="form3">
-                  <div class="row">
-                    <div class="card-ibu mt-4 col-6">
-                      <h4 class="mt-3">Identitas Ibu</h4>
-                      <div class="mb-3">
-                        <label for="nama_ibu" class="form-label">Nama Ibu</label>
-                        <input type="text" class="form-control" id="nama_ibu" name="nama_ibu" placeholder="Masukkan nama Ibu lengkap Anda" required />
-                      </div>
-                      <div class="mb-3">
-                        <label for="nik_ibu" class="form-label">NIK Ibu</label>
-                        <input type="text" class="form-control" id="nik_ibu" name="nik_ibu" placeholder="Masukkan NIK Ibu lengkap Anda" required />
-                      </div>
-                      <div class="mb-3">
-                        <label for="tempat_lahir_ibu" class="form-label">Tempat Lahir Ibu</label>
-                        <input type="text" class="form-control" id="tempat_lahir_ibu" name="tempat_lahir_ibu" placeholder="Masukkan tempat lahir Ibu Anda" required />
-                      </div>
-                      <div class="mb-3">
-                        <label for="tanggal_lahir_ibu" class="form-label">Tanggal Lahir Ibu</label>
-                        <input type="date" class="form-control" id="tanggal_lahir_ibu" name="tanggal_lahir_ibu" required />
-                      </div>
-                      <div class="mb-3">
-                        <label for="no_hp_ibu" class="form-label">Nomor HP</label>
-                        <input type="text" class="form-control" id="no_hp_ibu" name="no_hp_ibu" placeholder="Masukkan nomor HP Ibu Anda" required />
-                      </div>
-                    </div>
-
-                    <div class="card-ibu mt-4 col-6">
-                      <h4 class="mt-3">Identitas Ayah</h4>
-                      <div class="mb-3">
-                        <label for="nama_ayah" class="form-label">Nama Ayah</label>
-                        <input type="text" class="form-control" id="nama_ayah" name="nama_ayah" placeholder="Masukkan nama Ayah lengkap Anda" required />
-                      </div>
-                      <div class="mb-3">
-                        <label for="nik_ayah" class="form-label">NIK Ayah</label>
-                        <input type="text" class="form-control" id="nik_ayah" name="nik_ayah" placeholder="Masukkan NIK Ayah lengkap Anda" required />
-                      </div>
-                      <div class="mb-3">
-                        <label for="tempat_lahir_ayah" class="form-label">Tempat Lahir Ayah</label>
-                        <input type="text" class="form-control" id="tempat_lahir_ayah" name="tempat_lahir_ayah" placeholder="Masukkan tempat lahir Ayah Anda" required />
-                      </div>
-                      <div class="mb-3">
-                        <label for="tanggal_lahir_ayah" class="form-label">Tanggal Lahir Ayah</label>
-                        <input type="date" class="form-control" id="tanggal_lahir_ayah" name="tanggal_lahir_ayah" required />
-                      </div>
-                      <div class="mb-3">
-                        <label for="no_hp_ayah" class="form-label">Nomor HP Ayah</label>
-                        <input type="text" class="form-control" id="no_hp_ayah" name="no_hp_ayah" placeholder="Masukkan nomor HP Ayah Anda" required />
-                      </div>
-                    </div>
-                  </div>
-                  <div class="d-flex justify-content-between gap-3">
-                    <button type="button" class="btn btn-secondary w-50" id="backForm2">Kembali</button>
-                    <button type="submit" class="btn btn-user w-50">Daftar</button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-          <!-- Form Pendaftaran Pesantren End -->
-          {% endif %}
         </div>
+        <!-- Breadcrumb End -->
+        {% if form_submitted %}
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Formulir Sudah Diisi</h4>
+            <p class="card-text mb-2">Anda sudah mengisi formulir, silahkan cek status pendaftaran</p>
+            <a href="/dashboard/status" class="btn btn-user">Cek status pendaftaran</a>
+          </div>
+        </div>
+        {% else %}
+        <!-- Form Pendaftaran Pesantren Begin -->
+        <div class="card mb-5">
+          <div class="card-body">
+            <form id="form" action="{{ url_for('showformulir') }}" method="post">
+              <div class="form-section current" id="form1">
+                <h4 class="mt-3 mb-3">Identitas Calon Santri</h4>
+                <div class="mb-3">
+                  <label for="nama" class="form-label">Nama Lengkap</label>
+                  <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan nama lengkap Anda" required />
+                </div>
+                <div class="mb-3">
+                  <label for="tempat_lahir" class="form-label">Tempat Lahir</label>
+                  <input type="text" class="form-control" id="tempat_lahir" name="tempat_lahir" placeholder="Masukkan tempat lahir Anda" required />
+                </div>
+                <div class="mb-3">
+                  <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
+                  <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" required />
+                </div>
+                <div class="mb-3">
+                  <label for="jenis_kelamin" class="form-label">Jenis kelamin</label>
+                  <select class="form-select" id="jenis_kelamin" name="jenis_kelamin" required>
+                    <option selected disabled>-- Pilih --</option>
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="alamat" class="form-label">Alamat Lengkap</label>
+                  <textarea class="form-control" id="alamat" name="alamat" rows="3" placeholder="Masukkan alamat lengkap Anda" required></textarea>
+                </div>
+                <div class="d-flex justify-content-end">
+                  <button type="button" class="btn btn-user w-50" id="nextForm2">Next</button>
+                </div>
+              </div>
+
+              <div class="form-section" id="form2">
+                <h4 class="mt-3 mb-3">Data Sekolah</h4>
+                <div class="mb-3">
+                  <label for="nisn" class="form-label">NISN</label>
+                  <input type="text" class="form-control" id="nisn" name="nisn" placeholder="Masukkan NISN Anda" required />
+                </div>
+                <div class="mb-3">
+                  <label for="sekolah_asal" class="form-label">Sekolah Asal</label>
+                  <input type="text" class="form-control" id="sekolah_asal" name="sekolah_asal" placeholder="Masukkan Sekolah Asal Anda" required />
+                </div>
+                <div class="mb-3">
+                  <label for="pendidikan" class="form-label">Pendidikan Terakhir</label>
+                  <select class="form-select" id="pendidikan" name="pendidikan" required>
+                    <option selected disabled>-- Pilih --</option>
+                    <option value="SD/MI">SD / MI</option>
+                    <option value="SMP/MTs">SMP / MTs</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="program" class="form-label">Program yang ingin didaftar</label>
+                  <input type="text" class="form-control" id="program" name="program" value="" required readonly />
+                </div>
+                <div class="d-flex justify-content-between gap-3">
+                  <button type="button" class="btn btn-secondary w-50" id="backForm1">Kembali</button>
+                  <button type="button" class="btn btn-user w-50" id="nextForm3">Selanjutnya</button>
+                </div>
+              </div>
+
+              <div class="form-section" id="form3">
+                <div class="row">
+                  <div class="card-ibu mt-4 col-6">
+                    <h4 class="mt-3">Identitas Ibu</h4>
+                    <div class="mb-3">
+                      <label for="nama_ibu" class="form-label">Nama Ibu</label>
+                      <input type="text" class="form-control" id="nama_ibu" name="nama_ibu" placeholder="Masukkan nama Ibu lengkap Anda" required />
+                    </div>
+                    <div class="mb-3">
+                      <label for="nik_ibu" class="form-label">NIK Ibu</label>
+                      <input type="text" class="form-control" id="nik_ibu" name="nik_ibu" placeholder="Masukkan NIK Ibu lengkap Anda" required />
+                    </div>
+                    <div class="mb-3">
+                      <label for="tempat_lahir_ibu" class="form-label">Tempat Lahir Ibu</label>
+                      <input type="text" class="form-control" id="tempat_lahir_ibu" name="tempat_lahir_ibu" placeholder="Masukkan tempat lahir Ibu Anda" required />
+                    </div>
+                    <div class="mb-3">
+                      <label for="tanggal_lahir_ibu" class="form-label">Tanggal Lahir Ibu</label>
+                      <input type="date" class="form-control" id="tanggal_lahir_ibu" name="tanggal_lahir_ibu" required />
+                    </div>
+                    <div class="mb-3">
+                      <label for="no_hp_ibu" class="form-label">Nomor HP</label>
+                      <input type="text" class="form-control" id="no_hp_ibu" name="no_hp_ibu" placeholder="Masukkan nomor HP Ibu Anda" required />
+                    </div>
+                  </div>
+
+                  <div class="card-ibu mt-4 col-6">
+                    <h4 class="mt-3">Identitas Ayah</h4>
+                    <div class="mb-3">
+                      <label for="nama_ayah" class="form-label">Nama Ayah</label>
+                      <input type="text" class="form-control" id="nama_ayah" name="nama_ayah" placeholder="Masukkan nama Ayah lengkap Anda" required />
+                    </div>
+                    <div class="mb-3">
+                      <label for="nik_ayah" class="form-label">NIK Ayah</label>
+                      <input type="text" class="form-control" id="nik_ayah" name="nik_ayah" placeholder="Masukkan NIK Ayah lengkap Anda" required />
+                    </div>
+                    <div class="mb-3">
+                      <label for="tempat_lahir_ayah" class="form-label">Tempat Lahir Ayah</label>
+                      <input type="text" class="form-control" id="tempat_lahir_ayah" name="tempat_lahir_ayah" placeholder="Masukkan tempat lahir Ayah Anda" required />
+                    </div>
+                    <div class="mb-3">
+                      <label for="tanggal_lahir_ayah" class="form-label">Tanggal Lahir Ayah</label>
+                      <input type="date" class="form-control" id="tanggal_lahir_ayah" name="tanggal_lahir_ayah" required />
+                    </div>
+                    <div class="mb-3">
+                      <label for="no_hp_ayah" class="form-label">Nomor HP Ayah</label>
+                      <input type="text" class="form-control" id="no_hp_ayah" name="no_hp_ayah" placeholder="Masukkan nomor HP Ayah Anda" required />
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between gap-3">
+                  <button type="button" class="btn btn-secondary w-50" id="backForm2">Kembali</button>
+                  <button type="submit" class="btn btn-user w-50">Daftar</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- Form Pendaftaran Pesantren End -->
+        {% endif %}
       </div>
     </div>
-    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %} {% if category == 'danger' %}
-    <script>
-      swal({
-        icon: "error",
-        text: "{{ message }}",
-      });
-    </script>
-    {% elif category == 'success' %}
-    <script>
-      swal({
-        icon: "success",
-        text: "{{ message }}",
-      });
-    </script>
-    {% endif %} {% endfor %} {% endif %} {% endwith %}
-    <!-- Main Content End -->
+  </div>
+  {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %} {% if category == 'danger' %}
+  <script>
+    swal({
+      icon: "error",
+      text: "{{ message }}",
+    });
+  </script>
+  {% elif category == 'success' %}
+  <script>
+    swal({
+      icon: "success",
+      text: "{{ message }}",
+    });
+  </script>
+  {% endif %} {% endfor %} {% endif %} {% endwith %}
+  <!-- Main Content End -->
 
-    {% include 'dashboard_user/layouts/footer.html' %}
+  {% include 'dashboard_user/layouts/footer.html' %}
 
-    <script>
-      document.getElementById("nextForm2").addEventListener("click", function () {
-        if (validateForm1()) {
-          document.getElementById("form1").classList.remove("current");
-          document.getElementById("form2").classList.add("current");
-        } else {
-          swal({
-            icon: "error",
-            text: "Harap lengkapi semua field pada Identitas Calon Santri sebelum melanjutkan.",
-          });
-        }
-      });
-
-      document.getElementById("nextForm3").addEventListener("click", function () {
-        if (validateForm2()) {
-          document.getElementById("form2").classList.remove("current");
-          document.getElementById("form3").classList.add("current");
-        } else {
-          swal({
-            icon: "error",
-            text: "Harap lengkapi semua field pada Data Sekolah sebelum melanjutkan.",
-          });
-        }
-      });
-
-      document.getElementById("backForm1").addEventListener("click", function () {
-        document.getElementById("form2").classList.remove("current");
-        document.getElementById("form1").classList.add("current");
-      });
-
-      document.getElementById("backForm2").addEventListener("click", function () {
-        document.getElementById("form3").classList.remove("current");
+  <script>
+    document.getElementById("nextForm2").addEventListener("click", function () {
+      if (validateForm1()) {
+        document.getElementById("form1").classList.remove("current");
         document.getElementById("form2").classList.add("current");
-      });
-
-      document.getElementById("form").addEventListener("submit", function (event) {
-        if (!validateForm3()) {
-          event.preventDefault();
-          swal({
-            icon: "error",
-            text: "Harap lengkapi semua field pada Identitas Ibu dan Identitas Ayah sebelum mengirimkan formulir.",
-          });
-        }
-      });
-
-      function validateForm1() {
-        var nama = document.getElementById("nama").value.trim();
-        var tempat_lahir = document.getElementById("tempat_lahir").value.trim();
-        var tanggal_lahir = document.getElementById("tanggal_lahir").value.trim();
-        var jenis_kelamin = document.getElementById("jenis_kelamin").value.trim();
-        var alamat = document.getElementById("alamat").value.trim();
-
-        if (nama === "" || tempat_lahir === "" || tanggal_lahir === "" || jenis_kelamin === "" || alamat === "") {
-          return false;
-        }
-        return true;
-      }
-
-      function validateForm2() {
-        var sekolah_asal = document.getElementById("sekolah_asal").value.trim();
-        var nisn = document.getElementById("nisn").value.trim();
-        var pendidikan = document.getElementById("pendidikan").value.trim();
-        var program = document.getElementById("program").value;
-
-        if (sekolah_asal === "" || nisn === "" || pendidikan === "" || program === "") {
-          return false;
-        }
-        return true;
-      }
-      document.addEventListener("DOMContentLoaded", function () {
-        const pendidikanSelect = document.getElementById("pendidikan");
-        const programSelect = document.getElementById("program");
-
-        pendidikanSelect.addEventListener("change", function () {
-          if (pendidikanSelect.value === "SD/MI") {
-            programSelect.value = "MTs";
-          } else if (pendidikanSelect.value === "SMP/MTs") {
-            programSelect.value = "MAS";
-          } else {
-            programSelect.value = ""; // reset to default if none of the conditions match
-          }
+      } else {
+        swal({
+          icon: "error",
+          text: "Harap lengkapi semua field pada Identitas Calon Santri sebelum melanjutkan.",
         });
-      });
-      function validateForm3() {
-        var nama_ibu = document.getElementById("nama_ibu").value.trim();
-        var nik_ibu = document.getElementById("nik_ibu").value.trim();
-        var tempat_lahir_ibu = document.getElementById("tempat_lahir_ibu").value.trim();
-        var tanggal_lahir_ibu = document.getElementById("tanggal_lahir_ibu").value.trim();
-        var no_hp_ibu = document.getElementById("no_hp_ibu").value.trim();
-
-        var nama_ayah = document.getElementById("nama_ayah").value.trim();
-        var nik_ayah = document.getElementById("nik_ayah").value.trim();
-        var tempat_lahir_ayah = document.getElementById("tempat_lahir_ayah").value.trim();
-        var tanggal_lahir_ayah = document.getElementById("tanggal_lahir_ayah").value.trim();
-        var no_hp_ayah = document.getElementById("no_hp_ayah").value.trim();
-
-        if (nama_ibu === "" || nik_ibu === "" || tempat_lahir_ibu === "" || tanggal_lahir_ibu === "" || no_hp_ibu === "" || nama_ayah === "" || nik_ayah === "" || tempat_lahir_ayah === "" || tanggal_lahir_ayah === "" || no_hp_ayah === "") {
-          return false;
-        }
-        return true;
       }
-    </script>
-  </body>
-</html>
+    });
+
+    document.getElementById("nextForm3").addEventListener("click", function () {
+      if (validateForm2()) {
+        document.getElementById("form2").classList.remove("current");
+        document.getElementById("form3").classList.add("current");
+      } else {
+        swal({
+          icon: "error",
+          text: "Harap lengkapi semua field pada Data Sekolah sebelum melanjutkan.",
+        });
+      }
+    });
+
+    document.getElementById("backForm1").addEventListener("click", function () {
+      document.getElementById("form2").classList.remove("current");
+      document.getElementById("form1").classList.add("current");
+    });
+
+    document.getElementById("backForm2").addEventListener("click", function () {
+      document.getElementById("form3").classList.remove("current");
+      document.getElementById("form2").classList.add("current");
+    });
+
+    document.getElementById("form").addEventListener("submit", function (event) {
+      if (!validateForm3()) {
+        event.preventDefault();
+        swal({
+          icon: "error",
+          text: "Harap lengkapi semua field pada Identitas Ibu dan Identitas Ayah sebelum mengirimkan formulir.",
+        });
+      }
+    });
+
+    function validateForm1() {
+      var nama = document.getElementById("nama").value.trim();
+      var tempat_lahir = document.getElementById("tempat_lahir").value.trim();
+      var tanggal_lahir = document.getElementById("tanggal_lahir").value.trim();
+      var jenis_kelamin = document.getElementById("jenis_kelamin").value.trim();
+      var alamat = document.getElementById("alamat").value.trim();
+
+      if (nama === "" || tempat_lahir === "" || tanggal_lahir === "" || jenis_kelamin === "" || alamat === "") {
+        return false;
+      }
+      return true;
+    }
+
+    function validateForm2() {
+      var sekolah_asal = document.getElementById("sekolah_asal").value.trim();
+      var nisn = document.getElementById("nisn").value.trim();
+      var pendidikan = document.getElementById("pendidikan").value.trim();
+      var program = document.getElementById("program").value;
+
+      if (sekolah_asal === "" || nisn === "" || pendidikan === "" || program === "") {
+        return false;
+      }
+      return true;
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+      const pendidikanSelect = document.getElementById("pendidikan");
+      const programSelect = document.getElementById("program");
+
+      pendidikanSelect.addEventListener("change", function () {
+        if (pendidikanSelect.value === "SD/MI") {
+          programSelect.value = "MTs";
+        } else if (pendidikanSelect.value === "SMP/MTs") {
+          programSelect.value = "MAS";
+        } else {
+          programSelect.value = ""; // reset to default if none of the conditions match
+        }
+      });
+    });
+    function validateForm3() {
+      var nama_ibu = document.getElementById("nama_ibu").value.trim();
+      var nik_ibu = document.getElementById("nik_ibu").value.trim();
+      var tempat_lahir_ibu = document.getElementById("tempat_lahir_ibu").value.trim();
+      var tanggal_lahir_ibu = document.getElementById("tanggal_lahir_ibu").value.trim();
+      var no_hp_ibu = document.getElementById("no_hp_ibu").value.trim();
+
+      var nama_ayah = document.getElementById("nama_ayah").value.trim();
+      var nik_ayah = document.getElementById("nik_ayah").value.trim();
+      var tempat_lahir_ayah = document.getElementById("tempat_lahir_ayah").value.trim();
+      var tanggal_lahir_ayah = document.getElementById("tanggal_lahir_ayah").value.trim();
+      var no_hp_ayah = document.getElementById("no_hp_ayah").value.trim();
+
+      if (nama_ibu === "" || nik_ibu === "" || tempat_lahir_ibu === "" || tanggal_lahir_ibu === "" || no_hp_ibu === "" || nama_ayah === "" || nik_ayah === "" || tempat_lahir_ayah === "" || tanggal_lahir_ayah === "" || no_hp_ayah === "") {
+        return false;
+      }
+      return true;
+    }
+  </script>
+</body>

@@ -1,124 +1,129 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Status Pendaftaran</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <!-- Custom CSS -->
-    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
-  </head>
-  <body>
-    <!-- Offcanvas & Header Menu -->
-    {% include 'dashboard_user/layouts/header.html' %} {% include 'dashboard_user/layouts/navbar.html' %}
+{% include 'dashboard_user/layouts/header.html' %}
+<body>
+  <!-- Offcanvas & Header Menu -->
+  {% include 'dashboard_user/layouts/navbar.html' %}
 
-    <!-- Main Content -->
-    <div class="d-flex" id="wrapper">
-      <!-- Sidebar -->
-      {% include 'dashboard_user/layouts/sidebar.html' %}
+  <!-- Main Content -->
+  <div class="d-flex" id="wrapper">
+    <!-- Sidebar -->
+    {% include 'dashboard_user/layouts/sidebar.html' %}
 
-      <!-- Page Content Wrapper -->
-      <div id="page-content-wrapper">
-        <!-- Top Navigation -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-          <div class="container-fluid">
-            <button class="border-0" id="sidebarToggle"><span class="navbar-toggler-icon"></span></button>
-          </div>
-        </nav>
-        <!-- Page Content -->
-        <div class="container">
-          <!-- Breadcrumb -->
-          <div class="breadcrumb-section">
-            <div class="container">
-              <div class="row">
-                <div class="col-lg-12">
-                  <div class="breadcrumb__option">
-                    <a href="/dashboard"><span class="fa fa-home"></span> Home</a>
-                    <span>Status Pendaftaran</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Main Content Section -->
-          <div class="main-content">
-            <div class="card">
-              <div class="card-body">
-                <h2 class="card-title">Status Pendaftaran</h2>
-                <div class="card-text">
-                  <h5 class="mb-3">Informasi Status Pendaftaran</h5>
-                  <p>Nama: <strong>{{ user_info.nama }}</strong></p>
-                  <p>
-                    Status formulir:
-                    <strong
-                      >{% if data.status_formulir == 'Pending' %}
-                      <span class="text-warning">{{ data.status_formulir }}</span>
-                      {% elif data.status_formulir == 'Done' %}
-                      <span class="text-success">{{ data.status_formulir }}</span>
-                      {% elif data.status_formulir == 'Rejected' %}
-                      <span class="text-danger">{{ data.status_formulir }}</span>
-                      {% else %}
-                      <span class="text-secondary">{{ data.status_formulir }}</span>
-                      {% endif %} ({{ data.message_formulir }})
-                    </strong>
-                  </p>
-                  {% if data.status_formulir == 'None' %}
-                  <a href="/dashboard/formulir" class="btn btn-sm btn-user">Upload Formulir <i class="fa fa-upload"></i></a>
-                  {% elif data.status_formulir == 'Rejected' %}
-                  <a href="/dashboard/formulir" class="btn btn-sm btn-user">Upload Ulang Formulir <i class="fa fa-upload"></i></a>
-                  {% endif %}
-
-                  <p>
-                    Status Dokumen:
-                    <strong
-                      >{% if data.status_dokumen == 'Pending' %}
-                      <span class="text-warning">{{ data.status_dokumen }}</span>
-                      {% elif data.status_dokumen == 'Done' %}
-                      <span class="text-success">{{ data.status_dokumen }}</span>
-                      {% elif data.status_dokumen == 'Rejected' %}
-                      <span class="text-danger">{{ data.status_dokumen }}</span>
-                      {% else %}
-                      <span class="text-secondary">{{ data.status_dokumen }}</span>
-                      {% endif %} ({{ data.message_dokumen }})
-                    </strong>
-                  </p>
-                  {% if data.status_formulir == 'Done' %} {% if data.status_dokumen == 'None' %}
-                  <a href="/dashboard/dokumen" class="btn btn-sm btn-user">Upload Dokumen <i class="fa fa-upload"></i></a>
-                  {% elif data.status_dokumen == 'Rejected' %}
-                  <a href="/dashboard/dokumen" class="btn btn-sm btn-user">Upload Ulang Dokumen <i class="fa fa-upload"></i></a>
-                  {% endif %} {% endif %}
-                  <p>
-                    Status Pembayaran:
-                    <strong
-                      >{% if data.status_pembayaran == 'Pending' %}
-                      <span class="text-warning">{{ data.status_pembayaran }}</span>
-                      {% elif data.status_pembayaran == 'Done' %}
-                      <span class="text-success">{{ data.status_pembayaran }}</span>
-                      {% elif data.status_pembayaran == 'Rejected' %}
-                      <span class="text-danger">{{ data.status_pembayaran }}</span>
-                      {% else %}
-                      <span class="text-secondary">{{ data.status_pembayaran }}</span>
-                      {% endif %} ({{ data.message_pembayaran }})
-                    </strong>
-                  </p>
-                  {% if data.status_dokumen == 'Done' %} {% if data.status_pembayaran == 'None' %}
-                  <a href="/dashboard/pembayaran" class="btn btn-sm btn-user">Upload Pembayaran <i class="fa fa-upload"></i></a>
-                  {% elif data.status_pembayaran == 'Rejected' %}
-                  <a href="/dashboard/pembayaran" class="btn btn-sm btn-user">Upload Ulang Pembayaran <i class="fa fa-upload"></i></a>{% endif %} {% endif %}
+    <!-- Page Content Wrapper -->
+    <div id="page-content-wrapper">
+      <!-- Top Navigation -->
+      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        <div class="container-fluid">
+          <button class="border-0" id="sidebarToggle"><span class="navbar-toggler-icon"></span></button>
+        </div>
+      </nav>
+      <!-- Page Content -->
+      <div class="container">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb-section">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="breadcrumb__option">
+                  <a href="/dashboard"><span class="fa fa-home"></span> Home</a>
+                  <span>Status Pendaftaran</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- Main Content Section -->
+        <div class="main-content">
+          <div class="card">
+            <div class="card-body">
+              <h2 class="card-title">Status Pendaftaran</h2>
+              <div class="card-text">
+                <h5 class="mb-3">Informasi Status Pendaftaran</h5>
+                <p>Nama: <strong>{{ user_info.nama }}</strong></p>
+                <p>
+                  Status formulir:
+                  <strong
+                    >{% if data.status_formulir == 'Pending' %}
+                    <span class="text-warning">{{ data.status_formulir }}</span>
+                    {% elif data.status_formulir == 'Done' %}
+                    <span class="text-success">{{ data.status_formulir }}</span>
+                    {% elif data.status_formulir == 'Rejected' %}
+                    <span class="text-danger">{{ data.status_formulir }}</span>
+                    {% else %}
+                    <span class="text-secondary">{{ data.status_formulir }}</span>
+                    {% endif %} ({{ data.message_formulir }})
+                  </strong>
+                </p>
+                {% if data.status_formulir == 'None' %}
+                <a href="/dashboard/formulir" class="btn btn-sm btn-user">Upload Formulir <i class="fa fa-upload"></i></a>
+                {% elif data.status_formulir == 'Rejected' %}
+                <a href="/dashboard/formulir" class="btn btn-sm btn-user">Upload Ulang Formulir <i class="fa fa-upload"></i></a>
+                {% endif %}
+
+                <p>
+                  Status Dokumen:
+                  <strong
+                    >{% if data.status_dokumen == 'Pending' %}
+                    <span class="text-warning">{{ data.status_dokumen }}</span>
+                    {% elif data.status_dokumen == 'Done' %}
+                    <span class="text-success">{{ data.status_dokumen }}</span>
+                    {% elif data.status_dokumen == 'Rejected' %}
+                    <span class="text-danger">{{ data.status_dokumen }}</span>
+                    {% else %}
+                    <span class="text-secondary">{{ data.status_dokumen }}</span>
+                    {% endif %} ({{ data.message_dokumen }})
+                  </strong>
+                </p>
+                {% if data.status_formulir == 'Pending' %} {% if data.status_dokumen == 'None' %}
+                <a href="/dashboard/dokumen" class="btn btn-sm btn-user">Upload Dokumen <i class="fa fa-upload"></i></a>
+                {% elif data.status_dokumen == 'Rejected' %}
+                <a href="/dashboard/dokumen" class="btn btn-sm btn-user">Upload Ulang Dokumen <i class="fa fa-upload"></i></a>
+                {% endif %} {% endif %}
+                <p>
+                  Status Pembayaran:
+                  <strong
+                    >{% if data.status_pembayaran == 'Pending' %}
+                    <span class="text-warning">{{ data.status_pembayaran }}</span>
+                    {% elif data.status_pembayaran == 'Done' %}
+                    <span class="text-success">{{ data.status_pembayaran }}</span>
+                    {% elif data.status_pembayaran == 'Rejected' %}
+                    <span class="text-danger">{{ data.status_pembayaran }}</span>
+                    {% else %}
+                    <span class="text-secondary">{{ data.status_pembayaran }}</span>
+                    {% endif %} ({{ data.message_pembayaran }})
+                  </strong>
+                </p>
+                {% if data.status_formulir == 'Done' and data.status_dokumen == 'Done' %} {% if data.status_pembayaran == 'None' %}
+                <a href="/dashboard/pembayaran" class="btn btn-sm btn-user">Upload Pembayaran <i class="fa fa-upload"></i></a>
+                {% elif data.status_pembayaran == 'Rejected' %}
+                <a href="/dashboard/pembayaran" class="btn btn-sm btn-user">Upload Ulang Pembayaran <i class="fa fa-upload"></i></a>{% endif %} {% endif %}
+              </div>
+            </div>
+          </div>
+          {% if data.status_formulir == 'Done' and data.status_dokumen == 'Done' and data.status_pembayaran == 'Done' %}
+          <div class="card my-4">
+            <div class="card-body">
+              <h3 class="card-title fw-bold" style="color: #276a5b">Selamat! Anda Telah Diterima sebagai Santri Baru di Pondok Pesantren Ulumul Qur'an</h3>
+              <h5>Berikut jadwal acara serah terima santri ke pondok dan masuk asrama:</h5>
+              <p>Hari Minggu, 07 Juli 2024. Pukul 08.00 WIB s/d 10.00 WIB.</p>
+              <h5 class="mt-3">Informasi lebih lanjut hubungi:</h5>
+              <ul>
+                <li>Ust. Irwan S.H. (0813-7685-9320)</li>
+                <li>Usth. Aminatul Khairiyah S.Pd. (0853-5956-1550)</li>
+                <li>Usth. Leni Leliana S.Pd. (0813-7004-2973)</li>
+              </ul>
+              <h5>Selamat bergabung di Pondok Pesantren Ulumul Qur'an. Kami tunggu kehadiran Anda!</h5>
+            </div>
+          </div>
+          {% endif %}
+        </div>
       </div>
     </div>
+  </div>
 
-    <!-- Footer -->
-    {% include 'user_page/layouts/footer.html' %}
+  <!-- Footer -->
+  {% include 'user_page/layouts/footer.html' %}
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
-</html>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>

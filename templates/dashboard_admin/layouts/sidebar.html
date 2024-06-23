@@ -19,11 +19,13 @@
       <div class="nav-item dropdown">
         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Santri MTs</a>
         <div class="dropdown-menu bg-transparent border-0">
-          <a href="/admin/formulir" class="dropdown-item {% if data.active == 'formulir' %} active {% endif %}">Verifikasi Formulir</a>
+          <a href="/admin/formulir/tsanawiyah" class="dropdown-item">Verifikasi Formulir</a>
+          <a href="/admin/dokumen/tsanawiyah" class="dropdown-item">Verifikasi Dokumen</a>
+          <a href="/admin/pembayaran/tsanawiyah" class="dropdown-item">Verifikasi Pembayaran</a>
         </div>
       </div>
       <div class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle {% if data.active == 'verifikasi' %} active {% endif %}" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Santri MA</a>
+        <a href="#" class="nav-link dropdown-toggle {% if data.active == 'verifikasi_ma' %} active {% endif %}" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Santri MA</a>
         <div class="dropdown-menu bg-transparent border-0">
           <a href="/admin/formulir/aliyah" class="dropdown-item">Verifikasi Formulir</a>
           <a href="/admin/dokumen/aliyah" class="dropdown-item">Verifikasi Dokumen</a>

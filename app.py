@@ -8,6 +8,7 @@ import hashlib
 from pymongo import MongoClient
 from datetime import datetime, timedelta
 from pathlib import Path
+from flask_paginate import Pagination, get_page_parameter
 
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
@@ -91,7 +92,8 @@ def register():
         "password": password_hash,
         "status formulir": "None",
         "status dokumen": "None",
-        "status pembayaran": "None"
+        "status pembayaran": "None",
+        "program": "",
     }
     db.users.insert_one(doc)
     return jsonify({"status": "success"})
@@ -255,7 +257,7 @@ def indexAdmin():
         
         admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"]), "role": payload["role"]})
         if payload["role"] == "admin":
-            data['pendaftar'] = list(db.users.find({}))
+            data['pendaftar'] = list(db.users.find({}).sort([("_id", -1)]).limit(5))
             data['mts'] = list(db.form.find({ "program": "MTs" }))
             data['mas'] = list(db.form.find({ "program": "MAS" }))
             data['form'] = list(db.form.find({}))
@@ -297,9 +299,26 @@ def pesertaAdmin():
         
         admin_info = db.admin.find_one({"_id": ObjectId(payload["_id"]), "role": payload["role"]})
         if payload["role"] == "admin":
-            data['pendaftar'] = list(db.users.find({}))
             
-            return render_template("dashboard_admin/pendaftar.html", admin_info=admin_info, data=data)
+            page = request.args.get(get_page_parameter(), type=int, default=1)
+            per_page = 10  # Jumlah data per halaman
+            offset = (page - 1) * per_page
+
+            # Mengambil data user dan mengurutkan berdasarkan _id secara descending dan membatasi hasil
+            users = db.users.find().sort("_id", -1).skip(offset).limit(per_page)
+            
+            # Konversi data ke list agar bisa dijadikan JSON
+            user_list = []
+            for user in users:
+                user['_id'] = str(user['_id'])  # Konversi ObjectId ke string
+                user_list.append(user)
+
+            # Menghitung total jumlah user
+            total_users = db.users.count_documents({})
+
+            # Membuat objek pagination
+            pagination = Pagination(page=page, total=total_users, per_page=per_page, record_name='users')
+            return render_template("dashboard_admin/pendaftar.html", admin_info=admin_info, data=data, users=user_list, pagination=pagination, offset=offset)
         else:
             flash("Anda tidak memiliki izin untuk mengakses halaman ini", "danger")
             response = make_response(redirect(url_for("authAdmin")))
@@ -321,7 +340,7 @@ def pesertaAdmin():
 def verifyFormulirMA():
     data = {
         'title': 'Dashboard Admin',
-        'active': 'verifikasi'
+        'active': 'verifikasi_ma'
     }
     token_receive = request.cookies.get("tokenLogin")
     try:
@@ -340,9 +359,26 @@ def verifyFormulirMA():
             return response
         
         # Mendapatkan data siswa yang sedang menunggu verifikasi
-        user_info = list(db.users.find({}))
+        page = request.args.get(get_page_parameter(), type=int, default=1)
+        per_page = 10  # Jumlah data per halaman
+        offset = (page - 1) * per_page
+
+        # Mengambil data user dan mengurutkan berdasarkan _id secara descending dan membatasi hasil
+        users = db.users.find({'program': 'MAS'}).sort("tanggal pendaftaran", -1).skip(offset).limit(per_page)
+        
+        # Konversi data ke list agar bisa dijadikan JSON
+        user_list = []
+        for user in users:
+            user['_id'] = str(user['_id'])  # Konversi ObjectId ke string
+            user_list.append(user)
+
+        # Menghitung total jumlah user
+        total_users = db.users.count_documents({'program': 'MAS'})
+
+        # Membuat objek pagination
+        pagination = Pagination(page=page, total=total_users, per_page=per_page, record_name='users')
                 
-        return render_template("dashboard_admin/formulir_ma.html", admin_info=admin_info, user_info=user_info, data=data)
+        return render_template("dashboard_admin/formulir_ma.html", admin_info=admin_info, data=data, users=user_list, pagination=pagination, offset=offset)
 
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
@@ -403,7 +439,7 @@ def rejectFormulirMA(id):
         
         data = request.get_json()
         rejection_message = data.get('rejectionMessage')
-        db.users.update_one({'_id': ObjectId(id)}, {'$set': {'status formulir': 'Rejected', 'tolak_form': rejection_message}})
+        db.users.update_one({'_id': ObjectId(id)}, {'$set': {'status formulir': 'Rejected', 'tolak_form': rejection_message, 'tanggal pendaftaran': ''}})
         db.form.delete_one({'user_id': ObjectId(id)})
         return jsonify({'message': 'Formulir telah ditolak.'}), 200
     
@@ -424,7 +460,7 @@ def rejectFormulirMA(id):
 def detailFormulirMA(id):
     data = {
         'title': 'Detail Formulir',
-        'active': 'verifikasi'
+        'active': 'verifikasi_ma'
     }
     token_receive = request.cookies.get("tokenLogin")
     
@@ -461,7 +497,7 @@ def detailFormulirMA(id):
 def verifyDokumenMA():
     data = {
         'title': 'Dashboard Admin',
-        'active': 'verifikasi'
+        'active': 'verifikasi_ma'
     }
     token_receive = request.cookies.get("tokenLogin")
     try:
@@ -479,9 +515,26 @@ def verifyDokumenMA():
             response.delete_cookie("tokenLogin")
             return response
         
-        user_info = list(db.users.find({}))
+        page = request.args.get(get_page_parameter(), type=int, default=1)
+        per_page = 10  # Jumlah data per halaman
+        offset = (page - 1) * per_page
+
+        # Mengambil data user dan mengurutkan berdasarkan _id secara descending dan membatasi hasil
+        users = db.users.find({'program': 'MAS'}).sort("tanggal upload dokumen", -1).skip(offset).limit(per_page)
         
-        return render_template("dashboard_admin/dokumen_ma.html", data=data, admin_info=admin_info , user_info=user_info)
+        # Konversi data ke list agar bisa dijadikan JSON
+        user_list = []
+        for user in users:
+            user['_id'] = str(user['_id'])  # Konversi ObjectId ke string
+            user_list.append(user)
+
+        # Menghitung total jumlah user
+        total_users = db.users.count_documents({'program': 'MAS'})
+
+        # Membuat objek pagination
+        pagination = Pagination(page=page, total=total_users, per_page=per_page, record_name='users')
+        
+        return render_template("dashboard_admin/dokumen_ma.html", admin_info=admin_info, data=data, users=user_list, pagination=pagination, offset=offset)
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
         response = make_response(redirect(url_for("authAdmin")))
@@ -497,7 +550,7 @@ def verifyDokumenMA():
 def detailDokumenMA(id):
     data = {
         'title': 'Detail Dokumen',
-        'active': 'verifikasi'
+        'active': 'verifikasi_ma'
     }
     token_receive = request.cookies.get("tokenLogin")
     try:
@@ -590,7 +643,7 @@ def rejectDokumenMA(id):
                 if os.path.exists(full_path):
                     os.remove(full_path)
         
-        db.users.update_one({'_id': ObjectId(id)}, {'$set': {'status dokumen': 'Rejected', 'tolak_doc': rejection_message}})
+        db.users.update_one({'_id': ObjectId(id)}, {'$set'  : {'status dokumen': 'Rejected', 'tolak_doc': rejection_message, 'tanggal upload dokumen': ''}})
         db.dokumen_santri.delete_one({'user_id': ObjectId(id)})
         
         return jsonify({'message': 'Dokumen telah ditolak.'}), 200
@@ -613,7 +666,7 @@ def rejectDokumenMA(id):
 def verifyPembayaranMA():
     data = {
         'title': 'Dashboard Admin',
-        'active': 'verifikasi'
+        'active': 'verifikasi_ma'
     }
     token_receive = request.cookies.get("tokenLogin")
     try:
@@ -631,9 +684,27 @@ def verifyPembayaranMA():
             response.delete_cookie("tokenLogin")
             return response
         
-        user_info = list(db.users.find({}))
+        # Mendapatkan data siswa yang sedang menunggu verifikasi
+        page = request.args.get(get_page_parameter(), type=int, default=1)
+        per_page = 10  # Jumlah data per halaman
+        offset = (page - 1) * per_page
+
+        # Mengambil data user dan mengurutkan berdasarkan _id secara descending dan membatasi hasil
+        users = db.users.find({'program': 'MAS'}).sort("tanggal bayar", -1).skip(offset).limit(per_page)
         
-        return render_template("dashboard_admin/pembayaran_ma.html", data=data, admin_info=admin_info , user_info=user_info)
+        # Konversi data ke list agar bisa dijadikan JSON
+        user_list = []
+        for user in users:
+            user['_id'] = str(user['_id'])  # Konversi ObjectId ke string
+            user_list.append(user)
+
+        # Menghitung total jumlah user
+        total_users = db.users.count_documents({'program': 'MAS'})
+
+        # Membuat objek pagination
+        pagination = Pagination(page=page, total=total_users, per_page=per_page, record_name='users')
+        
+        return render_template("dashboard_admin/pembayaran_ma.html", admin_info=admin_info, data=data, users=user_list, pagination=pagination, offset=offset)
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
         response = make_response(redirect(url_for("authAdmin")))
@@ -649,7 +720,7 @@ def verifyPembayaranMA():
 def detailPembayaranMA(id):
     data = {
         'title': 'Detail Pembayaran',
-        'active': 'verifikasi'
+        'active': 'verifikasi_ma'
     }
     token_receive = request.cookies.get("tokenLogin")
     try:
@@ -738,7 +809,7 @@ def rejectPembayaranMA(id):
         if os.path.exists(full_path):
             os.remove(full_path)
         
-        db.users.update_one({'_id': ObjectId(id)}, {'$set': {'status pembayaran': 'Rejected', 'tolak_pay': rejection_message}})
+        db.users.update_one({'_id': ObjectId(id)}, {'$set': {'status pembayaran': 'Rejected', 'tolak_pay': rejection_message, 'tanggal bayar': ''}})
         db.pembayaran.delete_one({'user_id': ObjectId(id)})
         
         return jsonify({'message': 'Pembayaran telah ditolak.'}), 200
@@ -847,7 +918,8 @@ def showformulir():
                     "$set": {
                         "status formulir": "Pending",
                         "nama": data["nama"],
-                        "tanggal pendaftaran": data["tanggal pendaftaran"]
+                        "tanggal pendaftaran": data["tanggal pendaftaran"],
+                        "program": data["program"],
                     }
                 }
             )

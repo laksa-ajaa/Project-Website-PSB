@@ -26,7 +26,7 @@
               <div class="bg-light rounded h-100 p-4">
                 <h6 class="mb-4">Data Pendaftar</h6>
                 <div class="table-responsive">
-                  <table class="table">
+                  <table class="table table-bordered table-hover">
                     <thead>
                       <tr>
                         <th scope="col">No</th>
@@ -36,7 +36,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                      {% for pendaftar in data['pendaftar'] %}
+                      {% for pendaftar in users %}
                       <tr>
                           <th scope="row">{{ loop.index }}</th>
                           <td>{{ pendaftar.nama }}</td>
@@ -46,6 +46,10 @@
                       {% endfor %}
                     </tbody>
                   </table>
+                  <div>
+                    {{ pagination.info }}
+                    {{ pagination.links }}
+                </div>
                 </div>
               </div>
             </div>

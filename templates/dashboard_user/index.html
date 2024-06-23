@@ -1,87 +1,87 @@
+{% include 'dashboard_user/layouts/header.html' %}
 
-  <body>
-    <!-- Offcanvas & Header Menu Begin -->
-    {% include 'dashboard_user/layouts/header.html' %}
-    {% include 'dashboard_user/layouts/navbar.html' %}
-    <!-- Offcanvas & Header Menu End -->
-    
-    <!-- Sidebar Begin -->
-    
-    <!-- Main Content Begin -->
-    <div class="d-flex" id="wrapper">
-          {% include 'dashboard_user/layouts/sidebar.html' %}
-        <!-- Sidebar-->
-        <!-- Page content wrapper-->
-        <div id="page-content-wrapper">
-          <!-- Top navigation-->
-          <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-            <div class="container-fluid">
-              <button class="border-0" id="sidebarToggle"><span class="navbar-toggler-icon"></span></button>
-              </button>
-            </div>
-          </nav>
-          <!-- Page content-->
+<body>
+  <!-- Offcanvas & Header Menu Begin -->
+  {% include 'dashboard_user/layouts/navbar.html' %}
+  <!-- Offcanvas & Header Menu End -->
+
+  <!-- Sidebar Begin -->
+
+  <!-- Main Content Begin -->
+  <div class="d-flex" id="wrapper">
+    {% include 'dashboard_user/layouts/sidebar.html' %}
+    <!-- Sidebar-->
+    <!-- Page content wrapper-->
+    <div id="page-content-wrapper">
+      <!-- Top navigation-->
+      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        <div class="container-fluid">
+          <button class="border-0" id="sidebarToggle"><span class="navbar-toggler-icon"></span></button>
+        </div>
+      </nav>
+      <!-- Page content-->
+      <div class="container">
+        <!-- Breadcrumb Begin -->
+        <div class="breadcrumb-section">
           <div class="container">
-            <!-- Breadcrumb Begin -->
-            <div class="breadcrumb-section">
-              <div class="container">
-                <div class="row">
-                  <div class="col-lg-12">
-                    <div class="breadcrumb__option">
-                      <a href="/"><span class="fa fa-home"></span> Home</a>
-                      <span>Dashboard</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- Breadcrumb End -->
-    
-            <!-- Your content goes here -->
-            <div class="card my-5 p-3">
-              <div class="card-body">
-                <h2 class="card-title mb-5">Selamat Datang Di Halaman Dashboard Pendaftaran Santri Baru Ulumul Qur'an</h2>
-                <img src="../../static/assetsUserPage/img/hero/hero-4.jpg" alt="">
-                <h4 class="card-text mt-5 mb-3">Informasi Pendaftaran Santri Baru Pondok Pesantren Ulumul Qur'an T.A 2024/2025</h4>
-                <h5 class="mb-3">A. Waktu Pendaftaran</h5>
-                <ol>
-                  <li>Tahap 1 : Pada Tanggal 1 Februari s/d 30 Maret 2024</li>
-                  <li>Tahap 2 : Pada Tanggal 22 April s/d 30 Juni 2024</li>
-                </ol>
-                <p>Jika kuota sudah terpenuhi sebelum batas akhir tanggal tersebut di atas, maka penerimaan akan di tutup.</p>
-
-                <h5 class="mb-3">B. Alur Pendaftaran</h5>
-                <ol>
-                  <li>Pengisian Formulir Data Diri</li>
-                  <li>Melampirkan Dokumen</li>
-                  <li>Pembayaran Administrasi sebesar Rp.5.750.000,-</li>
-                  <li>Khusus santri MTs Ulumul Qur'an yang melanjutkan ke MAS Ulumul Qur'an biaya administrasi pendidikan sebesar Rp.5.350.000,-</li>
-                </ol>
-
-                <h5 class="mb-3">C. Persyaratan></h5>
-                <ol>
-                  <li>Mengisi Formulir Pendaftaran</li>
-                  <li>Menyerahkan foto ijazah yang di telah legalisir.</li>
-                  <ul>
-                    <li>MTs : Ijazah MI/SD (HARUS TERBACA JELAS)</li>
-                    <li>MAS : Ijazah MTS/SMP (HARUS TERBACA JELAS)</li>
-                  </ul>
-                  <li>Menyerahkan foto surat keterangan lulus menyusul yang telah dilegalisir.</li>
-                  <li>Menyerahkan foto akte kelahiran dan foto kartu keluarga.</li>
-                  <li>Surat Keterangan Memiliki NISN ( Nomor Induk Siswa Nasional ) dari sekolah asal/foto bagian depan raport yang terlampir NISN</li>
-                  <li>Biaya Pendaftaran = Rp.250.000,-</li>
-                  <li>Biaya Pendaftaran Alumni MTs Ulumul Qur'an = Rp. 150.000,-</li>
-                </ol>
-                <div class="mt-3">
-                  <a href="/dashboard/status" class="btn btn-user">Mulai Daftar</a>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="breadcrumb__option">
+                  <a href="/"><span class="fa fa-home"></span> Home</a>
+                  <span>Dashboard</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        <!-- Breadcrumb End -->
+
+        <!-- Your content goes here -->
+        <div class="card my-5 p-3">
+          <div class="card-body">
+            <h2 class="card-title mb-5">Selamat Datang Di Halaman Dashboard Pendaftaran Santri Baru Ulumul Qur'an</h2>
+            <img src="../../static/assetsUserPage/img/brosur.jpg" alt="" />
+            <h4 class="card-text mt-5 mb-3">Informasi Pendaftaran Santri Baru Pondok Pesantren Ulumul Qur'an T.A 2024/2025</h4>
+            <h5 class="mb-1">A. Waktu Pendaftaran</h5>
+            <ol>
+              <li>Tahap 1 : Pada Tanggal 1 Februari s/d 30 Maret 2024</li>
+              <li>Tahap 2 : Pada Tanggal 22 April s/d 30 Juni 2024</li>
+            </ol>
+            <p class="mb-3">Jika kuota sudah terpenuhi sebelum batas akhir tanggal tersebut di atas, maka penerimaan akan di tutup.</p>
+
+            <h5 class="mb-1">B. Alur Pendaftaran</h5>
+            <ol>
+              <li>Pengisian Formulir Data Diri</li>
+              <li>Melampirkan Dokumen</li>
+              <li>Pembayaran Administrasi pendidikan sebesar Rp.5.750.000,- (Belum termasuk biaya pendaftaran)</li>
+              <li>Khusus santri MTs Ulumul Qur'an yang melanjutkan ke MAS Ulumul Qur'an biaya administrasi pendidikan sebesar Rp.5.350.000,- ( Belum termasuk biaya pendaftaran)</li>
+              <li>Biaya uang masuk di atas, sudah termasuk biaya bulanan sampai dengan bulan agustus 2024</li>
+              <li>Biaya bulanan berikutnya mulai dibayarkan pada bulan September 2024 sebesar Rp.950.000,-</li>
+            </ol>
+
+            <h5 class="mb-1">C. Persyaratan</h5>
+            <ol>
+              <li>Mengisi Formulir Pendaftaran</li>
+              <li>Menyerahkan foto ijazah yang di telah legalisir.</li>
+              <ul>
+                <li>MTs : Ijazah MI/SD (HARUS TERBACA JELAS)</li>
+                <li>MAS : Ijazah MTS/SMP (HARUS TERBACA JELAS)</li>
+              </ul>
+              <li>Menyerahkan foto surat keterangan lulus menyusul yang telah dilegalisir.</li>
+              <li>Menyerahkan foto akte kelahiran dan foto kartu keluarga.</li>
+              <li>Surat Keterangan Memiliki NISN ( Nomor Induk Siswa Nasional ) dari sekolah asal/foto bagian depan raport yang terlampir NISN</li>
+              <li>Biaya Pendaftaran = Rp.250.000,-</li>
+              <li>Biaya Pendaftaran Alumni MTs Ulumul Qur'an = Rp. 150.000,-</li>
+            </ol>
+            <div class="mt-3">
+              <a href="/dashboard/status" class="btn btn-user">Mulai Daftar</a>
+            </div>
+          </div>
+        </div>
       </div>
-      
-      <!-- Main Content End -->
-    {% include 'dashboard_user/layouts/footer.html' %}
-  </body>
-</html>
+    </div>
+  </div>
+
+  <!-- Main Content End -->
+  {% include 'dashboard_user/layouts/footer.html' %}
+</body>
