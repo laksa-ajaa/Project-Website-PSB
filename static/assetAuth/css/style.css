@@ -216,3 +216,55 @@ footer a {
   font-weight: bold;
   color: #003;
 }
+
+.buttonSignUp {
+  display: none;
+}
+.buttonSignIn {
+  display: none;
+}
+@media (max-width: 550px) {
+  .overlay-container {
+    display: none;
+  }
+  .sign-in-container {
+    left: 0;
+    width: 100%;
+    z-index: 2;
+  }
+  .sign-up-container {
+    left: 0;
+    width: 100%;
+    z-index: 1;
+  }
+
+  .buttonSignUp {
+    display: flex;
+    flex-direction: column;
+    padding-top: 30px;
+    align-items: center;
+    justify-content: center;
+  }
+  .buttonSignIn {
+    display: flex;
+    flex-direction: column;
+    padding-top: 30px;
+    align-items: center;
+    justify-content: center;
+  }
+  p {
+    margin: 0 0 0 0;
+  }
+
+  .container.right-panel-active .sign-in-container {
+    transform: translateX(-100%);
+    z-index: 5;
+  }
+
+  .container.right-panel-active .sign-up-container {
+    transform: translateX(0%);
+    opacity: 1;
+    z-index: 5;
+    animation: 0.6s ease-in-out;
+  }
+}

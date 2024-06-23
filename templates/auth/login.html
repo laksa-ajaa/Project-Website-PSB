@@ -34,6 +34,10 @@
           <input type="password" id="regispassword" name="password" placeholder="Password" />
           <input type="password" id="repassword" name="repassword" placeholder="Confirm Password" />
           <button type="submit">Buat akun</button>
+          <div class="buttonSignIn">
+            <p>Sudah punya akun?</p>
+            <a class="fw-bold" href="#" id="signIn_mobile" style="color: #3498db; margin-top: 10px">Masuk Akun</a>
+          </div>
         </form>
       </div>
       <div class="form-container sign-in-container">
@@ -43,6 +47,10 @@
           <input type="email" id="email" placeholder="Email" />
           <input type="password" id="password" placeholder="Password" />
           <button type="submit">Masuk</button>
+          <div class="buttonSignUp">
+            <p>Belum punya akun?</p>
+            <a class="fw-bold" href="#" id="signUp_mobile" style="color: #3498db; margin-top: 10px">Buat Akun</a>
+          </div>
         </form>
       </div>
       <div class="overlay-container">
@@ -85,6 +93,8 @@
     <script>
       const signUpButton = document.getElementById("signUp");
       const signInButton = document.getElementById("signIn");
+      const signUpButton_mobile = document.getElementById("signUp_mobile");
+      const signInButton_mobile = document.getElementById("signIn_mobile");
       const container = document.getElementById("container");
 
       signUpButton.addEventListener("click", () => {
@@ -95,7 +105,13 @@
         container.classList.remove("right-panel-active");
       });
 
-      // jQuery code
+      signUpButton_mobile.addEventListener("click", () => {
+        container.classList.add("right-panel-active");
+      });
+
+      signInButton_mobile.addEventListener("click", () => {
+        container.classList.remove("right-panel-active");
+      });
       $(document).ready(function () {
         $("#loginForm").submit(function (e) {
           e.preventDefault();
