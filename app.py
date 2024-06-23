@@ -831,7 +831,7 @@ def rejectPembayaranMA(id):
 @app.route('/dashboard')
 def showDashUser():
     data = {
-        'title': 'Dashboard User',
+        'title': 'Dashboard',
     }
     token_receive = request.cookies.get("tokenLogin")
     if not token_receive:
@@ -1053,11 +1053,11 @@ def showVer():
             flash("User tidak ditemukan", "danger")
             return redirect(url_for("showAuth"))
 
-        data = {
-            'status_formulir': user_info.get('status formulir', ''),
-            'status_dokumen': user_info.get('status dokumen', ''),
-            'status_pembayaran': user_info.get('status pembayaran', ''),
-        }
+        
+        data['status_formulir'] = user_info.get('status formulir', '')
+        data['status_dokumen'] = user_info.get('status dokumen', '')
+        data['status_pembayaran'] = user_info.get('status pembayaran', '')
+        
         
         if user_info['status formulir'] == 'Pending':
             data['message_formulir'] = "Pendaftaran anda sedang diverifikasi"
