@@ -65,3 +65,32 @@
 <script src="../../../static/assetsUserPage/js/jquery.slicknav.js"></script>
 <script src="../../../static/assetsUserPage/js/owl.carousel.min.js"></script>
 <script src="../../../static/assetsUserPage/js/main.js"></script>
+<script>
+  function confirmLogout() {
+    swal({
+      title: "Konfirmasi Logout",
+      text: "Apakah Anda yakin ingin keluar?",
+      icon: "warning",
+      buttons: {
+        cancel: {
+          text: "Batal",
+          value: null,
+          visible: true,
+          className: "",
+          closeModal: true,
+        },
+        confirm: {
+          text: "Ya, keluar",
+          value: true,
+          visible: true,
+          className: "",
+          closeModal: true,
+        },
+      },
+    }).then((isConfirm) => {
+      if (isConfirm) {
+        window.location.href = "/logout";
+      }
+    });
+  }
+</script>
