@@ -1655,7 +1655,7 @@ def showPembayaran():
 
             return redirect(url_for('showPembayaran'))
 
-        return render_template('dashboard_user/Pembayaran.html', user_info=user_info, data=data, pay_submitted=pay_submitted)
+        return render_template('dashboard_user/pembayaran.html', user_info=user_info, data=data, pay_submitted=pay_submitted)
 
     except jwt.ExpiredSignatureError:
         flash("Token anda sudah kadaluarsa, silahkan login kembali", "danger")
