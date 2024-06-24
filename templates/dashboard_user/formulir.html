@@ -82,7 +82,7 @@
                 <h4 class="mt-3 mb-3">Data Sekolah</h4>
                 <div class="mb-3">
                   <label for="nisn" class="form-label">NISN</label>
-                  <input type="text" class="form-control" id="nisn" name="nisn" placeholder="Masukkan NISN Anda" required />
+                  <input type="number" class="form-control" id="nisn" name="nisn" placeholder="Masukkan NISN Anda" required />
                 </div>
                 <div class="mb-3">
                   <label for="sekolah_asal" class="form-label">Sekolah Asal</label>
@@ -116,7 +116,7 @@
                     </div>
                     <div class="mb-3">
                       <label for="nik_ibu" class="form-label">NIK Ibu</label>
-                      <input type="text" class="form-control" id="nik_ibu" name="nik_ibu" placeholder="Masukkan NIK Ibu lengkap Anda" required />
+                      <input type="number" class="form-control" id="nik_ibu" name="nik_ibu" placeholder="Masukkan NIK Ibu lengkap Anda" required />
                     </div>
                     <div class="mb-3">
                       <label for="tempat_lahir_ibu" class="form-label">Tempat Lahir Ibu</label>
@@ -128,7 +128,7 @@
                     </div>
                     <div class="mb-3">
                       <label for="no_hp_ibu" class="form-label">Nomor HP</label>
-                      <input type="text" class="form-control" id="no_hp_ibu" name="no_hp_ibu" placeholder="Masukkan nomor HP Ibu Anda" required />
+                      <input type="number" class="form-control" id="no_hp_ibu" name="no_hp_ibu" placeholder="Masukkan nomor HP Ibu Anda" required />
                     </div>
                   </div>
 
@@ -140,7 +140,7 @@
                     </div>
                     <div class="mb-3">
                       <label for="nik_ayah" class="form-label">NIK Ayah</label>
-                      <input type="text" class="form-control" id="nik_ayah" name="nik_ayah" placeholder="Masukkan NIK Ayah lengkap Anda" required />
+                      <input type="number" class="form-control" id="nik_ayah" name="nik_ayah" placeholder="Masukkan NIK Ayah lengkap Anda" required />
                     </div>
                     <div class="mb-3">
                       <label for="tempat_lahir_ayah" class="form-label">Tempat Lahir Ayah</label>
@@ -152,7 +152,7 @@
                     </div>
                     <div class="mb-3">
                       <label for="no_hp_ayah" class="form-label">Nomor HP Ayah</label>
-                      <input type="text" class="form-control" id="no_hp_ayah" name="no_hp_ayah" placeholder="Masukkan nomor HP Ayah Anda" required />
+                      <input type="number" class="form-control" id="no_hp_ayah" name="no_hp_ayah" placeholder="Masukkan nomor HP Ayah Anda" required />
                     </div>
                   </div>
                 </div>
@@ -267,7 +267,7 @@
         } else if (pendidikanSelect.value === "SMP/MTs") {
           programSelect.value = "MAS";
         } else {
-          programSelect.value = ""; // reset to default if none of the conditions match
+          programSelect.value = "";
         }
       });
     });
