@@ -129,8 +129,15 @@ a:focus {
 }
 
 .section-title p {
+  text-align: justify;
   color: #111111;
   font-size: 16px;
+}
+.section-title li {
+  text-align: justify;
+}
+.visimisi {
+  text-align: justify;
 }
 
 .section-title h3:after {
@@ -483,7 +490,7 @@ a:focus {
   position: absolute;
   width: 100%;
   left: 0;
-  bottom: 118px;
+  bottom: 50px;
   text-align: center;
 }
 
@@ -695,6 +702,7 @@ a:focus {
 }
 
 .services__item {
+  height: 220px;
   background: #ffffff;
   padding-left: 40px;
   padding-top: 40px;
@@ -708,7 +716,15 @@ a:focus {
   -o-transition: all 0.3s;
   transition: all 0.3s;
 }
-
+.services__item.sejarah {
+  height: 100%;
+}
+.services__item.kegiatan {
+  height: 100%;
+}
+.img-sejarah {
+  width: 500px;
+}
 .services__item:hover {
   -webkit-box-shadow: 0px 8px 30px rgba(18, 8, 81, 0.2);
   box-shadow: 0px 8px 30px rgba(18, 8, 81, 0.2);
@@ -731,6 +747,7 @@ a:focus {
 
 .services__item p {
   color: #111111;
+  text-align: justify;
 }
 
 /*---------------------
@@ -970,11 +987,9 @@ a:focus {
 .sejarah-section {
   background: #f5f5f5;
 }
-
-.plan__text {
-  padding-left: 20px;
+.logo-sejarah {
+  width: 300px;
 }
-
 .plan__text h3 {
   color: #111111;
   font-weight: 700;
@@ -982,6 +997,10 @@ a:focus {
   margin-bottom: 18px;
 }
 
+.plan__text p {
+  text-align: justify;
+  font-size: 16px;
+}
 .plan__text ul {
   margin-bottom: 35px;
 }
@@ -1120,6 +1139,7 @@ a:focus {
   font-size: 14px;
   color: #c4c4c4;
   line-height: 30px;
+  text-align: justify;
 }
 
 .footer__text-widget .footer__widget-info li {
@@ -2729,11 +2749,115 @@ a:focus {
     width: 100%;
     margin-left: 10px;
   }
+  .hero__item .hero__text a {
+    font-size: 10px;
+  }
+
+  .hero__item .hero__text h2 {
+    font-size: 30px;
+  }
+  p {
+    font-size: 14px;
+  }
+  .visimisi {
+    font-size: 14px;
+  }
+  .section-title p {
+    font-size: 14px;
+  }
+  .section-title h3 {
+    font-size: 28px;
+  }
+
+  .services__item h5 {
+    font-size: 14px;
+  }
+  .services__item {
+    height: 220px;
+    padding-left: 15px;
+    padding-top: 40px;
+    padding-right: 15px;
+    padding-bottom: 20px;
+  }
+  .services__item.sejarah {
+    height: 100%;
+  }
+  .services__item.kegiatan {
+    height: 100%;
+  }
+
+  .img-sejarah {
+    width: 250px;
+  }
+  .logo-sejarah {
+    width: 250px;
+  }
+  .dashboard-user h2 {
+    font-size: 28px;
+  }
+  .card-body h5 {
+    font-size: 16px;
+  }
+  .card-body li {
+    font-size: 14px;
+  }
 }
 
 /* Wide Mobile = 480px */
 
 @media only screen and (max-width: 767px) {
+  .plan__text p {
+    font-size: 15px;
+  }
+  .img-sejarah {
+    display: none;
+  }
+  .hero__item .hero__text a {
+    font-size: 15px;
+  }
+  .hero__item .hero__text h2 {
+    font-size: 24px;
+  }
+  .hero__item .hero__text h5 {
+    font-size: 15px;
+  }
+  p {
+    font-size: 15px;
+  }
+  .img-sejarah {
+    width: 100px;
+  }
+  .visimisi {
+    font-size: 15px;
+  }
+  .section-title p {
+    font-size: 15px;
+  }
+  .section-title h3 {
+    font-size: 24px;
+  }
+
+  .services__item h5 {
+    font-size: 15px;
+  }
+  .dashboard-user h2 {
+    font-size: 24px;
+  }
+  .card-body h4 {
+    font-size: 22px;
+  }
+  .card-body h5 {
+    font-size: 15px;
+  }
+  .card-body li {
+    font-size: 13px;
+  }
+  .breadcrumb__option a {
+    font-size: 12px;
+  }
+  .breadcrumb__option span {
+    font-size: 12px;
+  }
   .header__logo {
     width: 25px;
   }
@@ -3035,6 +3159,64 @@ body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
 /* Small Device = 320px */
 
 @media only screen and (max-width: 479px) {
+  .plan__text p {
+    font-size: 11px;
+  }
+  .img-sejarah {
+    display: none;
+  }
+  .hero__item .hero__text a {
+    font-size: 10px;
+  }
+  .hero__item .hero__text h2 {
+    font-size: 18px;
+  }
+  .sejarah .hero__item .hero__text h5 {
+    font-size: 13px;
+  }
+  p {
+    font-size: 11px;
+  }
+  .status p {
+    font-size: 12px;
+  }
+  .logo-sejarah {
+    width: 200px;
+  }
+  .visimisi {
+    font-size: 11px;
+  }
+  .section-title p {
+    font-size: 11px;
+  }
+  .section-title h3 {
+    font-size: 20px;
+  }
+
+  .services__item h5 {
+    font-size: 15px;
+  }
+  .services__item.kegiatan {
+    font-size: 11px;
+  }
+  .breadcrumb__option a {
+    font-size: 10px;
+  }
+  .breadcrumb__option span {
+    font-size: 10px;
+  }
+  .dashboard-user h2 {
+    font-size: 20px;
+  }
+  .card-body h4 {
+    font-size: 18px;
+  }
+  .card-body h5 {
+    font-size: 14px;
+  }
+  .card-body li {
+    font-size: 12px;
+  }
   .header__logo {
     width: 38px;
   }
